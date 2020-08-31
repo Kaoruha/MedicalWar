@@ -1,23 +1,16 @@
 import BaseModule from './base.js';
 
-const url = 'local_api/user';
+const url = 'local_api/game';
 
-class User extends BaseModule {
+class Game extends BaseModule {
   constructor() {
     super(url, 3000);
   }
 
-  Login(account, password) {
-    return this.post('/login', {
-      "account": account,
-      "password": password,
-    });
-  }
-
-  Register(account, password) {
+  Create(name, description) {
     return this.post('/register', {
-      "account": account,
-      "password": password
+      "name": name,
+      "description": description
     })
   }
 
@@ -36,12 +29,6 @@ class User extends BaseModule {
       "uid": uid,
     })
   }
-
-  test() {
-    return this.post('/delete', {
-      "uid": uid,
-    })
-  }
 }
 
-export default new User()
+export default new Game()

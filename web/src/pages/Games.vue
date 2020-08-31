@@ -1,8 +1,8 @@
 <template>
   <div class="container">
-    <h4>User Manager</h4>
+    <h4>Game Manager</h4>
     <q-table
-      title="User List"
+      title="Works List"
       :data="data"
       :columns="columns"
       row-key="id"
@@ -12,6 +12,7 @@
       @request="onRequest"
       binary-state-sort
     >
+      <!--搜索框插槽-->
       <template v-slot:top-right>
         <q-input borderless dense debounce="300" v-model="filter" placeholder="Search">
           <template v-slot:append>
@@ -23,15 +24,16 @@
           color="primary"
           rounded
           icon="add"
-          label="Add User"
+          label="Add Game"
           @click="is_add_show = true"
         />
       </template>
+      <!--搜索框插槽-->
 
       <template v-slot:body="props">
         <q-tr :props="props">
           <q-td key="id" :props="props">{{ props.row.id }}</q-td>
-          <q-td key="account" :props="props">{{ props.row.account }}</q-td>
+          <q-td key="name" :props="props">{{ props.row.name }}</q-td>
           <q-td key="description" :props="props">
             {{ props.row.description }}
             <q-popup-edit
@@ -45,53 +47,58 @@
                 v-model="props.row.description"
                 dense
                 autofocus
-                hint="Update Description"
+                hint="Use buttons to close"
               />
             </q-popup-edit>
           </q-td>
+          <q-td key="round" :props="props">{{ props.row.round }}</q-td>
           <q-td key="recent" :props="props">{{ props.row.recent }}</q-td>
           <q-td key="operation" :props="props">
+            <q-btn
+              flat
+              text-color="primay"
+              label="ENTER"
+              @click="enter_game(props.row.id)"
+            />
             <q-btn
               flat
               color="white"
               text-color="red"
               label="Delete"
-              @click="show_delete_dialog(props.row.id, props.row.account)"
+              @click="show_delete_dialog(props.row.id, props.row.name)"
             />
           </q-td>
         </q-tr>
       </template>
     </q-table>
 
-    <!--新增用户弹窗-->
+    <!--新建一局游戏弹窗-->
     <q-dialog v-model="is_add_show" persistent>
       <q-card style="min-width: 350px">
         <q-card-section>
-          <div class="text-h6">Add User</div>
+          <div class="text-h6">Create Game</div>
         </q-card-section>
 
+        <q-card-section class="q-pt-none">
+          <q-input dense v-model="name" autofocus @keyup.enter="prompt = false" placeholder="Name" />
+        </q-card-section>
         <q-card-section class="q-pt-none">
           <q-input
             dense
-            v-model="account"
-            autofocus
+            v-model="description"
             @keyup.enter="prompt = false"
-            placeholder="Account"
+            placeholder="Description"
           />
-        </q-card-section>
-
-        <q-card-section class="q-pt-none">
-          <q-input dense v-model="password" @keyup.enter="prompt = false" placeholder="Password" />
         </q-card-section>
 
         <q-card-actions align="right" class="text-primary">
           <q-btn flat label="Cancel" v-close-popup />
-          <q-btn flat label="Add" v-close-popup @click="add_user" />
+          <q-btn flat label="Add" v-close-popup @click="creat_game" />
         </q-card-actions>
       </q-card>
     </q-dialog>
 
-    <!--用户删除弹窗-->
+    <!--删除弹窗-->
     <q-dialog v-model="is_delete_show" persistent>
       <q-card style="min-width: 350px">
         <q-card-section>
@@ -100,7 +107,7 @@
 
         <q-card-section class="q-pt-none del-dialog">
           <p class="msg">Do you really want to delete</p>
-          <p class="name">{{ready_to_delete.account}}?</p>
+          <p class="name">{{ready_to_delete.name}}?</p>
         </q-card-section>
 
         <q-card-actions align="right" class="text-primary">
@@ -110,7 +117,7 @@
             color="red"
             label="Delete"
             v-close-popup
-            @click="delete_user(ready_to_delete.id)"
+            @click="delete_game(ready_to_delete.id)"
           />
         </q-card-actions>
       </q-card>
@@ -119,20 +126,20 @@
 </template>
 
 <script>
-import User from "../api/user.js";
+import Game from "../api/game.js";
 
 export default {
-  name: "User",
+  name: "Works",
   data() {
     return {
       is_add_show: false,
       is_delete_show: false,
       ready_to_delete: {
         id: 0,
-        account: "god",
+        name: "god",
       },
-      account: "",
-      password: "",
+      name: "",
+      description: "",
       filter: "",
       loading: false,
       pagination: {
@@ -155,9 +162,9 @@ export default {
           sortable: true,
         },
         {
-          name: "account",
+          name: "name",
           required: true,
-          label: "Account",
+          label: "Name",
           align: "left",
           field: (row) => row.account,
           style: "width:200px",
@@ -168,6 +175,16 @@ export default {
           name: "description",
           required: false,
           label: "Description",
+          align: "left",
+          field: (row) => row.description,
+          style: "width:200px",
+          format: (val) => `${val}`,
+          sortable: false,
+        },
+        {
+          name: "round",
+          required: false,
+          label: "Round",
           align: "left",
           field: (row) => row.description,
           style: "width:200px",
@@ -206,11 +223,11 @@ export default {
   methods: {
     onRequest(props) {
       const { page, rowsPerPage, sortBy, descending } = props.pagination;
-      const filter = props.filter;
+      const { filter } = props;
 
       this.loading = true;
       // Update original
-      this.get_user(filter, descending);
+      this.get_game(filter, descending);
       // emulate server
       setTimeout(() => {
         // update rowsCount with appropriate value
@@ -229,7 +246,7 @@ export default {
           fetchCount,
           filter,
           sortBy,
-          descending,
+          descending
         );
 
         // clear out existing data and add new
@@ -283,17 +300,18 @@ export default {
       return count;
     },
 
-    get_user(filter, descending) {
+    get_game(filter, descending) {
       this.original = [];
       const _this = this;
-      User.Filter(filter, descending).then(function (response) {
-        const data = response.data;
-        console.log(response);
+      Game.Filter(filter, descending).then((response) => {
+        const { data } = response;
+        console.log(data);
         for (let i = 0; i < data.length; i++) {
           _this.original.push({
-            account: data[i].account,
+            name: data[i].name,
             id: data[i].id,
             description: data[i].description,
+            round: data[i].rounds,
             recent: data[i].update,
           });
         }
@@ -305,9 +323,9 @@ export default {
       this.password = "";
     },
 
-    add_user() {
+    creat_game() {
       const _this = this;
-      User.Register(this.account, this.password).then(function (response) {
+      Game.Create(this.name, this.description).then((response) => {
         switch (response.code) {
           default:
             break;
@@ -316,7 +334,6 @@ export default {
               pagination: _this.pagination,
               filter: _this.filter,
             });
-
             break;
           case 600:
             break;
@@ -327,15 +344,15 @@ export default {
       this.clear_add_dialog();
     },
 
-    show_delete_dialog(id, account) {
+    show_delete_dialog(id, name) {
       this.is_delete_show = true;
       this.ready_to_delete.id = id;
-      this.ready_to_delete.account = account;
+      this.ready_to_delete.name = name;
     },
 
-    delete_user(id) {
+    delete_game(id) {
       const _this = this;
-      User.Delete(id).then(function (response) {
+      Game.Delete(id).then((response) => {
         switch (response.code) {
           default:
             break;
@@ -349,9 +366,9 @@ export default {
       });
     },
 
-    test() {
-      this.$router.push("/login");
-    },
+    enter_game(id){
+      alert('进入游戏'+'id:'+id)
+    }
   },
 };
 </script>

@@ -1,19 +1,21 @@
 // BaseModule.js
-import axios from 'axios'
-import routes from '../router/index.js'
+import axios from 'axios';
+import routes from '../router/index.js';
+
+// const baseURL = 'http://0.0.0.0:5000/api';
 
 class BaseModule {
   constructor(url, timeout) {
-    this.url = url
-    this.timeout = timeout
+    this.url = url;
+    this.timeout = timeout;
     this.instance = axios.create({
       baseURL: this.url,
       timeout: this.timeout,
       headers: {
         // 'Content-Type': 'multipart/form-data',
         'Content-Type': 'application/json;charset=UTF-8',
-        'Authorization': localStorage.getItem('Authorization')
-      }
+        'Authorization': localStorage.getItem('Authorization'),
+      },
     })
     // this.instance.defaults.headers.common['Authorization'] = localStorage.getItem('Authorization')
 

@@ -23,7 +23,7 @@
       Header,
     },
     data() {
-      return {}
-    }
-  }
+      return {};
+    },
+  };
 </script>
