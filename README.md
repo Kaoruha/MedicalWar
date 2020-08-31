@@ -8,7 +8,7 @@ python3 -m venv venv
 // Mac/Linux
 source venv/bin/activate
 // Windows
-venv/Scripts/activate.bat
+venv\Scripts\activate
 ```
 ### 安装python依赖
 pip install -r requirements.yml
@@ -16,8 +16,11 @@ pip install -r requirements.yml
 pip3 freeze >requirements.yml
 
 ### 安装node依赖
+在web目录下
+yarn install
+npm install
 好像是在web内npm install
-有yarn用yarn，我这mac预览版，yarn装不上
+有yarn用yarn，我这mac预览版，yarn装不上,
 ### 前端启动
 cd web
 quasar dev
