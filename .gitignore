@@ -3,6 +3,8 @@
 node_modules
 /venv
 secure.py
+*/__pycache__
+*/*/__pycache__
 
 # Quasar core related directories
 .quasar
