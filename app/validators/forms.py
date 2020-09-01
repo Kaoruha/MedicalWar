@@ -20,6 +20,15 @@ class GameForm(BaseForm):
     ])
     description = StringField()
 
+class HospitalForm(BaseForm):
+    name = StringField(validators=[
+        DataRequired(message='不允许为空'),
+        length(min=4, max=32)
+    ])
+    description = StringField()
+    scale = StringField()
+    type_ = StringField()
+
 
 class TokenForm(Form):
     token = StringField(validators=[DataRequired()])

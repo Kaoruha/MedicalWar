@@ -5,9 +5,10 @@
         <q-btn dense flat round icon="menu" @click="left = !left" />
 
         <q-toolbar-title>
-          <q-avatar>
+          <!-- <q-avatar>
             <img src="https://cdn.quasar.dev/logo/svg/quasar-logo.svg" />
-          </q-avatar>Medical WarGame
+          </q-avatar> -->
+          Medical WarGame
         </q-toolbar-title>
       </q-toolbar>
     </q-header>

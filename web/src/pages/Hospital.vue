@@ -1,8 +1,8 @@
 <template>
   <div class="container">
-    <h4>User Manager</h4>
+    <h4>Hospital Manager</h4>
     <q-table
-      title="User List"
+      title="Hospital List"
       :data="data"
       :columns="columns"
       row-key="id"
@@ -23,7 +23,7 @@
           color="primary"
           rounded
           icon="add"
-          label="Add User"
+          label="Add Hospital"
           @click="is_add_show = true"
         />
       </template>
@@ -31,7 +31,7 @@
       <template v-slot:body="props">
         <q-tr :props="props">
           <q-td key="id" :props="props">{{ props.row.id }}</q-td>
-          <q-td key="account" :props="props">{{ props.row.account }}</q-td>
+          <q-td key="name" :props="props">{{ props.row.name }}</q-td>
           <q-td key="description" :props="props">
             {{ props.row.description }}
             <q-popup-edit
@@ -49,7 +49,8 @@
               />
             </q-popup-edit>
           </q-td>
-          <q-td key="recent" :props="props">{{ props.row.recent }}</q-td>
+          <q-td key="type" :props="props">{{ props.row.type_ }}</q-td>
+          <q-td key="scale" :props="props">{{ props.row.scale }}</q-td>
           <q-td key="operation" :props="props">
             <q-btn
               flat
@@ -63,30 +64,41 @@
       </template>
     </q-table>
 
-    <!--新增用户弹窗-->
+    <!--新增医院弹窗-->
     <q-dialog v-model="is_add_show" persistent>
       <q-card style="min-width: 350px">
         <q-card-section>
-          <div class="text-h6">Add User</div>
+          <div class="text-h6">Add Hospital</div>
         </q-card-section>
 
         <q-card-section class="q-pt-none">
           <q-input
             dense
-            v-model="account"
+            v-model="name"
             autofocus
             @keyup.enter="prompt = false"
-            placeholder="Account"
+            placeholder="Name"
           />
         </q-card-section>
-
         <q-card-section class="q-pt-none">
-          <q-input dense v-model="password" @keyup.enter="prompt = false" placeholder="Password" />
+          <q-input
+            dense
+            v-model="description"
+            @keyup.enter="prompt = false"
+            placeholder="Description"
+          />
         </q-card-section>
+        <q-card-section class="q-pt-none">
+          <q-select v-model="scale" :options="scale_options" label="Scale" />
+        </q-card-section>
+        <q-card-section class="q-pt-none">
+          <q-select v-model="type_" :options="type_options" label="Type" />
+        </q-card-section>
+
 
         <q-card-actions align="right" class="text-primary">
           <q-btn flat label="Cancel" v-close-popup />
-          <q-btn flat label="Add" v-close-popup @click="add_user" />
+          <q-btn flat label="Add" v-close-popup @click="add_hospital" />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -95,7 +107,7 @@
     <q-dialog v-model="is_delete_show" persistent>
       <q-card style="min-width: 350px">
         <q-card-section>
-          <div class="text-h6">Delete User</div>
+          <div class="text-h6">Delete Hospital</div>
         </q-card-section>
 
         <q-card-section class="q-pt-none del-dialog">
@@ -110,7 +122,7 @@
             color="red"
             label="Delete"
             v-close-popup
-            @click="delete_user(ready_to_delete.id)"
+            @click="delete_hospital(ready_to_delete.id)"
           />
         </q-card-actions>
       </q-card>
@@ -119,20 +131,28 @@
 </template>
 
 <script>
-import User from "../api/user.js";
+import Hospital from "../api/hospital.js";
 
 export default {
-  name: "User",
+  name: "Hospital",
   data() {
     return {
+      scale_options: [
+        '大型医院', '中型医院', '小型医院'
+      ],
+      type_options: [
+        '公立医院', '私立医院'
+      ],
       is_add_show: false,
       is_delete_show: false,
       ready_to_delete: {
         id: 0,
-        account: "god",
+        name: "god",
       },
-      account: "",
-      password: "",
+      name: "",
+      description: "",
+      scale: "",
+      type_: "",
       filter: "",
       loading: false,
       pagination: {
@@ -155,9 +175,9 @@ export default {
           sortable: true,
         },
         {
-          name: "account",
+          name: "name",
           required: true,
-          label: "Account",
+          label: "Name",
           align: "left",
           field: (row) => row.account,
           style: "width:200px",
@@ -175,9 +195,19 @@ export default {
           sortable: false,
         },
         {
-          name: "recent",
+          name: "type",
           required: true,
-          label: "Recent",
+          label: "Type",
+          align: "left",
+          field: (row) => row.recent,
+          style: "width:200px",
+          format: (val) => `${val}`,
+          sortable: true,
+        },
+        {
+          name: "scale",
+          required: true,
+          label: "Scale",
           align: "left",
           field: (row) => row.recent,
           style: "width:200px",
@@ -210,7 +240,7 @@ export default {
 
       this.loading = true;
       // Update original
-      this.get_user(filter, descending);
+      this.get_hospital(filter, descending);
       // emulate server
       setTimeout(() => {
         // update rowsCount with appropriate value
@@ -283,18 +313,19 @@ export default {
       return count;
     },
 
-    get_user(filter, descending) {
+    get_hospital(filter, descending) {
       this.original = [];
       const _this = this;
-      User.Filter(filter, descending).then(function (response) {
+      Hospital.Filter(filter, descending).then(function (response) {
         const data = response.data;
         console.log(response);
         for (let i = 0; i < data.length; i++) {
           _this.original.push({
-            account: data[i].account,
+            name: data[i].name,
             id: data[i].id,
             description: data[i].description,
-            recent: data[i].update,
+            scale: data[i].scale,
+            type_:data[i].type
           });
         }
       });
@@ -303,11 +334,13 @@ export default {
     clear_add_dialog() {
       this.name = "";
       this.description = "";
+      this.scale='';
+      this.type_='';
     },
 
-    add_user() {
+    add_hospital() {
       const _this = this;
-      User.Register(this.account, this.password).then(function (response) {
+      Hospital.Create(this.name, this.description, this.scale, this.type_).then(function (response) {
         switch (response.code) {
           default:
             break;
@@ -333,9 +366,9 @@ export default {
       this.ready_to_delete.account = account;
     },
 
-    delete_user(id) {
+    delete_hospital(id) {
       const _this = this;
-      User.Delete(id).then(function (response) {
+      Hospital.Delete(id).then(function (response) {
         switch (response.code) {
           default:
             break;
@@ -347,10 +380,6 @@ export default {
             break;
         }
       });
-    },
-
-    test() {
-      this.$router.push("/login");
     },
   },
 };

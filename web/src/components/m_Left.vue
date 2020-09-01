@@ -31,6 +31,12 @@ export default {
           separator: false,
           url: "/manager/user",
         },
+        {
+          icon: "local_hospital",
+          label: "Hospital",
+          separator: false,
+          url: "/manager/hospital",
+        },
       ],
     };
   },

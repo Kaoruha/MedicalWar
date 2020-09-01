@@ -1,8 +1,8 @@
 <template>
   <div class="container">
-    <h4>Game Manager</h4>
+    <h4>WarGame Manager</h4>
     <q-table
-      title="Works List"
+      title="WarGame List"
       :data="data"
       :columns="columns"
       row-key="id"
@@ -80,7 +80,7 @@
         </q-card-section>
 
         <q-card-section class="q-pt-none">
-          <q-input dense v-model="name" autofocus @keyup.enter="prompt = false" placeholder="Name" />
+          <q-input dense v-model="name" autofocus @keyup.enter="prompt = false" placeholder="Name at least 4 letters." />
         </q-card-section>
         <q-card-section class="q-pt-none">
           <q-input
@@ -129,7 +129,7 @@
 import Game from "../api/game.js";
 
 export default {
-  name: "Works",
+  name: "Game",
   data() {
     return {
       is_add_show: false,
@@ -319,8 +319,8 @@ export default {
     },
 
     clear_add_dialog() {
-      this.account = "";
-      this.password = "";
+      this.name = "";
+      this.description = "";
     },
 
     creat_game() {
@@ -334,6 +334,8 @@ export default {
               pagination: _this.pagination,
               filter: _this.filter,
             });
+            _this.name=''
+            _this.description=''
             break;
           case 600:
             break;
