@@ -1,127 +1,88 @@
 <template>
   <div class="container">
-    <h4>WarGame Manager</h4>
-    <q-table
-      title="WarGame List"
-      :data="data"
-      :columns="columns"
-      row-key="id"
-      :pagination.sync="pagination"
-      :loading="loading"
-      :filter="filter"
-      @request="onRequest"
-      binary-state-sort
-    >
-      <!--搜索框插槽-->
-      <template v-slot:top-right>
-        <q-input borderless dense debounce="300" v-model="filter" placeholder="Search">
-          <template v-slot:append>
-            <q-icon name="search" />
+    <h4>Game Host</h4>
+    <q-card class="my-card">
+      <q-img src="https://cdn.quasar.dev/img/parallax2.jpg">
+        <div class="absolute-bottom">
+          <div class="text-h6">{{game_name}}</div>
+          <div class="text-subtitle2">Current Round ：{{round}}</div>
+        </div>
+      </q-img>
+
+      <q-card-actions>
+        <q-btn flat color="negative" @click="end_the_game" style="width: 120px">End the Game</q-btn>
+        <q-btn disabled color="primary" @click="commit" style="width: 120px">Next</q-btn>
+      </q-card-actions>
+    </q-card>
+    <div class="row q-col-gutter-md">
+      <div class="col-6" v-for="n in 4" :key="`md-${n}`">
+        <q-table
+          title="data[n]"
+          :data="data"
+          :columns="columns"
+          row-key="id"
+          :pagination.sync="pagination"
+          :loading="loading"
+          :filter="filter"
+          @request="onRequest"
+          binary-state-sort
+        >
+          <!--搜索框插槽-->
+          <template v-slot:top-right>
+            <q-input borderless disabled dense debounce="300" v-model="filter" placeholder="Search">
+            <!-- <template v-slot:append> -->
+              <!-- <q-icon name="search" /> -->
+            <!-- </template> -->
+          </q-input>
+            <q-btn
+              class="btn-add"
+              color="primary"
+              rounded
+              icon="done"
+              label="Check"
+              @click="is_add_show = true"
+            />
           </template>
-        </q-input>
-        <q-btn
-          class="btn-add"
-          color="primary"
-          rounded
-          icon="add"
-          label="Add Game"
-          @click="is_add_show = true"
-        />
-      </template>
-      <!--搜索框插槽-->
-
-      <template v-slot:body="props">
-        <q-tr :props="props">
-          <q-td key="id" :props="props">{{ props.row.id }}</q-td>
-          <q-td key="name" :props="props">{{ props.row.name }}</q-td>
-          <q-td key="description" :props="props">
-            {{ props.row.description }}
-            <q-popup-edit
-              v-model="props.row.description"
-              title="Update Description"
-              buttons
-              persistent
-            >
-              <q-input
-                type="input"
-                v-model="props.row.description"
-                dense
-                autofocus
-                hint="Use buttons to close"
-              />
-            </q-popup-edit>
-          </q-td>
-          <q-td key="round" :props="props">{{ props.row.round }}</q-td>
-          <q-td key="recent" :props="props">{{ props.row.recent }}</q-td>
-          <q-td key="operation" :props="props">
-            <q-btn
-              flat
-              text-color="primay"
-              label="ENTER"
-              @click="enter_game(props.row.id)"
-            />
-            <q-btn
-              flat
-              color="white"
-              text-color="red"
-              label="Delete"
-              @click="show_delete_dialog(props.row.id, props.row.name)"
-            />
-          </q-td>
-        </q-tr>
-      </template>
-    </q-table>
-
-    <!--新建一局游戏弹窗-->
-    <q-dialog v-model="is_add_show" persistent>
-      <q-card style="min-width: 350px">
-        <q-card-section>
-          <div class="text-h6">Create Game</div>
-        </q-card-section>
-
-        <q-card-section class="q-pt-none">
-          <q-input dense v-model="name" autofocus @keyup.enter="prompt = false" placeholder="Name at least 4 letters." />
-        </q-card-section>
-        <q-card-section class="q-pt-none">
-          <q-input
-            dense
-            v-model="description"
-            @keyup.enter="prompt = false"
-            placeholder="Description"
-          />
-        </q-card-section>
-
-        <q-card-actions align="right" class="text-primary">
-          <q-btn flat label="Cancel" v-close-popup />
-          <q-btn flat label="Add" v-close-popup @click="creat_game" />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
-
-    <!--删除弹窗-->
-    <q-dialog v-model="is_delete_show" persistent>
-      <q-card style="min-width: 350px">
-        <q-card-section>
-          <div class="text-h6">Delete User</div>
-        </q-card-section>
-
-        <q-card-section class="q-pt-none del-dialog">
-          <p class="msg">Do you really want to delete</p>
-          <p class="name">{{ready_to_delete.name}}?</p>
-        </q-card-section>
-
-        <q-card-actions align="right" class="text-primary">
-          <q-btn flat label="Cancel" v-close-popup />
-          <q-btn
-            flat
-            color="red"
-            label="Delete"
-            v-close-popup
-            @click="delete_game(ready_to_delete.id)"
-          />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
+          <!--搜索框插槽-->
+          
+          <template v-slot:body="props">
+            <q-tr :props="props">
+              <q-td key="id" :props="props">{{ props.row.id }}</q-td>
+              <q-td key="name" :props="props">{{ props.row.name }}</q-td>
+              <q-td key="description" :props="props">
+                {{ props.row.description }}
+                <q-popup-edit
+                  v-model="props.row.description"
+                  title="Update Description"
+                  buttons
+                  persistent
+                >
+                  <q-input
+                    type="input"
+                    v-model="props.row.description"
+                    dense
+                    autofocus
+                    hint="Use buttons to close"
+                  />
+                </q-popup-edit>
+              </q-td>
+              <q-td key="round" :props="props">{{ props.row.round }}</q-td>
+              <q-td key="recent" :props="props">{{ props.row.recent }}</q-td>
+              <q-td key="operation" :props="props">
+                <q-btn flat text-color="primay" label="ENTER" @click="enter_game(props.row.id)" />
+                <q-btn
+                  flat
+                  color="white"
+                  text-color="red"
+                  label="Delete"
+                  @click="show_delete_dialog(props.row.id, props.row.name)"
+                />
+              </q-td>
+            </q-tr>
+          </template>
+        </q-table>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -129,17 +90,17 @@
 import Game from "../api/game.js";
 
 export default {
-  name: "Game",
+  name: "Game_host",
   data() {
     return {
+      game_name: "default",
+      round: 0,
       is_add_show: false,
       is_delete_show: false,
       ready_to_delete: {
         id: 0,
         name: "god",
       },
-      name: "",
-      description: "",
       filter: "",
       loading: false,
       pagination: {
@@ -215,6 +176,7 @@ export default {
   },
   mounted() {
     // get initial data from server (1st page)
+    this.get_current_game();
     this.onRequest({
       pagination: this.pagination,
       filter: this.filter,
@@ -227,7 +189,7 @@ export default {
 
       this.loading = true;
       // Update original
-      this.get_game(filter, descending);
+      this.get_company_strategy(filter, descending);
       // emulate server
       setTimeout(() => {
         // update rowsCount with appropriate value
@@ -300,7 +262,7 @@ export default {
       return count;
     },
 
-    get_game(filter, descending) {
+    get_company_strategy(filter, descending) {
       this.original = [];
       const _this = this;
       Game.Filter(filter, descending).then((response) => {
@@ -319,8 +281,8 @@ export default {
     },
 
     clear_add_dialog() {
-      this.name = "";
-      this.description = "";
+      this.account = "";
+      this.password = "";
     },
 
     creat_game() {
@@ -334,8 +296,6 @@ export default {
               pagination: _this.pagination,
               filter: _this.filter,
             });
-            _this.name=''
-            _this.description=''
             break;
           case 600:
             break;
@@ -368,15 +328,34 @@ export default {
       });
     },
 
-    enter_game(id){
-      this.$store.commit("current_game/updateCurrentGameID", id);
-      this.$router.push("game_host");
+    enter_game(id) {
+      alert("进入游戏" + "id:" + id);
+    },
+
+    get_current_game() {
+      var t = localStorage.getItem("current_game_id");
+      this.game_name = t; // 目前是把id显示出来，回头用id去查询这一局的情况
+    },
+
+    commit() {
+      alert("提交信息");
+    },
+    end_the_game(){
+      alert("做个二次确认");
     }
   },
 };
 </script>
 
 <style scoped lang="scss">
+.my-card {
+  width: 100%;
+  margin-bottom: 24px;
+  // max-width: 250px;
+  .q-img {
+    height: 200px;
+  }
+}
 .del-dialog {
   p {
     display: inline-block;

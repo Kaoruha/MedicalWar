@@ -26,6 +26,10 @@ const routes = [{
     component: () => import('pages/Games.vue'),
   },
   {
+    path: 'game_host',
+    component: () => import('pages/Game_host.vue'),
+  },
+  {
     path: 'hospital',
     component: () => import('pages/Hospital.vue'),
   },
