@@ -23,7 +23,7 @@ class GameForm(BaseForm):
 class HospitalForm(BaseForm):
     name = StringField(validators=[
         DataRequired(message='不允许为空'),
-        length(min=4, max=32)
+        length(min=2, max=32)
     ])
     description = StringField()
     scale = StringField()

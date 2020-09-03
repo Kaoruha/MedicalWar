@@ -15,7 +15,7 @@
       </q-card-actions>
     </q-card>
     <div class="row q-col-gutter-md">
-      <div class="col-6" v-for="n in 4" :key="`md-${n}`">
+      <div class="col-12" v-for="n in 4" :key="`md-${n}`">
         <q-table
           title="data[n]"
           :data="data"
@@ -27,33 +27,33 @@
           @request="onRequest"
           binary-state-sort
         >
-          <!--搜索框插槽-->
+          <!--检查按钮-->
           <template v-slot:top-right>
-            <q-input borderless disabled dense debounce="300" v-model="filter" placeholder="Search">
-            <!-- <template v-slot:append> -->
+            <q-input borderless dense debounce="300" v-model="filter" placeholder="Search">
+              <!-- <template v-slot:append> -->
               <!-- <q-icon name="search" /> -->
-            <!-- </template> -->
-          </q-input>
+              <!-- </template> -->
+            </q-input>
             <q-btn
               class="btn-add"
               color="primary"
               rounded
               icon="done"
-              label="Check"
-              @click="is_add_show = true"
+              :label= "is_company_checked[n-1].check ? 'Checked':'Check'"
+              @click="is_company_checked[n-1].check = !is_company_checked[n-1].check"
             />
           </template>
-          <!--搜索框插槽-->
-          
+          <!--检查按钮-->
+
           <template v-slot:body="props">
             <q-tr :props="props">
               <q-td key="id" :props="props">{{ props.row.id }}</q-td>
               <q-td key="name" :props="props">{{ props.row.name }}</q-td>
-              <q-td key="description" :props="props">
+              <q-td key="hc" :props="props">
                 {{ props.row.description }}
                 <q-popup-edit
                   v-model="props.row.description"
-                  title="Update Description"
+                  title="Update HC"
                   buttons
                   persistent
                 >
@@ -66,18 +66,13 @@
                   />
                 </q-popup-edit>
               </q-td>
-              <q-td key="round" :props="props">{{ props.row.round }}</q-td>
-              <q-td key="recent" :props="props">{{ props.row.recent }}</q-td>
-              <q-td key="operation" :props="props">
-                <q-btn flat text-color="primay" label="ENTER" @click="enter_game(props.row.id)" />
-                <q-btn
-                  flat
-                  color="white"
-                  text-color="red"
-                  label="Delete"
-                  @click="show_delete_dialog(props.row.id, props.row.name)"
-                />
-              </q-td>
+              <q-td key="advertising" :props="props">{{ props.row.round }}</q-td>
+              <q-td key="product_a" :props="props">{{ props.row.recent }}</q-td>
+              <q-td key="product_b" :props="props"></q-td>
+              <q-td key="product_c" :props="props"></q-td>
+              <q-td key="channel" :props="props"></q-td>
+              <q-td key="permission" :props="props"></q-td>
+              <q-td key="info" :props="props"></q-td>
             </q-tr>
           </template>
         </q-table>
@@ -95,12 +90,12 @@ export default {
     return {
       game_name: "default",
       round: 0,
-      is_add_show: false,
-      is_delete_show: false,
-      ready_to_delete: {
-        id: 0,
-        name: "god",
-      },
+      is_company_checked: [
+        { check: false },
+        { check: false },
+        { check: false },
+        { check: false },
+      ],
       filter: "",
       loading: false,
       pagination: {
@@ -133,9 +128,9 @@ export default {
           sortable: false,
         },
         {
-          name: "description",
+          name: "hc",
           required: false,
-          label: "Description",
+          label: "HC",
           align: "left",
           field: (row) => row.description,
           style: "width:200px",
@@ -143,9 +138,9 @@ export default {
           sortable: false,
         },
         {
-          name: "round",
+          name: "advertising",
           required: false,
-          label: "Round",
+          label: "Advertising",
           align: "left",
           field: (row) => row.description,
           style: "width:200px",
@@ -153,9 +148,9 @@ export default {
           sortable: false,
         },
         {
-          name: "recent",
+          name: "product_a",
           required: true,
-          label: "Recent",
+          label: "ProductA Price",
           align: "left",
           field: (row) => row.recent,
           style: "width:200px",
@@ -163,9 +158,43 @@ export default {
           sortable: true,
         },
         {
-          name: "operation",
+          name: "product_b",
+          required: true,
+          label: "ProductB Price",
+          align: "left",
+          field: (row) => row.recent,
+          style: "width:200px",
+          format: (val) => `${val}`,
+          sortable: true,
+        },
+        {
+          name: "product_c",
+          required: true,
+          label: "ProductC Price",
+          align: "left",
+          field: (row) => row.recent,
+          style: "width:200px",
+          format: (val) => `${val}`,
+          sortable: true,
+        },
+        {
+          name: "channel",
           required: false,
-          label: "Operation",
+          label: "Channel",
+          align: "right",
+          style: "width:200px",
+        },
+        {
+          name: "permission",
+          required: false,
+          label: "Permission",
+          align: "right",
+          style: "width:200px",
+        },
+        {
+          name: "info",
+          required: false,
+          label: "Info",
           align: "right",
           style: "width:200px",
         },
@@ -280,54 +309,6 @@ export default {
       });
     },
 
-    clear_add_dialog() {
-      this.account = "";
-      this.password = "";
-    },
-
-    creat_game() {
-      const _this = this;
-      Game.Create(this.name, this.description).then((response) => {
-        switch (response.code) {
-          default:
-            break;
-          case 200:
-            _this.onRequest({
-              pagination: _this.pagination,
-              filter: _this.filter,
-            });
-            break;
-          case 600:
-            break;
-          case 601:
-            break;
-        }
-      });
-      this.clear_add_dialog();
-    },
-
-    show_delete_dialog(id, name) {
-      this.is_delete_show = true;
-      this.ready_to_delete.id = id;
-      this.ready_to_delete.name = name;
-    },
-
-    delete_game(id) {
-      const _this = this;
-      Game.Delete(id).then((response) => {
-        switch (response.code) {
-          default:
-            break;
-          case 200:
-            _this.onRequest({
-              pagination: _this.pagination,
-              filter: _this.filter,
-            });
-            break;
-        }
-      });
-    },
-
     enter_game(id) {
       alert("进入游戏" + "id:" + id);
     },
@@ -340,9 +321,9 @@ export default {
     commit() {
       alert("提交信息");
     },
-    end_the_game(){
+    end_the_game() {
       alert("做个二次确认");
-    }
+    },
   },
 };
 </script>

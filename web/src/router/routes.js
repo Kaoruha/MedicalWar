@@ -8,6 +8,10 @@ const routes = [{
       path: 'login',
       component: () => import('pages/Login.vue'),
     },
+    {
+      path: 'game_player',
+      component: () => import('pages/game_player.vue'),
+    },
   ],
 },
 {

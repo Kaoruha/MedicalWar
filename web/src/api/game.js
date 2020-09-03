@@ -29,6 +29,15 @@ class Game extends BaseModule {
       "uid": uid,
     })
   }
+
+  Submit(game_id, company_id, strategy_data) {
+    return this.post('/submit', {
+      "game_id": game_id,
+      "company_id": company_id,
+      "data": strategy_data
+    })
+  }
+
 }
 
 export default new Game()

@@ -369,7 +369,7 @@ export default {
     },
 
     enter_game(id){
-      this.$store.commit("current_game/updateCurrentGameID", id);
+      this.$store.submit("current_game/updateCurrentGameID", id);
       this.$router.push("game_host");
     }
   },

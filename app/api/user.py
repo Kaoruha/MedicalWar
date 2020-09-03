@@ -109,7 +109,7 @@ def user_get():
 @yp_user.route('/delete', methods=['POST'])
 @login_required
 def user_delete():
-    uid = request.get_json()['uid']
+    uid = request.json['uid']
     t = User.is_exist(uid=uid)
     if t:
         u = User.query.filter_by(id=uid).first()

@@ -89,3 +89,29 @@ def game_delete():
         return NoException(msg='删除成功')
     else:
         return ParameterException(msg="不存在该局", error_code=602)
+
+@yp_game.route('/submit', methods=['POST'])
+def strategy_submit():
+    data = request.get_json()['data']
+    game_id = request.get_json()['game_id']
+    company_id = request.get_json()['company_id']
+    print(game_id)
+    print(company_id)
+    print('开始试图解析数据')
+    # TODO 本地化存储成csv
+    try:
+        for row in data:
+            print(row)
+    except Exception as e:
+        print(e)
+    return '解析传过来的数据'
+
+# TODO 获取某局某个回合某个公司的策略
+
+
+# TODO 接受某局某回合所有公司的策略
+
+
+# TODO 公司获取当前回合结果
+# 1、没结果
+# 2、有结果
