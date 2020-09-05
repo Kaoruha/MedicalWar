@@ -106,7 +106,15 @@ def strategy_submit():
         print(e)
     return '解析传过来的数据'
 
-# TODO 获取某局某个回合某个公司的策略
+# 获取某局某个回合某个公司的策略
+@yp_game.route('/get_com_data', methods=['POST'])
+def get_com_data():
+    game_id = request.get_json()['game_id']
+    rounds = request.get_json()['rounds']
+    company_id = request.get_json()['company_id']
+    Game.get_com_data(uid=game_id,rounds=rounds,company_id=company_id)
+
+    return '解析传过来的数据'
 
 
 # TODO 接受某局某回合所有公司的策略

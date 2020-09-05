@@ -38,6 +38,14 @@ class Game extends BaseModule {
     })
   }
 
+  GetCompanyData(game_id, company_id, rounds){
+    return this.post('/submit', {
+      "game_id": game_id,
+      "company_id": company_id,
+      "rounds": rounds
+    })
+  }
+
 }
 
 export default new Game()

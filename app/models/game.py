@@ -54,8 +54,16 @@ class Game(Base):
         pass
 
     @classmethod
-    def get_com_data(cls,uid,round,company_id):
+    def get_com_data(cls,uid,rounds,company_id:str):
         if not cls.is_exist(uid=uid):
             print('不存在该局游戏')
             return
+        if rounds > cls.query.filter_by(id=uid, status=1).first().rounds:
+            print('游戏回合超出')
+            return
+        # 允许输入a,b,c,d,A,B,C,D
+        _company = company_id.upper()
+        game_name = cls.query.filter_by(id=uid, status=1).first().name
+        path = 'app/data/game_'+game_name+'/round'+round+'/InputTable'+_company
+        print(path)
         
