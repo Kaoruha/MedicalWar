@@ -39,7 +39,7 @@ class Game extends BaseModule {
   }
 
   GetCompanyData(game_id, company_id, rounds){
-    return this.post('/submit', {
+    return this.post('/get_com_data', {
       "game_id": game_id,
       "company_id": company_id,
       "rounds": rounds
