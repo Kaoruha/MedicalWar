@@ -210,6 +210,8 @@ export default {
       pagination: this.pagination,
       filter: this.filter,
     });
+
+    Game.GetCompanyData(1,'a',0);
   },
   methods: {
     onRequest(props) {

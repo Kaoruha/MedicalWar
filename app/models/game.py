@@ -1,5 +1,6 @@
 import os
 import shutil
+import pandas as pd
 from datetime import datetime
 
 from sqlalchemy import Column, String, Integer, SmallInteger
@@ -54,7 +55,7 @@ class Game(Base):
         pass
 
     @classmethod
-    def get_com_data(cls,uid,rounds,company_id:str):
+    def get_com_data(cls,uid:int,rounds:int,company_id:str):
         if not cls.is_exist(uid=uid):
             print('不存在该局游戏')
             return
@@ -64,6 +65,8 @@ class Game(Base):
         # 允许输入a,b,c,d,A,B,C,D
         _company = company_id.upper()
         game_name = cls.query.filter_by(id=uid, status=1).first().name
-        path = 'app/data/game_'+game_name+'/round'+round+'/InputTable'+_company
+        path = 'app/data/game_'+game_name+'/round'+str(rounds)+'/InputTable'+_company+'.xlsx'
         print(path)
+        df = pd.read_excel(path)
+        # print(df)
         

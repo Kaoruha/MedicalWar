@@ -112,6 +112,7 @@ def get_com_data():
     game_id = request.get_json()['game_id']
     rounds = request.get_json()['rounds']
     company_id = request.get_json()['company_id']
+
     Game.get_com_data(uid=game_id,rounds=rounds,company_id=company_id)
 
     return '解析传过来的数据'
