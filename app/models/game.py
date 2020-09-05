@@ -1,3 +1,5 @@
+import os
+import shutil
 from datetime import datetime
 
 from sqlalchemy import Column, String, Integer, SmallInteger
@@ -13,6 +15,7 @@ class Game(Base):
 
     @staticmethod
     def creat_game(name, description):
+        # 数据库添加
         with db.auto_commit():
             temp = Game()
             temp.name = name
@@ -20,6 +23,17 @@ class Game(Base):
             temp.rounds = 0
             temp.update_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             db.session.add(temp)
+        
+        # 本地生成目录
+        path = 'app/data/game_'+ name
+        if not os.path.exists(path):
+            os.makedirs(path)
+            os.makedirs(path+'/round1')
+        # 拷贝初始CSV
+        files = ['companyInfo.xlsx','InputTableA.xlsx','InputTableB.xlsx','InputTableC.xlsx']
+        for file in files:
+            shutil.copyfile('app/data/mould/'+file, path+'/round1/'+file)
+
 
     @classmethod
     def is_game_exist(cls, name):

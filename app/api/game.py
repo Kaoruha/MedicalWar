@@ -61,7 +61,7 @@ def game_get():
         ).order_by(
             Game.id.desc() if descending else Game.id  # 根据descending选择正序or倒序
         ).all()[start_row:start_row + count]  # 根据start_row和count选择切片
-        print(result)
+
         data = []
         for item in result:
             t = {
@@ -72,7 +72,7 @@ def game_get():
                 "update": item.update_time
             }
             data.append(t)
-        print(data)
+
         return NoException(data=data)
     else:
         raise ParameterException
