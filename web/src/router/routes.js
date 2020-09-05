@@ -14,31 +14,36 @@ const routes = [{
     },
   ],
 },
-{
-  path: '/manager',
-  component: () => import('layouts/SubLayout.vue'),
-  children: [{
-    path: '',
-    redirect: 'game',
-  },
   {
-    path: 'user',
-    component: () => import('pages/User.vue'),
+    path: '/manager',
+    component: () => import('layouts/SubLayout.vue'),
+    children: [{
+      path: '',
+      redirect: 'game',
+    },
+      {
+        path: 'user',
+        component: () => import('pages/User.vue'),
+      },
+      {
+        path: 'game',
+        component: () => import('pages/Games.vue'),
+      },
+      {
+        path: 'game_host',
+        component: () => import('pages/Game_host.vue'),
+      },
+      //game_host_copy
+      {
+        path: 'game_host_copy',
+        component: () => import('pages/Game_host_copy.vue'),
+      },
+      {
+        path: 'hospital',
+        component: () => import('pages/Hospital.vue'),
+      },
+    ],
   },
-  {
-    path: 'game',
-    component: () => import('pages/Games.vue'),
-  },
-  {
-    path: 'game_host',
-    component: () => import('pages/Game_host.vue'),
-  },
-  {
-    path: 'hospital',
-    component: () => import('pages/Hospital.vue'),
-  },
-  ],
-},
 ];
 
 // Always leave this as last one
