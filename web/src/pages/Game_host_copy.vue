@@ -1,6 +1,12 @@
 <template>
   <div class="container">
     <h4 class="text-green-5">Game Host Copy</h4>
+    <div>
+      <q-input outlined v-model="game_id" label="game_id" />
+      <q-input outlined v-model="company_id" label="company_id" />
+      <q-input outlined v-model="rounds" label="rounds" />
+      <q-btn color="primary" label="Primary" @click="primaryBtn"/>
+    </div>
     <q-card class="my-card">
       <q-img src="https://cdn.quasar.dev/img/parallax2.jpg">
         <div class="absolute-bottom">
@@ -88,6 +94,9 @@ export default {
   name: "Game_host",
   data() {
     return {
+      game_id:'',
+      company_id:'',
+      rounds:'',
       game_name: "default",
       round: 0,
       is_company_checked: [
@@ -212,6 +221,12 @@ export default {
     });
   },
   methods: {
+    //GetCompanyData
+    primaryBtn(){
+      const _this = this;
+      Game.GetCompanyData(this.game_id,this.company_id,this.rounds)
+    },
+
     onRequest(props) {
       const { page, rowsPerPage, sortBy, descending } = props.pagination;
       const { filter } = props;
