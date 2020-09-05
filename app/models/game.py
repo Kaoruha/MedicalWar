@@ -48,3 +48,14 @@ class Game(Base):
             return True
         else:
             return False
+
+    @classmethod
+    def get_data(cls, uid, round):
+        pass
+
+    @classmethod
+    def get_com_data(cls,uid,round,company_id):
+        if not cls.is_exist(uid=uid):
+            print('不存在该局游戏')
+            return
+        
