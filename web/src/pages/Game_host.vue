@@ -5,91 +5,257 @@
       <q-img src="https://cdn.quasar.dev/img/parallax2.jpg">
         <div class="absolute-bottom">
           <div class="text-h6">{{game_name}}</div>
-          <div class="text-subtitle2">Current Round ：{{round}}</div>
+          <div class="text-subtitle2">Current Round ：{{rounds}}</div>
         </div>
       </q-img>
 
       <q-card-actions>
-        <q-btn flat color="negative" @click="end_the_game" style="width: 120px">End the Game</q-btn>
-        <q-btn disabled color="primary" @click="commit" style="width: 120px">Next</q-btn>
+        <q-btn
+          flat
+          color="light-blue"
+          @click="start_this_round"
+          :disabled="current_round_started"
+          style="width: 120px"
+        >开始当前回合</q-btn>
+        <q-btn
+          :disabled="!is_ok_to_commit()"
+          color="primary"
+          @click="next"
+          style="width: 120px"
+        >提交策略</q-btn>
       </q-card-actions>
     </q-card>
-    <div class="row q-col-gutter-md">
-      <div class="col-12" v-for="n in 4" :key="`md-${n}`">
-        <q-table
-          title="data[n]"
-          :data="data"
-          :columns="columns"
-          row-key="id"
-          :pagination.sync="pagination"
-          :loading="loading"
-          :filter="filter"
-          @request="onRequest"
-          binary-state-sort
-        >
-          <!--检查按钮-->
-          <template v-slot:top-right>
-            <q-input borderless dense debounce="300" v-model="filter" placeholder="Search">
-              <!-- <template v-slot:append> -->
-              <!-- <q-icon name="search" /> -->
-              <!-- </template> -->
-            </q-input>
-            <q-btn
-              class="btn-add"
-              color="primary"
-              rounded
-              icon="done"
-              :label= "is_company_checked[n-1].check ? 'Checked':'Check'"
-              @click="is_company_checked[n-1].check = !is_company_checked[n-1].check"
-            />
-          </template>
-          <!--检查按钮-->
 
-          <template v-slot:body="props">
-            <q-tr :props="props">
-              <q-td key="id" :props="props">{{ props.row.id }}</q-td>
-              <q-td key="name" :props="props">{{ props.row.name }}</q-td>
-              <q-td key="hc" :props="props">
-                {{ props.row.description }}
-                <q-popup-edit
-                  v-model="props.row.description"
-                  title="Update HC"
-                  buttons
-                  persistent
-                >
-                  <q-input
-                    type="input"
-                    v-model="props.row.description"
-                    dense
-                    autofocus
-                    hint="Use buttons to close"
-                  />
-                </q-popup-edit>
-              </q-td>
-              <q-td key="advertising" :props="props">{{ props.row.round }}</q-td>
-              <q-td key="product_a" :props="props">{{ props.row.recent }}</q-td>
-              <q-td key="product_b" :props="props"></q-td>
-              <q-td key="product_c" :props="props"></q-td>
-              <q-td key="channel" :props="props"></q-td>
-              <q-td key="permission" :props="props"></q-td>
-              <q-td key="info" :props="props"></q-td>
-            </q-tr>
+    <q-table
+      class="ComInfo"
+      title="Company Info"
+      :data="data"
+      :columns="columns"
+      row-key="id"
+      :pagination.sync="pagination"
+      :loading="loading"
+      :filter="filter"
+      @request="onRequest"
+      binary-state-sort
+    >
+      <!--检查按钮-->
+      <!-- <template v-slot:top-right>
+        <q-input borderless dense debounce="300" v-model="filter" placeholder="Search">
+          <template v-slot:append>
+            <q-icon name="search" />
           </template>
-        </q-table>
-      </div>
-    </div>
+        </q-input>
+        <q-btn
+          class="btn-add"
+          color="primary"
+          rounded
+          icon="done"
+          :label="is_company_checked ? 'Checked':'Check'"
+          @click="all_check"
+        />
+      </template>-->
+      <!--检查按钮-->
+
+      <template v-slot:body="props">
+        <q-tr :props="props">
+          <q-td key="name" :props="props">{{ props.row.name }}</q-td>
+          <q-td key="capital" :props="props">
+            {{ props.row.capital }}
+            <q-popup-edit v-model="props.row.description" title="调整总资金" buttons persistent>
+              <q-input
+                type="number"
+                v-model="props.row.capital"
+                dense
+                autofocus
+                hint="Use buttons to close"
+              />
+            </q-popup-edit>
+          </q-td>
+
+          <q-td key="hc_limit" :props="props">
+            {{ props.row.hc_limit }}
+            <q-popup-edit v-model="props.row.hc_limit" title="调整可分配人数" buttons persistent>
+              <q-input
+                type="number"
+                v-model="props.row.hc_limit"
+                dense
+                autofocus
+                hint="Use buttons to close"
+              />
+            </q-popup-edit>
+          </q-td>
+
+          <q-td key="hc_price" :props="props">
+            {{ props.row.hc_price }}
+            <q-popup-edit v-model="props.row.hc_price" title="人力成本" buttons persistent>
+              <q-input
+                type="number"
+                v-model="props.row.hc_price"
+                dense
+                autofocus
+                hint="Use buttons to close"
+              />
+            </q-popup-edit>
+          </q-td>
+
+          <q-td key="channel_price" :props="props">
+            {{ props.row.channel_price }}
+            <q-popup-edit v-model="props.row.channel_price" title="调整渠道牌价格" buttons persistent>
+              <q-input
+                type="number"
+                v-model="props.row.channel_price"
+                dense
+                autofocus
+                hint="Use buttons to close"
+              />
+            </q-popup-edit>
+          </q-td>
+
+          <q-td key="channel" :props="props">
+            {{ props.row.channel }}
+            <q-popup-edit v-model="props.row.channel" title="调整渠道牌剩余数量" buttons persistent>
+              <q-input
+                type="number"
+                v-model="props.row.channel"
+                dense
+                autofocus
+                hint="Use buttons to close"
+              />
+            </q-popup-edit>
+          </q-td>
+
+          <q-td key="permission_price" :props="props">
+            {{ props.row.permission_price }}
+            <q-popup-edit v-model="props.row.permission_price" title="调整准入牌价格" buttons persistent>
+              <q-input
+                type="number"
+                v-model="props.row.permission_price"
+                dense
+                autofocus
+                hint="Use buttons to close"
+              />
+            </q-popup-edit>
+          </q-td>
+
+          <q-td key="permission" :props="props">
+            {{ props.row.permission }}
+            <q-popup-edit v-model="props.row.permission" title="调整准入牌剩余数量" buttons persistent>
+              <q-input
+                type="number"
+                v-model="props.row.permission"
+                dense
+                autofocus
+                hint="Use buttons to close"
+              />
+            </q-popup-edit>
+          </q-td>
+
+          <q-td key="info_price" :props="props">
+            {{ props.row.info_price }}
+            <q-popup-edit v-model="props.row.info_price" title="调整信息牌价格" buttons persistent>
+              <q-input
+                type="number"
+                v-model="props.row.info_price"
+                dense
+                autofocus
+                hint="Use buttons to close"
+              />
+            </q-popup-edit>
+          </q-td>
+
+          <q-td key="info" :props="props">
+            {{ props.row.info }}
+            <q-popup-edit v-model="props.row.info" title="调整信息牌剩余数量" buttons persistent>
+              <q-input
+                type="number"
+                v-model="props.row.info"
+                dense
+                autofocus
+                hint="Use buttons to close"
+              />
+            </q-popup-edit>
+          </q-td>
+
+          <q-td key="profit" :props="props">
+            {{ props.row.profit }}
+            <q-popup-edit v-model="props.row.profit" title="调整营收" buttons persistent>
+              <q-input
+                type="number"
+                v-model="props.row.profit"
+                dense
+                autofocus
+                hint="Use buttons to close"
+              />
+            </q-popup-edit>
+          </q-td>
+        </q-tr>
+      </template>
+    </q-table>
+
+    <q-expansion-item
+      expand-separator
+      icon="perm_identity"
+      :label="company_name[n-1]"
+      :caption="is_company_checked[n-1].check ? '确认':'未确认'"
+      v-for="n in 4"
+      :key="`md-${n}`"
+    >
+      <q-card>
+        <q-card-section>
+          <div class="row q-col-gutter-md">
+            <div class="col-12">
+              <Strategy
+                @company_check="company_check"
+                :rounds="rounds"
+                :company_id="company_ids[n-1]"
+                :company_name="company_name[n-1]"
+              ></Strategy>
+            </div>
+          </div>
+        </q-card-section>
+      </q-card>
+    </q-expansion-item>
+
+    <!--提交弹窗-->
+    <q-dialog v-model="is_commit_show" persistent>
+      <q-card style="min-width: 350px">
+        <q-card-section>
+          <div class="text-h6">确认提交</div>
+        </q-card-section>
+
+        <q-card-section class="q-pt-none del-dialog">
+          <p class="msg">Do you really want to delete</p>
+          <p class="name">{{this.game_name}}?</p>
+        </q-card-section>
+
+        <q-card-actions align="right" class="text-primary">
+          <q-btn flat label="Cancel" v-close-popup />
+          <q-btn flat color="red" label="Delete" v-close-popup @click="next" />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
   </div>
 </template>
 
 <script>
 import Game from "../api/game.js";
+import Strategy from "../components/host_strategy";
 
 export default {
   name: "Game_host",
+  components: {
+    Strategy,
+  },
   data() {
     return {
+      is_commit_show: false,
+      current_round_started: false,
       game_name: "default",
-      round: 0,
+      rounds: 1,
+      game_id: 1,
+      company_ids: ["a", "b", "c", "d"],
+      company_name: ["Company A", "Company B", "Company C", "Company D"],
+      is_all_com_check: false,
       is_company_checked: [
         { check: false },
         { check: false },
@@ -102,116 +268,133 @@ export default {
         sortBy: "id",
         descending: false,
         page: 1,
-        rowsPerPage: 10,
+        rowsPerPage: 0,
         rowsNumber: 10,
       },
       columns: [
         {
-          name: "id",
+          name: "name",
           required: true,
-          label: "ID",
+          label: "公司名称",
           align: "left",
-          field: (row) => row.id,
+          field: (row) => row.name,
           style: "width: 10px",
           headerStyle: "width: 10px",
           format: (val) => `${val}`,
           sortable: true,
         },
         {
-          name: "name",
+          name: "capital",
           required: true,
-          label: "Name",
+          label: "总资金",
           align: "left",
-          field: (row) => row.account,
-          style: "width:200px",
+          field: (row) => row.capital,
+          style: "width:100px",
           format: (val) => `${val}`,
           sortable: false,
         },
         {
-          name: "hc",
+          name: "hc_limit",
           required: false,
-          label: "HC",
+          label: "可分配人数",
           align: "left",
-          field: (row) => row.description,
-          style: "width:200px",
+          field: (row) => row.hc_limit,
+          style: "width:100px",
           format: (val) => `${val}`,
           sortable: false,
         },
         {
-          name: "advertising",
+          name: "hc_price",
           required: false,
-          label: "Advertising",
+          label: "人力成本",
           align: "left",
-          field: (row) => row.description,
-          style: "width:200px",
+          field: (row) => row.hc_price,
+          style: "width:100px",
           format: (val) => `${val}`,
           sortable: false,
         },
         {
-          name: "product_a",
+          name: "channel_price",
           required: true,
-          label: "ProductA Price",
+          label: "渠道牌价格",
           align: "left",
-          field: (row) => row.recent,
-          style: "width:200px",
-          format: (val) => `${val}`,
-          sortable: true,
-        },
-        {
-          name: "product_b",
-          required: true,
-          label: "ProductB Price",
-          align: "left",
-          field: (row) => row.recent,
-          style: "width:200px",
-          format: (val) => `${val}`,
-          sortable: true,
-        },
-        {
-          name: "product_c",
-          required: true,
-          label: "ProductC Price",
-          align: "left",
-          field: (row) => row.recent,
+          field: (row) => row.channel_price,
           style: "width:200px",
           format: (val) => `${val}`,
           sortable: true,
         },
         {
           name: "channel",
-          required: false,
-          label: "Channel",
-          align: "right",
+          required: true,
+          label: "渠道牌剩余数量",
+          align: "left",
+          field: (row) => row.channel,
           style: "width:200px",
+          format: (val) => `${val}`,
+          sortable: true,
+        },
+        {
+          name: "permission_price",
+          required: true,
+          label: "准入牌价格",
+          align: "left",
+          field: (row) => row.permission_price,
+          style: "width:200px",
+          format: (val) => `${val}`,
+          sortable: true,
         },
         {
           name: "permission",
-          required: false,
-          label: "Permission",
-          align: "right",
+          required: true,
+          label: "准入牌剩余数量",
+          align: "left",
+          field: (row) => row.permission,
           style: "width:200px",
+          format: (val) => `${val}`,
+          sortable: true,
+        },
+        {
+          name: "info_price",
+          required: true,
+          label: "信息牌价格",
+          align: "left",
+          field: (row) => row.info_price,
+          style: "width:200px",
+          format: (val) => `${val}`,
+          sortable: true,
         },
         {
           name: "info",
-          required: false,
-          label: "Info",
-          align: "right",
+          required: true,
+          label: "信息牌剩余数量",
+          align: "left",
+          field: (row) => row.info,
           style: "width:200px",
+          format: (val) => `${val}`,
+          sortable: true,
+        },
+        {
+          name: "profit",
+          required: true,
+          label: "营收",
+          align: "left",
+          field: (row) => row.profit,
+          style: "width:200px",
+          format: (val) => `${val}`,
+          sortable: true,
         },
       ],
       data: [],
+      data_a: [],
+      data_b: [],
+      data_c: [],
+      data_d: [],
       original: [],
     };
   },
   mounted() {
     // get initial data from server (1st page)
     this.get_current_game();
-    this.onRequest({
-      pagination: this.pagination,
-      filter: this.filter,
-    });
-
-    Game.GetCompanyData(1,'a',0);
   },
   methods: {
     onRequest(props) {
@@ -220,7 +403,7 @@ export default {
 
       this.loading = true;
       // Update original
-      this.get_company_strategy(filter, descending);
+      this.get_company_info();
       // emulate server
       setTimeout(() => {
         // update rowsCount with appropriate value
@@ -293,19 +476,27 @@ export default {
       return count;
     },
 
-    get_company_strategy(filter, descending) {
+    get_company_info() {
       this.original = [];
       const _this = this;
-      Game.Filter(filter, descending).then((response) => {
+      // alert(this.rounds)
+      Game.GetCompanyInfo(this.game_id, this.rounds).then((response) => {
         const { data } = response;
+        console.log(response);
         console.log(data);
         for (let i = 0; i < data.length; i++) {
           _this.original.push({
             name: data[i].name,
-            id: data[i].id,
-            description: data[i].description,
-            round: data[i].rounds,
-            recent: data[i].update,
+            capital: data[i].capital,
+            hc_limit: data[i].hc_limit,
+            hc_price: data[i].hc_price,
+            channel_price: data[i].channel_price,
+            channel: data[i].channel,
+            permission_price: data[i].permission_price,
+            permission: data[i].permission,
+            info_price: data[i].info_price,
+            info: data[i].info,
+            profit: data[i].profit,
           });
         }
       });
@@ -316,15 +507,107 @@ export default {
     },
 
     get_current_game() {
+      // TODO 将id传到后段，获得gamename和当前回合，本地存储
+      // TODO 后段写个api，入id，吐name和rounds
+      const _this = this;
       var t = localStorage.getItem("current_game_id");
-      this.game_name = t; // 目前是把id显示出来，回头用id去查询这一局的情况
+      this.game_id = Number(t); // 目前是把id显示出来，回头用id去查询这一局的情况
+      Game.GetGameInfo(this.game_id).then((response) => {
+        const { data } = response;
+        _this.rounds = data["rounds"];
+        //TODO store更新存储rounds
+        _this.game_name = data["name"];
+
+        this.onRequest({
+          pagination: this.pagination,
+          filter: this.filter,
+        });
+      });
     },
 
-    commit() {
-      alert("提交信息");
+    next() {
+      const _this = this;
+      let data = [
+        this.data,
+        this.data_a,
+        this.data_b,
+        this.data_c,
+        this.data_d,
+      ];
+      Game.Next(this.game_id, data).then((response) => {
+        // _this.reset();
+        _this.get_current_game();
+      });
+
+      // 将gameid和rounds 和5个dataframe拼起来传到后端
+      // 后端处理生成下回合的初始数据
+      // 数据库gameround ++，playerrounds保持
+      // 前端刷新，拿到新的回合，根据新的回合去拿数据
+      // 确认无误后，点开始，playerrounds++
+      // 通知学生刷新
     },
-    end_the_game() {
+
+    reset() {
+      const _this = this;
+      this.current_round_started = false;
+      this.is_all_com_check = false;
+      for (let index = 0; index < this.is_company_checked.length; index++) {
+        _this.is_company_checked[index].check = false;
+      }
+    },
+    start_this_round() {
+      this.current_round_started = true;
       alert("做个二次确认");
+    },
+    company_check(msg) {
+      // 子组件发起的函数
+      let id = msg.company_id;
+      let is_checked = msg.is_checked;
+      let data = msg.data;
+      let index = 0;
+      switch (id) {
+        case "a":
+          index = 0;
+          this.data_a = data;
+          break;
+        case "b":
+          index = 1;
+          this.data_b = data;
+          break;
+        case "c":
+          index = 2;
+          this.data_c = data;
+          break;
+        case "d":
+          index = 3;
+          this.data_d = data;
+          break;
+        default:
+          break;
+      }
+      this.is_company_checked[index].check = is_checked;
+      this.is_all_check();
+    },
+
+    is_ok_to_commit() {
+      if (this.is_all_com_check && this.current_round_started) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+
+    is_all_check() {
+      const _this = this;
+      let r = 1;
+      for (let index = 0; index < this.is_company_checked.length; index++) {
+        r *= _this.is_company_checked[index].check;
+      }
+      if (r == 1) {
+        _this.is_all_com_check = true;
+      } else {
+        _this.is_all_com_check = false;
+      }
     },
   },
 };
@@ -375,5 +658,8 @@ h4 {
   margin: 0;
   line-height: 50px;
   height: 50px;
+}
+.ComInfo {
+  margin-bottom: 20px;
 }
 </style>

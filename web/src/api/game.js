@@ -38,11 +38,31 @@ class Game extends BaseModule {
     })
   }
 
-  GetCompanyData(game_id, company_id, rounds){
+  GetCompanyData(game_id, company_id, rounds) {
     return this.post('/get_com_data', {
       "game_id": game_id,
       "company_id": company_id,
       "rounds": rounds
+    })
+  }
+
+  GetCompanyInfo(game_id, rounds) {
+    return this.post('/get_com_info', {
+      "game_id": game_id,
+      "rounds": rounds
+    })
+  }
+
+  GetGameInfo(game_id) {
+    return this.post('/get_game_info', {
+      "game_id": game_id
+    })
+  }
+
+  Next(game_id, data) {
+    return this.post('/next', {
+      "game_id": game_id,
+      "data": data
     })
   }
 
