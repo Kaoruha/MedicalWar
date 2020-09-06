@@ -740,8 +740,10 @@ export default {
       return count;
     },
     get_current_game() {
-      var t = localStorage.getItem("current_game_id");
-      this.game_id = Number(t); // 目前是把id显示出来，回头用id去查询这一局的情况
+      let id = localStorage.getItem('current_game_id');
+      this.game_id = Number(id);
+      let r = localStorage.getItem('current_rounds');
+      this.rounds = Number(r)
     },
 
     get_company_strategy() {
@@ -751,8 +753,8 @@ export default {
       Game.GetCompanyData(this.game_id, this.company_id, this.rounds).then(
         (response) => {
           const { data } = response;
-          console.log(response)
-          console.log(data);
+          // console.log(response);
+          // console.log(data);
           for (let i = 0; i < data.length; i++) {
             _this.original.push({
               name: data[i].name,

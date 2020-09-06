@@ -104,13 +104,11 @@ class Game(Base):
             'InputTableD'
         ]
         df = df_list
-        # TODO df 会调用方法得到结果
-        #  + str(game.rounds)
         path = os.getcwd(
-        ) + '/app/data/game_' + game.name + '/' + 'round2'
+        ) + '/app/data/game_' + game.name + '/' + 'round' + str(game.rounds)
         print(path)
         dict1 = {
-            'name': '医院名称',
+            'name': '公司名称',
             'capital': '总资金',
             'hc_limit': '可分配人数',
             'hc_price': '人力成本',
@@ -157,8 +155,9 @@ class Game(Base):
                     df[i].rename(columns=dict1, inplace=True)
                 else:
                     df[i].rename(columns=dict2, inplace=True)
+                # 生成下一轮的csv
+                # TODO 传到后面去，拿到返回再写入
+                # 目前直接返回把拿到的值
                 df[i].to_csv(path + '/' + files[i] + '.csv', index=0)
             except Exception as e:
                 print(e)
-            # print(path + '/round'+str(game.rounds)+'/' + files[i] + '.csv')
-        # 生成下一轮的csv

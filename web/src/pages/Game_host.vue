@@ -206,7 +206,6 @@
             <div class="col-12">
               <Strategy
                 @company_check="company_check"
-                :rounds="rounds"
                 :company_id="company_ids[n-1]"
                 :company_name="company_name[n-1]"
               ></Strategy>
@@ -482,8 +481,8 @@ export default {
       // alert(this.rounds)
       Game.GetCompanyInfo(this.game_id, this.rounds).then((response) => {
         const { data } = response;
-        console.log(response);
-        console.log(data);
+        // console.log(response);
+        // console.log(data);
         for (let i = 0; i < data.length; i++) {
           _this.original.push({
             name: data[i].name,
@@ -510,11 +509,12 @@ export default {
       // TODO 将id传到后段，获得gamename和当前回合，本地存储
       // TODO 后段写个api，入id，吐name和rounds
       const _this = this;
-      var t = localStorage.getItem("current_game_id");
+      var t = localStorage.getItem('current_game_id');
       this.game_id = Number(t); // 目前是把id显示出来，回头用id去查询这一局的情况
       Game.GetGameInfo(this.game_id).then((response) => {
         const { data } = response;
         _this.rounds = data["rounds"];
+        this.$store.commit("current_game/updateCurrentRounds", data["rounds"]);
         //TODO store更新存储rounds
         _this.game_name = data["name"];
 

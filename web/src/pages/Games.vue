@@ -305,7 +305,7 @@ export default {
       const _this = this;
       Game.Filter(filter, descending).then((response) => {
         const { data } = response;
-        console.log(data);
+        // console.log(data);
         for (let i = 0; i < data.length; i++) {
           _this.original.push({
             name: data[i].name,
@@ -370,6 +370,7 @@ export default {
 
     enter_game(id){
       this.$store.commit("current_game/updateCurrentGameID", id); // TODO Check
+      // alert(this.$store.state.current_game.xxx;)
       this.$router.push("game_host");
     }
   },
