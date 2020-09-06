@@ -12,6 +12,11 @@ const routes = [{
       path: 'game_player',
       component: () => import('pages/game_player.vue'),
     },
+    //game_player_copy
+    {
+      path: 'game_player_copy',
+      component: () => import('pages/game_player_copy.vue'),
+    },
   ],
 },
   {
