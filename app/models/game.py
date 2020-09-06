@@ -57,7 +57,7 @@ class Game(Base):
             return True
         else:
             return False
-
+    
     @classmethod
     def get_com_data(cls, game_id: int, rounds: int, company_id: str):
         if not cls.is_exist(game_id=game_id):
@@ -99,6 +99,12 @@ class Game(Base):
 
     @classmethod
     def next_round(cls, game, df_list):
+        if (game.rounds - game.player_rounds) >1:
+            print('需要开始当前回合能允许下一回合')
+            return # 需要开始当前回合能允许下一回合
+
+        game.rounds += 1
+        db.session.commit()
         files = [
             'companyInfo', 'InputTableA', 'InputTableB', 'InputTableC',
             'InputTableD'
@@ -161,3 +167,63 @@ class Game(Base):
                 df[i].to_csv(path + '/' + files[i] + '.csv', index=0)
             except Exception as e:
                 print(e)
+
+    @classmethod
+    def player_commit(cls, game_id: int, company_id: str, rounds: int, data):
+        if not cls.is_exist(game_id=game_id):
+            print('不存在该局游戏')
+            return
+
+        # 更新第回合数不能超过game的playerrounds
+        game = cls.query.filter_by(id=game_id, status=1).first()
+        if rounds > game.player_rounds:
+            print('游戏回合超出')
+            return
+
+        path = path = os.getcwd(
+        ) + '/app/data/game_' + game.name + '/' + 'round' + str(
+            game.player_rounds) + '/' + 'InputTable' + company_id.upper(
+            ) + '.csv'
+        col_dict = {
+            'name': '医院名称',
+            'operation_count': '年手术台数',
+            'hc': '当前HC',
+            'advertising': '推广费用',
+            'a_price': '产品A价格',
+            'a_share': '产品A份额',
+            'b_price': '产品B价格',
+            'b_share': '产品B份额',
+            'c_price': '产品C价格',
+            'c_share': '产品C份额',
+            'hc_strategy': 'HC决策',
+            'advertising_strategy': '推广决策',
+            'a_strategy': '产品A价格决策',
+            'b_strategy': '产品B价格决策',
+            'c_strategy': '产品C价格决策',
+            'channel': '渠道牌',
+            'permission': '准入牌',
+            'info': '信息牌'
+        }
+        try:
+            df1 = pd.read_csv(path)
+
+            df2 = pd.DataFrame(data)
+            df2.rename(columns=col_dict, inplace=True)
+            s = pd.merge(df2,df1[['医院名称','HC敏感度', '推广敏感度', '价格敏感度', 'HC下限','产品A均价','产品B均价','产品C均价']],on='医院名称')
+            s.to_csv(path)
+            print(path)
+        except Exception as e:
+            print(e)
+
+    @classmethod
+    def round_start(cls, game_id:int):
+        if not cls.is_exist(game_id=game_id):
+            print('不存在该局游戏')
+            return
+        game = cls.query.filter_by(id=game_id, status=1).first()
+        if game.player_rounds < game.rounds:
+            game.player_rounds += 1
+            db.session.commit()
+        
+
+        

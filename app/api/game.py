@@ -97,15 +97,13 @@ def strategy_submit():
     data = request.get_json()['data']
     game_id = request.get_json()['game_id']
     company_id = request.get_json()['company_id']
+    rounds = request.get_json()['rounds']
+
+    Game.player_commit(game_id=game_id, company_id=company_id, rounds=rounds,data=data)
     # print(game_id)
     # print(company_id)
     print('开始试图解析数据')
     # TODO 本地化存储成csv
-    try:
-        for row in data:
-            print(row)
-    except Exception as e:
-        print(e)
     return '解析传过来的数据'
 
 
@@ -206,11 +204,16 @@ def next_round():
         return '不存在'  # TODO回头用Exception抱一下
     else:
         game = Game.query.filter_by(id=game_id).first()
-        game.rounds+=1
-        db.session.commit()
         df_list = []
         for d in data:
             df_list.append(pd.DataFrame(d))
         Game.next_round(game, df_list=df_list)
         return NoException(msg='提交成功')
+    return NoException()
+
+# 开启这回合
+@yp_game.route('/start', methods=['POST'])
+def start_round():
+    game_id = request.get_json()['game_id']
+    Game.round_start(game_id=game_id)
     return NoException()

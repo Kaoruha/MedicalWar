@@ -31,7 +31,7 @@
           <template v-slot:append>
             <q-icon name="search" />
           </template>
-        </q-input> -->
+        </q-input>-->
         <q-btn
           class="btn-add"
           color="primary"
@@ -45,18 +45,26 @@
 
       <template v-slot:body="props">
         <q-tr :props="props">
-          <q-td key="id" :props="props">{{ props.row.id }}</q-td>
           <q-td key="name" :props="props">{{ props.row.name }}</q-td>
-          <q-td key="scale" :props="props">{{ props.row.scale }}</q-td>
-          <q-td key="type" :props="props">{{ props.row.type }}</q-td>
-          <q-td key="share" :props="props">{{ props.row.share }}</q-td>
+          <q-td key="operation_count" :props="props">{{ props.row.operation_count }}</q-td>
+          <q-td key="hc" :props="props">{{ props.row.hc }}</q-td>
+          <q-td key="advertising" :props="props">{{ props.row.advertising }}</q-td>
 
-          <q-td key="hc" :props="props">
-            {{ props.row.hc }}
-            <q-popup-edit v-model="props.row.hc" title="Update HC" buttons persistent>
+          <q-td key="a_price" :props="props">{{ props.row.a_price }}</q-td>
+          <q-td key="a_share" :props="props">{{ props.row.a_share }}</q-td>
+
+          <q-td key="b_price" :props="props">{{ props.row.b_price }}</q-td>
+          <q-td key="b_share" :props="props">{{ props.row.b_share }}</q-td>
+
+          <q-td key="c_price" :props="props">{{ props.row.c_price }}</q-td>
+          <q-td key="c_share" :props="props">{{ props.row.c_share }}</q-td>
+
+          <q-td key="hc_strategy" :props="props">
+            {{ props.row.hc_strategy }}
+            <q-popup-edit v-model="props.row.info" title="Update HC" buttons persistent>
               <q-input
                 type="number"
-                v-model="props.row.hc"
+                v-model="props.row.hc_strategy"
                 dense
                 autofocus
                 hint="Use buttons to close"
@@ -64,17 +72,17 @@
             </q-popup-edit>
           </q-td>
 
-          <q-td key="advertising" :props="props">
-            {{ props.row.advertising }}
+          <q-td key="advertising_strategy" :props="props">
+            {{ props.row.advertising_strategy }}
             <q-popup-edit
-              v-model="props.row.advertising"
+              v-model="props.row.advertising_strategy"
               title="Update Advertising"
               buttons
               persistent
             >
               <q-input
                 type="number"
-                v-model="props.row.advertising"
+                v-model="props.row.advertising_strategy"
                 dense
                 autofocus
                 hint="Use buttons to close"
@@ -82,12 +90,12 @@
             </q-popup-edit>
           </q-td>
 
-          <q-td key="product_a" :props="props">
-            {{ props.row.product_a }}
-            <q-popup-edit v-model="props.row.product_a" title="Update Product A" buttons persistent>
+          <q-td key="a_strategy" :props="props">
+            {{ props.row.a_strategy }}
+            <q-popup-edit v-model="props.row.a_strategy" title="Update A Price" buttons persistent>
               <q-input
                 type="number"
-                v-model="props.row.product_a"
+                v-model="props.row.a_strategy"
                 dense
                 autofocus
                 hint="Use buttons to close"
@@ -95,12 +103,12 @@
             </q-popup-edit>
           </q-td>
 
-          <q-td key="product_b" :props="props">
-            {{ props.row.product_b }}
-            <q-popup-edit v-model="props.row.product_b" title="Update Product B" buttons persistent>
+          <q-td key="b_strategy" :props="props">
+            {{ props.row.a_strategy }}
+            <q-popup-edit v-model="props.row.b_strategy" title="Update B Price" buttons persistent>
               <q-input
                 type="number"
-                v-model="props.row.product_b"
+                v-model="props.row.b_strategy"
                 dense
                 autofocus
                 hint="Use buttons to close"
@@ -108,12 +116,12 @@
             </q-popup-edit>
           </q-td>
 
-          <q-td key="product_c" :props="props">
-            {{ props.row.product_c }}
-            <q-popup-edit v-model="props.row.product_c" title="Update Product C" buttons persistent>
+          <q-td key="c_strategy" :props="props">
+            {{ props.row.a_strategy }}
+            <q-popup-edit v-model="props.row.c_strategy" title="Update C Price" buttons persistent>
               <q-input
                 type="number"
-                v-model="props.row.product_c"
+                v-model="props.row.c_strategy"
                 dense
                 autofocus
                 hint="Use buttons to close"
@@ -172,17 +180,17 @@
     <q-dialog v-model="is_submit_show" persistent>
       <q-card style="min-width: 350px">
         <q-card-section>
-          <div class="text-h6">Delete User</div>
+          <div class="text-h6">结束回合</div>
         </q-card-section>
 
         <q-card-section class="q-pt-none del-dialog">
-          <p class="msg">Do you really want to delete</p>
-          <p class="name">{{ready_to_submit.name}}?</p>
+          <p class="msg">你确定提交第{{rounds}}回合策略么？</p>
+          <!-- <p class="name">{{ready_to_submit.name}}?</p> -->
         </q-card-section>
 
         <q-card-actions align="right" class="text-primary">
           <q-btn flat label="Cancel" v-close-popup />
-          <q-btn flat color="red" label="Submit" v-close-popup @click="submit(ready_to_submit.id)" />
+          <q-btn flat color="green" label="Submit" v-close-popup @click="submit()" />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -190,13 +198,15 @@
 </template>
 
 <script>
-import Hospital from "../api/hospital.js";
 import Game from "../api/game.js";
 
 export default {
   name: "Game_player",
   data() {
     return {
+      game_id: 7,
+      rounds: 2,
+      company_id: "a",
       capital: 0,
       man: 0,
       man_cost: 1000,
@@ -211,10 +221,7 @@ export default {
         id: 0,
         name: "god",
       },
-      game_id: 0,
-      company_id: 0,
       company_name: "公司1",
-      round: 0,
       filter: "",
       loading: false,
       pagination: {
@@ -226,60 +233,30 @@ export default {
       },
       columns: [
         {
-          name: "id",
+          name: "name",
           required: true,
-          label: "ID",
+          label: "医院名称",
           align: "left",
-          field: (row) => row.id,
+          field: (row) => row.name,
           style: "width: 10px",
           headerStyle: "width: 10px",
           format: (val) => `${val}`,
           sortable: true,
         },
         {
-          name: "name",
+          name: "operation_count",
           required: true,
-          label: "Name",
+          label: "年手术台数",
           align: "left",
-          field: (row) => row.name,
-          style: "width:200px",
-          format: (val) => `${val}`,
-          sortable: false,
-        },
-        {
-          name: "scale",
-          required: true,
-          label: "Scale",
-          align: "left",
-          field: (row) => row.scale,
-          style: "width:200px",
-          format: (val) => `${val}`,
-          sortable: false,
-        },
-        {
-          name: "type",
-          required: true,
-          label: "Type",
-          align: "left",
-          field: (row) => row.type,
-          style: "width:200px",
-          format: (val) => `${val}`,
-          sortable: false,
-        },
-        {
-          name: "share",
-          required: true,
-          label: "Share",
-          align: "left",
-          field: (row) => row.share,
+          field: (row) => row.operation_count,
           style: "width:200px",
           format: (val) => `${val}`,
           sortable: false,
         },
         {
           name: "hc",
-          required: false,
-          label: "HC",
+          required: true,
+          label: "当前HC",
           align: "left",
           field: (row) => row.hc,
           style: "width:200px",
@@ -288,8 +265,8 @@ export default {
         },
         {
           name: "advertising",
-          required: false,
-          label: "Advertising",
+          required: true,
+          label: "推广费用",
           align: "left",
           field: (row) => row.advertising,
           style: "width:200px",
@@ -297,31 +274,111 @@ export default {
           sortable: false,
         },
         {
-          name: "product_a",
+          name: "a_price",
+          required: true,
+          label: "产品A价格",
+          align: "left",
+          field: (row) => row.a_price,
+          style: "width:200px",
+          format: (val) => `${val}`,
+          sortable: false,
+        },
+        {
+          name: "a_share",
+          required: false,
+          label: "产品A份额",
+          align: "left",
+          field: (row) => row.a_share,
+          style: "width:200px",
+          format: (val) => `${val}`,
+          sortable: false,
+        },
+        {
+          name: "b_price",
+          required: false,
+          label: "产品B价格",
+          align: "left",
+          field: (row) => row.b_price,
+          style: "width:200px",
+          format: (val) => `${val}`,
+          sortable: false,
+        },
+        {
+          name: "b_share",
           required: true,
           label: "ProductA Price",
-          align: "left",
-          field: (row) => row.product_a,
+          align: "产品B份额",
+          field: (row) => row.b_share,
           style: "width:200px",
           format: (val) => `${val}`,
           sortable: true,
         },
         {
-          name: "product_b",
+          name: "c_price",
           required: true,
-          label: "ProductB Price",
+          label: "产品C价格",
           align: "left",
-          field: (row) => row.product_b,
+          field: (row) => row.c_price,
           style: "width:200px",
           format: (val) => `${val}`,
           sortable: true,
         },
         {
-          name: "product_c",
+          name: "c_share",
           required: true,
-          label: "ProductC Price",
+          label: "产品C份额",
           align: "left",
-          field: (row) => row.product_c,
+          field: (row) => row.c_share,
+          style: "width:200px",
+          format: (val) => `${val}`,
+          sortable: true,
+        },
+        {
+          name: "hc_strategy",
+          required: true,
+          label: "HC决策",
+          align: "left",
+          field: (row) => row.hc_strategy,
+          style: "width:200px",
+          format: (val) => `${val}`,
+          sortable: true,
+        },
+        {
+          name: "advertising_strategy",
+          required: true,
+          label: "推广决策",
+          align: "left",
+          field: (row) => row.advertising_strategy,
+          style: "width:200px",
+          format: (val) => `${val}`,
+          sortable: true,
+        },
+        {
+          name: "a_strategy",
+          required: true,
+          label: "产品A价格决策",
+          align: "left",
+          field: (row) => row.a_strategy,
+          style: "width:200px",
+          format: (val) => `${val}`,
+          sortable: true,
+        },
+        {
+          name: "b_strategy",
+          required: true,
+          label: "产品B价格决策",
+          align: "left",
+          field: (row) => row.b_strategy,
+          style: "width:200px",
+          format: (val) => `${val}`,
+          sortable: true,
+        },
+        {
+          name: "c_strategy",
+          required: true,
+          label: "产品C价格决策",
+          align: "left",
+          field: (row) => row.c_strategy,
           style: "width:200px",
           format: (val) => `${val}`,
           sortable: true,
@@ -329,7 +386,7 @@ export default {
         {
           name: "channel",
           required: true,
-          label: "Channel",
+          label: "渠道牌",
           align: "left",
           field: (row) => row.channel,
           style: "width:200px",
@@ -339,7 +396,7 @@ export default {
         {
           name: "permission",
           required: true,
-          label: "Permission",
+          label: "准入牌",
           align: "left",
           field: (row) => row.permission,
           style: "width:200px",
@@ -349,7 +406,7 @@ export default {
         {
           name: "info",
           required: true,
-          label: "Info",
+          label: "信息牌",
           align: "left",
           field: (row) => row.info,
           style: "width:200px",
@@ -357,60 +414,12 @@ export default {
           sortable: true,
         },
       ],
-      data: [
-        {
-          id: 0,
-          name: "默认医院",
-          hc: 0,
-          advertising: 1000,
-          product_a: 1100,
-          product_b: 2000,
-          product_c: 1300,
-          channel: 1,
-          permission: 2,
-          info: 3,
-        },
-        {
-          id: 0,
-          name: "默认医院",
-          hc: 0,
-          advertising: 1000,
-          product_a: 1100,
-          product_b: 2000,
-          product_c: 1300,
-          channel: 1,
-          permission: 2,
-          info: 3,
-        },
-        {
-          id: 0,
-          name: "默认医院",
-          hc: 0,
-          advertising: 1000,
-          product_a: 1100,
-          product_b: 2000,
-          product_c: 1300,
-          channel: 1,
-          permission: 2,
-          info: 3,
-        },
-        {
-          id: 0,
-          name: "默认医院",
-          hc: 0,
-          advertising: 1000,
-          product_a: 1100,
-          product_b: 2000,
-          product_c: 1300,
-          channel: 1,
-          permission: 2,
-          info: 3,
-        },
-      ],
+      data: [],
       original: [],
     };
   },
   mounted() {
+    this.enter_game();
     // get initial data from server (1st page)
     this.onRequest({
       pagination: this.pagination,
@@ -424,7 +433,7 @@ export default {
 
       this.loading = true;
       // Update original
-      this.get_hospital(filter, descending);
+      this.get_company_data(filter, descending);
       // emulate server
       setTimeout(() => {
         // update rowsCount with appropriate value
@@ -498,30 +507,37 @@ export default {
       return count;
     },
 
-    get_hospital(filter, descending) {
+    get_company_data(filter, descending) {
       this.original = [];
       const _this = this;
-      Hospital.Filter(filter, descending).then((response) => {
-        const { data } = response;
-        console.log(data);
-        for (let i = 0; i < data.length; i++) {
-          _this.original.push({
-            name: data[i].name,
-            id: data[i].id,
-            type: data[i].type,
-            scale: data[i].scale,
-            hc: 0,
-            share: 0,
-            advertising: 0,
-            product_a: 0,
-            product_b: 0,
-            product_c: 0,
-            channel: 0,
-            permission: 0,
-            info: 0,
-          });
+      Game.GetCompanyData(this.game_id, this.company_id, this.rounds).then(
+        (response) => {
+          const { data } = response;
+          console.log(data);
+          for (let i = 0; i < data.length; i++) {
+            _this.original.push({
+              name: data[i].name,
+              operation_count: data[i].operation_count,
+              hc: data[i].hc,
+              advertising: data[i].advertising,
+              a_price: data[i].a_price,
+              a_share: data[i].a_share,
+              b_price: data[i].b_price,
+              b_share: data[i].b_share,
+              c_price: data[i].c_price,
+              c_share: data[i].c_share,
+              hc_strategy: data[i].hc_strategy,
+              advertising_strategy: data[i].advertising_strategy,
+              a_strategy: data[i].a_strategy,
+              b_strategy: data[i].b_strategy,
+              c_strategy: data[i].c_strategy,
+              channel: data[i].channel,
+              permission: data[i].permission,
+              info: data[i].info,
+            });
+          }
         }
-      });
+      );
     },
 
     clear_add_dialog() {
@@ -556,51 +572,26 @@ export default {
       this.ready_to_delete.name = name;
     },
 
-    delete_game(id) {
-      const _this = this;
-      Game.Delete(id).then((response) => {
-        switch (response.code) {
-          default:
-            break;
-          case 200:
-            _this.onRequest({
-              pagination: _this.pagination,
-              filter: _this.filter,
-            });
-            break;
-        }
-      });
-    },
-
-    enter_game(id) {
-      alert("进入游戏" + "id:" + id);
+    enter_game() {
+      // alert("gameid：" + this.game_id);
+      // alert("rounds:" + this.rounds);
+      // alert("company_id" + this.company_id);
+      // TODO 从url获取gameid，companyid，再从game。playerrounds获取回合
     },
 
     submit() {
       const _this = this;
-      let strategy_data = [1];
-      for (let i = 0; i < this.data.length; i++) {
-          strategy_data.push({
-            id: _this.data[i].id,
-            hc: _this.data[i].hc,
-            advertising: _this.data[i].advertising,
-            product_a: _this.data[i].product_a,
-            product_b: _this.data[i].product_b,
-            product_c: _this.data[i].product_c,
-            channel: _this.data[i].channel,
-            permission: _this.data[i].permission,
-            info: _this.data[i].info,
-          });
+      Game.Submit(this.game_id, this.company_id, this.rounds, this.data).then(
+        (response) => {
+          switch (response.code) {
+            default:
+              break;
+            case 200:
+              alert("提交成功");
+              break;
+          }
         }
-      Game.Submit(_this.game_id, _this.company_id, strategy_data).then((response) => {
-        switch (response.code) {
-          default:
-            break;
-          case 200:
-            alert('提交成功')
-            break;
-        }
-      });
+      );
     },
   },
 };

@@ -30,11 +30,12 @@ class Game extends BaseModule {
     })
   }
 
-  Submit(game_id, company_id, strategy_data) {
+  Submit(game_id, company_id, rounds, data) {
     return this.post('/submit', {
       "game_id": game_id,
       "company_id": company_id,
-      "data": strategy_data
+      "rounds": rounds,
+      "data": data
     })
   }
 
@@ -63,6 +64,12 @@ class Game extends BaseModule {
     return this.post('/next', {
       "game_id": game_id,
       "data": data
+    })
+  }
+
+  Start(game_id) {
+    return this.post('/start', {
+      "game_id": game_id,
     })
   }
 

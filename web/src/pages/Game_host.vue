@@ -525,6 +525,7 @@ export default {
       });
     },
 
+
     next() {
       const _this = this;
       let data = [
@@ -557,7 +558,10 @@ export default {
     },
     start_this_round() {
       this.current_round_started = true;
+      alert(this.game_id);
       alert("做个二次确认");
+      Game.Start(this.game_id)
+      
     },
     company_check(msg) {
       // 子组件发起的函数
