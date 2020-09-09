@@ -190,7 +190,11 @@ def get_game_info():
         data = {
             "name": game.name,
             "rounds": game.rounds,
-            "player_rounds": game.player_rounds
+            "player_rounds": game.player_rounds,
+            "a_uuid":game.a_uuid,
+            "b_uuid":game.b_uuid,
+            "c_uuid":game.c_uuid,
+            "d_uuid":game.d_uuid
         }
         return NoException(data=data)
 

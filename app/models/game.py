@@ -3,9 +3,9 @@ import sys
 import shutil
 import pandas as pd
 from datetime import datetime
-
 from sqlalchemy import Column, String, Integer, SmallInteger
 from ..models.base import Base, db
+from .company import Company
 
 
 class Game(Base):
@@ -15,9 +15,13 @@ class Game(Base):
     rounds = Column(Integer)
     player_rounds = Column(Integer)
     update_time = Column(String(30))
+    a_uuid = Column(String(255), default='-')
+    b_uuid = Column(String(255), default='-')
+    c_uuid = Column(String(255), default='-')
+    d_uuid = Column(String(255), default='-')
 
-    @staticmethod
-    def creat_game(name, description):
+    @classmethod
+    def creat_game(cls, name, description):
         # 数据库添加
         with db.auto_commit():
             temp = Game()
@@ -27,7 +31,19 @@ class Game(Base):
             temp.player_rounds = 0
             temp.update_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             db.session.add(temp)
-
+        # 创建公司
+        game = cls.query.filter_by(name=name, status=1).first()
+        print(game.id)
+        Company.creat_Company(str(game.id),'a')
+        Company.creat_Company(str(game.id),'b')
+        Company.creat_Company(str(game.id),'c')
+        Company.creat_Company(str(game.id),'d')
+        game.a_uuid = Company.get_com_uuid(game_id=game.id, company_id='a')
+        game.b_uuid = Company.get_com_uuid(game_id=game.id, company_id='b')
+        game.c_uuid = Company.get_com_uuid(game_id=game.id, company_id='c')
+        game.d_uuid = Company.get_com_uuid(game_id=game.id, company_id='d')
+        db.session.commit()
+            
         # 本地生成目录
         path = 'app/data/game_' + name
         if not os.path.exists(path):
@@ -39,10 +55,13 @@ class Game(Base):
             'InputTableC.xlsx', 'InputTableD.xlsx'
         ]
         for file in files:
-            source_path = os.getcwd() + '/app/data/mould/' + file
-            df = pd.read_excel(source_path)
-            df = df.fillna(0)
-            df.to_csv(path + '/round1/' + file.split('.')[0] + '.csv', index=0)
+            try:
+                source_path = os.getcwd() + '/app/data/mould/' + file
+                df = pd.read_excel(source_path)
+                df = df.fillna(0)
+                df.to_csv(path + '/round1/' + file.split('.')[0] + '.csv', index=0)
+            except Exception as e:
+                print(e)
 
     @classmethod
     def is_game_exist(cls, name):
@@ -224,6 +243,5 @@ class Game(Base):
         if game.player_rounds < game.rounds:
             game.player_rounds += 1
             db.session.commit()
-        
 
         

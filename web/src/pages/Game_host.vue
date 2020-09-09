@@ -208,6 +208,7 @@
                 @company_check="company_check"
                 :company_id="company_ids[n-1]"
                 :company_name="company_name[n-1]"
+                :url="uuid[n-1]"
               ></Strategy>
             </div>
           </div>
@@ -247,6 +248,7 @@ export default {
   },
   data() {
     return {
+      host:'http://localhost:8080/#/game_player?uuid=',
       is_commit_show: false,
       current_round_started: false,
       game_name: "default",
@@ -383,6 +385,7 @@ export default {
           sortable: true,
         },
       ],
+      uuid:[],
       data: [],
       data_a: [],
       data_b: [],
@@ -501,10 +504,6 @@ export default {
       });
     },
 
-    enter_game(id) {
-      alert("进入游戏" + "id:" + id);
-    },
-
     get_current_game() {
       // TODO 将id传到后段，获得gamename和当前回合，本地存储
       // TODO 后段写个api，入id，吐name和rounds
@@ -514,7 +513,13 @@ export default {
       Game.GetGameInfo(this.game_id).then((response) => {
         const { data } = response;
         _this.rounds = data["rounds"];
-        this.$store.commit("current_game/updateCurrentRounds", data["rounds"]);
+        this.$store.commit("current_game/updateCurrentRounds", data.rounds);
+        // 存储四个公司的UUID
+        _this.uuid.push(_this.host+data.a_uuid);
+        _this.uuid.push(_this.host+data.b_uuid);
+        _this.uuid.push(_this.host+data.c_uuid);
+        _this.uuid.push(_this.host+data.d_uuid); 
+
         //TODO store更新存储rounds
         _this.game_name = data["name"];
 

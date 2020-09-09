@@ -13,11 +13,7 @@
     >
       <!--检查按钮-->
       <template v-slot:top-right>
-        <!-- <q-input borderless dense debounce="300" v-model="filter" placeholder="Search"> -->
-        <!-- <template v-slot:append> -->
-        <!-- <q-icon name="search" /> -->
-        <!-- </template> -->
-        <!-- </q-input> -->
+        {{url}}
         <q-btn
           class="btn-add"
           color="primary"
@@ -371,6 +367,10 @@ import Game from "../api/game.js";
 export default {
   name: "host_strategy",
   props: {
+    url: {
+      type: String,
+      default: "uuid2url"
+    },
     company_id: {
       type: String,
       default: "a"
