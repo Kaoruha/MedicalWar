@@ -2,7 +2,7 @@
   <q-header elevated class="header" height-hint="96">
     <q-tabs align="left">
       <q-route-tab to="/page1" label="Intro" />
-      <q-route-tab to="/page2" label="Host" />
+      <q-route-tab to="/login" label="Host" />
       <div class="logo_container">
         <div class="logo" onclick="alert(1)"></div>
       </div>

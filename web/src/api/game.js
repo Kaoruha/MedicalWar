@@ -73,6 +73,12 @@ class Game extends BaseModule {
     })
   }
 
+  QueryByUUID(uuid) {
+    return this.post('/query_by_uuid', {
+      "uuid": uuid,
+    })
+  }
+
 }
 
 export default new Game()

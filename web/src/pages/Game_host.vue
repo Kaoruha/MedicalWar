@@ -541,7 +541,7 @@ export default {
         this.data_d,
       ];
       Game.Next(this.game_id, data).then((response) => {
-        // _this.reset();
+        _this.reset();
         _this.get_current_game();
       });
 

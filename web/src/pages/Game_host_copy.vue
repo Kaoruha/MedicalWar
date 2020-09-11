@@ -1,392 +1,233 @@
 <template>
-  <div class="container">
-    <h4 class="text-green-5">Game Host Copy</h4>
-    <div>
-      <q-input outlined v-model="game_id" label="game_id" />
-      <q-input outlined v-model="company_id" label="company_id" />
-      <q-input outlined v-model="rounds" label="rounds" />
-      <q-btn color="primary" label="Primary" @click="primaryBtn"/>
-    </div>
-    <q-card class="my-card">
-      <q-img src="https://cdn.quasar.dev/img/parallax2.jpg">
-        <div class="absolute-bottom">
-          <div class="text-h6">{{game_name}}</div>
-          <div class="text-subtitle2">Current Round ：{{round}}</div>
-        </div>
-      </q-img>
-
-      <q-card-actions>
-        <q-btn flat color="negative" @click="end_the_game" style="width: 120px">End the Game</q-btn>
-        <q-btn disabled color="primary" @click="commit" style="width: 120px">Next</q-btn>
-      </q-card-actions>
-    </q-card>
-    <div class="row q-col-gutter-md">
-      <div class="col-12" v-for="n in 4" :key="`md-${n}`">
-        <q-table
-          title="data[n]"
-          :data="data"
-          :columns="columns"
-          row-key="id"
-          :pagination.sync="pagination"
-          :loading="loading"
-          :filter="filter"
-          @request="onRequest"
-          binary-state-sort
-        >
-          <!--检查按钮-->
-          <template v-slot:top-right>
-            <q-input borderless dense debounce="300" v-model="filter" placeholder="Search">
-              <!-- <template v-slot:append> -->
-              <!-- <q-icon name="search" /> -->
-              <!-- </template> -->
-            </q-input>
-            <q-btn
-              class="btn-add"
-              color="primary"
-              rounded
-              icon="done"
-              :label= "is_company_checked[n-1].check ? 'Checked':'Check'"
-              @click="is_company_checked[n-1].check = !is_company_checked[n-1].check"
-            />
-          </template>
-          <!--检查按钮-->
-
-          <template v-slot:body="props">
-            <q-tr :props="props">
-              <q-td key="id" :props="props">{{ props.row.id }}</q-td>
-              <q-td key="name" :props="props">{{ props.row.name }}</q-td>
-              <q-td key="hc" :props="props">
-                {{ props.row.description }}
-                <q-popup-edit
-                  v-model="props.row.description"
-                  title="Update HC"
-                  buttons
-                  persistent
-                >
-                  <q-input
-                    type="input"
-                    v-model="props.row.description"
-                    dense
-                    autofocus
-                    hint="Use buttons to close"
-                  />
-                </q-popup-edit>
-              </q-td>
-              <q-td key="advertising" :props="props">{{ props.row.round }}</q-td>
-              <q-td key="product_a" :props="props">{{ props.row.recent }}</q-td>
-              <q-td key="product_b" :props="props"></q-td>
-              <q-td key="product_c" :props="props"></q-td>
-              <q-td key="channel" :props="props"></q-td>
-              <q-td key="permission" :props="props"></q-td>
-              <q-td key="info" :props="props"></q-td>
-            </q-tr>
-          </template>
-        </q-table>
-      </div>
-    </div>
+  <div class="q-pa-md">
+    <q-table
+      class="my-sticky-virtscroll-table"
+      virtual-scroll
+      :pagination.sync="pagination"
+      :rows-per-page-options="[0]"
+      :virtual-scroll-sticky-size-start="48"
+      row-key="index"
+      title="Treat1s"
+      :data="data"
+      :columns="columns"
+    />
   </div>
 </template>
 
 <script>
 import Game from "../api/game.js";
 
+const seed = [
+  {
+    name: "Frozen Yogurt",
+    calories: 159,
+    fat: 6.0,
+    carbs: 24,
+    protein: 4.0,
+    sodium: 87,
+    calcium: "14%",
+    iron: "1%",
+  },
+  {
+    name: "Ice cream sandwich",
+    calories: 237,
+    fat: 9.0,
+    carbs: 37,
+    protein: 4.3,
+    sodium: 129,
+    calcium: "8%",
+    iron: "1%",
+  },
+  {
+    name: "Eclair",
+    calories: 262,
+    fat: 16.0,
+    carbs: 23,
+    protein: 6.0,
+    sodium: 337,
+    calcium: "6%",
+    iron: "7%",
+  },
+  {
+    name: "Cupcake",
+    calories: 305,
+    fat: 3.7,
+    carbs: 67,
+    protein: 4.3,
+    sodium: 413,
+    calcium: "3%",
+    iron: "8%",
+  },
+  {
+    name: "Gingerbread",
+    calories: 356,
+    fat: 16.0,
+    carbs: 49,
+    protein: 3.9,
+    sodium: 327,
+    calcium: "7%",
+    iron: "16%",
+  },
+  {
+    name: "Jelly bean",
+    calories: 375,
+    fat: 0.0,
+    carbs: 94,
+    protein: 0.0,
+    sodium: 50,
+    calcium: "0%",
+    iron: "0%",
+  },
+  {
+    name: "Lollipop",
+    calories: 392,
+    fat: 0.2,
+    carbs: 98,
+    protein: 0,
+    sodium: 38,
+    calcium: "0%",
+    iron: "2%",
+  },
+  {
+    name: "Honeycomb",
+    calories: 408,
+    fat: 3.2,
+    carbs: 87,
+    protein: 6.5,
+    sodium: 562,
+    calcium: "0%",
+    iron: "45%",
+  },
+  {
+    name: "Donut",
+    calories: 452,
+    fat: 25.0,
+    carbs: 51,
+    protein: 4.9,
+    sodium: 326,
+    calcium: "2%",
+    iron: "22%",
+  },
+  {
+    name: "KitKat",
+    calories: 518,
+    fat: 26.0,
+    carbs: 65,
+    protein: 7,
+    sodium: 54,
+    calcium: "12%",
+    iron: "6%",
+  },
+];
+
+// we generate lots of rows here
+let data = [];
+for (let i = 0; i < 1000; i++) {
+  data = data.concat(seed.slice(0).map((r) => ({ ...r })));
+}
+data.forEach((row, index) => {
+  row.index = index;
+});
+
+// we are not going to change this array,
+// so why not freeze it to avoid Vue adding overhead
+// with state change detection
+Object.freeze(data);
+
 export default {
-  name: "Game_host",
   data() {
     return {
-      game_id:'',
-      company_id:'',
-      rounds:'',
-      game_name: "default",
-      round: 0,
-      is_company_checked: [
-        { check: false },
-        { check: false },
-        { check: false },
-        { check: false },
-      ],
-      filter: "",
-      loading: false,
+      data,
+
       pagination: {
-        sortBy: "id",
-        descending: false,
-        page: 1,
-        rowsPerPage: 10,
-        rowsNumber: 10,
+        rowsPerPage: 0,
       },
+
       columns: [
         {
-          name: "id",
-          required: true,
-          label: "ID",
-          align: "left",
-          field: (row) => row.id,
-          style: "width: 10px",
-          headerStyle: "width: 10px",
-          format: (val) => `${val}`,
-          sortable: true,
+          name: "index",
+          label: "#",
+          field: "index",
         },
         {
           name: "name",
           required: true,
-          label: "Name",
+          label: "Dessert (100g serving)",
           align: "left",
-          field: (row) => row.account,
-          style: "width:200px",
-          format: (val) => `${val}`,
-          sortable: false,
-        },
-        {
-          name: "hc",
-          required: false,
-          label: "HC",
-          align: "left",
-          field: (row) => row.description,
-          style: "width:200px",
-          format: (val) => `${val}`,
-          sortable: false,
-        },
-        {
-          name: "advertising",
-          required: false,
-          label: "Advertising",
-          align: "left",
-          field: (row) => row.description,
-          style: "width:200px",
-          format: (val) => `${val}`,
-          sortable: false,
-        },
-        {
-          name: "product_a",
-          required: true,
-          label: "ProductA Price",
-          align: "left",
-          field: (row) => row.recent,
-          style: "width:200px",
+          field: (row) => row.name,
           format: (val) => `${val}`,
           sortable: true,
         },
         {
-          name: "product_b",
-          required: true,
-          label: "ProductB Price",
-          align: "left",
-          field: (row) => row.recent,
-          style: "width:200px",
-          format: (val) => `${val}`,
+          name: "calories",
+          align: "center",
+          label: "Calories",
+          field: "calories",
           sortable: true,
         },
+        { name: "fat", label: "Fat (g)", field: "fat", sortable: true },
+        { name: "carbs", label: "Carbs (g)", field: "carbs" },
+        { name: "protein", label: "Protein (g)", field: "protein" },
+        { name: "sodium", label: "Sodium (mg)", field: "sodium" },
         {
-          name: "product_c",
-          required: true,
-          label: "ProductC Price",
-          align: "left",
-          field: (row) => row.recent,
-          style: "width:200px",
-          format: (val) => `${val}`,
+          name: "calcium",
+          label: "Calcium (%)",
+          field: "calcium",
           sortable: true,
+          sort: (a, b) => parseInt(a, 10) - parseInt(b, 10),
         },
         {
-          name: "channel",
-          required: false,
-          label: "Channel",
-          align: "right",
-          style: "width:200px",
-        },
-        {
-          name: "permission",
-          required: false,
-          label: "Permission",
-          align: "right",
-          style: "width:200px",
-        },
-        {
-          name: "info",
-          required: false,
-          label: "Info",
-          align: "right",
-          style: "width:200px",
+          name: "iron",
+          label: "Iron (%)",
+          field: "iron",
+          sortable: true,
+          sort: (a, b) => parseInt(a, 10) - parseInt(b, 10),
         },
       ],
-      data: [],
-      original: [],
     };
-  },
-  mounted() {
-    // get initial data from server (1st page)
-    this.get_current_game();
-    this.onRequest({
-      pagination: this.pagination,
-      filter: this.filter,
-    });
-  },
-  methods: {
-    //GetCompanyData
-    primaryBtn(){
-      const _this = this;
-      Game.GetCompanyData(this.game_id,this.company_id,this.rounds)
-    },
-
-    onRequest(props) {
-      const { page, rowsPerPage, sortBy, descending } = props.pagination;
-      const { filter } = props;
-
-      this.loading = true;
-      // Update original
-      this.get_company_strategy(filter, descending);
-      // emulate server
-      setTimeout(() => {
-        // update rowsCount with appropriate value
-        this.pagination.rowsNumber = this.getRowsNumberCount(filter);
-
-        // get all rows if "All" (0) is selected
-        const fetchCount =
-          rowsPerPage === 0 ? this.pagination.rowsNumber : rowsPerPage;
-
-        // calculate starting row of data
-        const startRow = (page - 1) * rowsPerPage;
-
-        // fetch data from "server"
-        const returnedData = this.fetchFromServer(
-          startRow,
-          fetchCount,
-          filter,
-          sortBy,
-          descending
-        );
-
-        // clear out existing data and add new
-        this.data.splice(0, this.data.length, ...returnedData);
-
-        // don't forget to update local pagination object
-        this.pagination.page = page;
-        this.pagination.rowsPerPage = rowsPerPage;
-        this.pagination.sortBy = sortBy;
-        this.pagination.descending = descending;
-
-        // ...and turn of loading indicator
-        this.loading = false;
-      }, 1500);
-    },
-
-    // emulate ajax call
-    // SELECT * FROM ... WHERE...LIMIT...
-    fetchFromServer(startRow, count, filter, sortBy, descending) {
-      const data = filter
-        ? this.original.filter((row) => row.account.includes(filter))
-        : this.original.slice();
-
-      // handle sortBy
-      if (sortBy) {
-        const sortFn =
-          sortBy === "id"
-            ? descending
-              ? (a, b) => (a.name > b.name ? -1 : a.name < b.name ? 1 : 0)
-              : (a, b) => (a.name > b.name ? 1 : a.name < b.name ? -1 : 0)
-            : descending
-            ? (a, b) => parseFloat(b[sortBy]) - parseFloat(a[sortBy])
-            : (a, b) => parseFloat(a[sortBy]) - parseFloat(b[sortBy]);
-        data.sort(sortFn);
-      }
-
-      return data.slice(startRow, startRow + count);
-    },
-
-    // emulate 'SELECT count(*) FROM ...WHERE...'
-    getRowsNumberCount(filter) {
-      if (!filter) {
-        return this.original.length;
-      }
-      let count = 0;
-      this.original.forEach((treat) => {
-        if (treat.account.includes(filter)) {
-          ++count;
-        }
-      });
-      return count;
-    },
-
-    get_company_strategy(filter, descending) {
-      this.original = [];
-      const _this = this;
-      Game.Filter(filter, descending).then((response) => {
-        const { data } = response;
-        console.log(data);
-        for (let i = 0; i < data.length; i++) {
-          _this.original.push({
-            name: data[i].name,
-            id: data[i].id,
-            description: data[i].description,
-            round: data[i].rounds,
-            recent: data[i].update,
-          });
-        }
-      });
-    },
-
-    enter_game(id) {
-      alert("进入游戏" + "id:" + id);
-    },
-
-    get_current_game() {
-      var t = localStorage.getItem("current_game_id");
-      this.game_name = t; // 目前是把id显示出来，回头用id去查询这一局的情况
-    },
-
-    commit() {
-      alert("提交信息");
-    },
-    end_the_game() {
-      alert("做个二次确认");
-    },
   },
 };
 </script>
 
-<style scoped lang="scss">
-.my-card {
-  width: 100%;
-  margin-bottom: 24px;
-  // max-width: 250px;
-  .q-img {
-    height: 200px;
-  }
-}
-.del-dialog {
-  p {
-    display: inline-block;
-  }
+<style lang="sass">
+.my-sticky-virtscroll-table
+  /* height or max-height is important */
+  height: 410px
 
-  .msg {
-    margin-right: 10px;
-  }
+  .q-table__top,
+  .q-table__bottom,
+  thead tr:first-child th /* bg color is important for th; just specify one */
+    background-color: #fff
 
-  .name {
-    color: #f54336;
-    font-weight: 600;
-    font-size: 16px;
-  }
-}
+  thead tr th
+    position: sticky
+    z-index: 1
+  /* this will be the loading indicator */
+  thead tr:last-child th
+    /* height of all previous header rows */
+    top: 48px
+  thead tr:first-child th
+    top: 0
+</style>
 
-.container {
-  padding: 0 24px;
-}
 
-.th-class {
-  color: red;
-}
+<style lang="sass">
+.my-sticky-virtscroll-table
+  /* height or max-height is important */
+  height: 410px
 
-.btn-add {
-  margin-left: 40px;
-}
+  .q-table__top,
+  .q-table__bottom,
+  thead tr:first-child th /* bg color is important for th; just specify one */
+    background-color: #fff
 
-h4 {
-  display: block;
-  font-weight: 600;
-  font-size: 28px;
-  padding: 0;
-  margin: 0;
-  line-height: 50px;
-  height: 50px;
-}
+  thead tr th
+    position: sticky
+    z-index: 1
+  /* this will be the loading indicator */
+  thead tr:last-child th
+    /* height of all previous header rows */
+    top: 48px
+  thead tr:first-child th
+    top: 0
 </style>

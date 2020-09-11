@@ -5,25 +5,34 @@
       <q-img src="https://cdn.quasar.dev/img/parallax2.jpg">
         <div class="absolute-bottom">
           <div class="text-h6">{{company_name}}</div>
-          <div class="text-subtitle2">Current Round ：{{round}}</div>
+          <div class="text-subtitle2">Current Round ：{{rounds}}</div>
         </div>
       </q-img>
-
-      <q-card-actions>
-        <!-- <q-btn flat color="negative" @click="end_the_game" style="width: 120px">End the Game</q-btn>
-        <q-btn disabled color="primary" @click="submit" style="width: 120px">Next</q-btn>-->
-      </q-card-actions>
+      <div class="row">
+        <div class="col info">总资金：{{capital}}</div>
+        <div class="col">可分配人数：{{hc_limit}}</div>
+        <div class="col">人力成本:{{hc_price}}</div>
+        <div class="col">渠道牌价格：{{channel_price}}</div>
+        <div class="col">渠道牌数量：{{channel_count}}</div>
+        <div class="col">准入牌价格：{{permission_price}}</div>
+        <div class="col">准入牌数量：{{permission_count}}</div>
+        <div class="col">信息牌价格：{{info_price}}</div>
+        <div class="col">信息牌数量：{{info_count}}</div>
+        <div class="col">营收：{{profit}}</div>
+      </div>
     </q-card>
+
     <q-table
-      title="Works List"
+      class="my-sticky-virtscroll-table"
+      virtual-scroll
+      :pagination.sync="pagination"
+      :rows-per-page-options="[0]"
+      :virtual-scroll-sticky-size-start="48"
+      row-key="id"
+      title="Strategy"
       :data="data"
       :columns="columns"
-      row-key="id"
-      :pagination.sync="pagination"
-      :loading="loading"
-      :filter="filter"
       @request="onRequest"
-      binary-state-sort
     >
       <!--搜索框插槽-->
       <template v-slot:top-right>
@@ -104,7 +113,7 @@
           </q-td>
 
           <q-td key="b_strategy" :props="props">
-            {{ props.row.a_strategy }}
+            {{ props.row.b_strategy }}
             <q-popup-edit v-model="props.row.b_strategy" title="Update B Price" buttons persistent>
               <q-input
                 type="number"
@@ -117,7 +126,7 @@
           </q-td>
 
           <q-td key="c_strategy" :props="props">
-            {{ props.row.a_strategy }}
+            {{ props.row.c_strategy }}
             <q-popup-edit v-model="props.row.c_strategy" title="Update C Price" buttons persistent>
               <q-input
                 type="number"
@@ -205,24 +214,25 @@ export default {
   data() {
     return {
       uuid: "",
-      game_id: 7,
-      rounds: 2,
+      game_id: 1,
+      rounds: 1,
       company_id: "a",
       capital: 0,
-      man: 0,
-      man_cost: 1000,
+      hc_limit: 0,
+      hc_price: 1000,
       channel_count: 10,
       channel_price: 1100,
       permission_count: 11,
       permission_price: 1010,
       info_count: 12,
       info_price: 1001,
+      profit: 0,
       is_submit_show: false,
       ready_to_submit: {
         id: 0,
         name: "god",
       },
-      company_name: "公司1",
+      company_name: "公司12",
       filter: "",
       loading: false,
       pagination: {
@@ -307,8 +317,8 @@ export default {
         {
           name: "b_share",
           required: true,
-          label: "ProductA Price",
-          align: "产品B份额",
+          label: "产品B份额",
+          align: "left",
           field: (row) => row.b_share,
           style: "width:200px",
           format: (val) => `${val}`,
@@ -421,11 +431,7 @@ export default {
   },
   mounted() {
     this.get_uuid();
-    // get initial data from server (1st page)
-    this.onRequest({
-      pagination: this.pagination,
-      filter: this.filter,
-    });
+    this.get_current_game_info();
   },
   methods: {
     onRequest(props) {
@@ -546,47 +552,73 @@ export default {
       this.password = "";
     },
 
-    creat_game() {
-      const _this = this;
-      Game.Create(this.name, this.description).then((response) => {
-        switch (response.code) {
-          default:
-            break;
-          case 200:
-            _this.onRequest({
-              pagination: _this.pagination,
-              filter: _this.filter,
-            });
-            break;
-          case 600:
-            break;
-          case 601:
-            break;
-        }
-      });
-      this.clear_add_dialog();
-    },
-
     show_delete_dialog(id, name) {
       this.is_delete_show = true;
       this.ready_to_delete.id = id;
       this.ready_to_delete.name = name;
     },
 
+    get_company_info() {
+      const _this = this;
+      Game.GetCompanyInfo(this.game_id, this.rounds).then((response) => {
+        const { data } = response;
+        console.log(data);
+        let index = 0;
+        switch (_this.company_id) {
+          case "a":
+            index = 0;
+            break;
+          case "b":
+            index = 1;
+            break;
+          case "c":
+            index = 2;
+            break;
+          case "d":
+            index = 3;
+            break;
+          default:
+            break;
+        }
+        _this.capital = data[index].capital;
+        _this.hc_limit = data[index].hc_limit;
+        _this.hc_price = data[index].hc_price;
+        _this.channel_price = data[index].channel_price;
+        _this.channel_count = data[index].channel;
+        _this.permission_price = data[index].permission_price;
+        _this.permission_count = data[index].permission;
+        _this.info_price = data[index].info_price;
+        _this.info_count = data[index].info;
+        _this.profit = data[index].profit;
+      });
+    },
+
     get_uuid() {
-      let s = window.location.href;
-      alert(s);
-      // var url = location.search; //获取url中"?"符后的字串
-      // if (url.indexOf("?") != -1) {
-      //   //判断是否有参数
-      //   var str = url.substr(1); //从第一个字符开始 因为第0个是?号 获取所有除问号的所有符串
-      //   strs = str.split("="); //用等号进行分隔 （因为知道只有一个参数 所以直接用等号进分隔 如果有多个参数 要用&号分隔 再用等号进行分隔）
-      //   alert(strs[1]); //直接弹出第一个参数 （如果有多个参数 还要进行循环的）
-      // }
-      // alert("gameid：" + this.game_id);
-      // alert("rounds:" + this.rounds);
-      // alert("company_id" + this.company_id);
-      // TODO 从url获取gameid，companyid，再从game。playerrounds获取回合
+      let result = this.get_query_string("uuid");
+      this.uuid = result;
+    },
+
+    get_query_string(name) {
+      let url = window.location.href;
+      let param = url.split(name + "=")[1];
+      return param;
+    },
+
+    get_current_game_info() {
+      const _this = this;
+      Game.QueryByUUID(this.uuid).then((response) => {
+        const { data } = response;
+        console.log(data);
+        _this.game_id = data.game_id;
+        _this.company_id = data.company_id;
+        _this.company_name = "Company " + _this.company_id;
+        _this.rounds = data.player_rounds;
+        _this.onRequest({
+          pagination: this.pagination,
+          filter: this.filter,
+        });
+        _this.get_company_info();
+      });
     },
 
     submit() {
@@ -608,6 +640,16 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.row {
+  padding: 0 20px;
+  height: 40px;
+  line-height: 40px;
+  font-weight: 600;
+  color: #666;
+
+  .info {
+  }
+}
 .my-card {
   width: 100%;
   margin-bottom: 24px;
@@ -653,4 +695,25 @@ h4 {
   line-height: 50px;
   height: 50px;
 }
+</style>
+
+<style lang="sass">
+.my-sticky-virtscroll-table
+  /* height or max-height is important */
+  height: 600px
+
+  .q-table__top,
+  .q-table__bottom,
+  thead tr:first-child th /* bg color is important for th; just specify one */
+    background-color: #fff
+
+  thead tr th
+    position: sticky
+    z-index: 1
+  /* this will be the loading indicator */
+  thead tr:last-child th
+    /* height of all previous header rows */
+    top: 48px
+  thead tr:first-child th
+    top: 0
 </style>

@@ -3,6 +3,7 @@ from ..authorization.token_auth import login_required
 from ..libs.yellowprint import YellowPrint
 from ..validators.forms import GameForm, FilterForm
 from ..models.game import Game
+from ..models.company import Company
 from ..libs.error_code import ParameterException
 from ..libs.error import NoException
 from ..authorization.token_auth import creat_token, verify_token
@@ -113,6 +114,7 @@ def get_com_data():
     game_id = request.get_json()['game_id']
     rounds = request.get_json()['rounds']
     company_id = request.get_json()['company_id']
+    print(f'gameid:{game_id} companyid:{company_id} rounds:{rounds}')
 
     df = Game.get_com_data(game_id=game_id,
                            rounds=rounds,
@@ -221,3 +223,22 @@ def start_round():
     game_id = request.get_json()['game_id']
     Game.round_start(game_id=game_id)
     return NoException()
+
+
+# 根据uuid返回所处战局的id和玩家回合
+@yp_game.route('/query_by_uuid', methods=['POST'])
+def query_by_uuid():
+    uuid = request.get_json()['uuid']
+    result = {}
+    if not Company.is_uuid_exist(uuid=uuid):
+        return NoException(msg='uuid不存在')
+    else:
+        com = Company.query.filter_by(uuid=uuid).first()
+        result['game_id'] = com.game_id
+        result['company_id'] = com.company_id
+        if not Game.is_exist(result['game_id']):
+            return '不存在'  # TODO回头用Exception抱一下
+        else:
+            game = Game.query.filter_by(id=result['game_id']).first()
+            result['player_rounds'] = game.player_rounds
+    return NoException(data=result)

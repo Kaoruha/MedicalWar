@@ -1,6 +1,10 @@
 <template>
   <div>
     <q-table
+      class="my-sticky-virtscroll-table"
+      virtual-scroll
+      :rows-per-page-options="[0]"
+      :virtual-scroll-sticky-size-start="48"
       :title="company_name"
       :data="data"
       :columns="columns"
@@ -56,7 +60,12 @@
 
           <q-td key="advertising_sensitivity" :props="props">
             {{ props.row.advertising_sensitivity }}
-            <q-popup-edit v-model="props.row.advertising_sensitivity" title="调整推广敏感度" buttons persistent>
+            <q-popup-edit
+              v-model="props.row.advertising_sensitivity"
+              title="调整推广敏感度"
+              buttons
+              persistent
+            >
               <q-input
                 type="number"
                 v-model="props.row.advertising_sensitivity"
@@ -119,10 +128,6 @@
             </q-popup-edit>
           </q-td>
 
-
-
-
-
           <q-td key="a_price" :props="props">
             {{ props.row.a_price }}
             <q-popup-edit v-model="props.row.a_price" title="产品A价格" buttons persistent>
@@ -135,7 +140,6 @@
               />
             </q-popup-edit>
           </q-td>
-
 
           <q-td key="a_mean" :props="props">
             {{ props.row.a_mean }}
@@ -150,7 +154,6 @@
             </q-popup-edit>
           </q-td>
 
-
           <q-td key="a_share" :props="props">
             {{ props.row.a_share }}
             <q-popup-edit v-model="props.row.a_share" title="调整产品A份额" buttons persistent>
@@ -163,7 +166,6 @@
               />
             </q-popup-edit>
           </q-td>
-
 
           <q-td key="b_price" :props="props">
             {{ props.row.b_price }}
@@ -178,7 +180,6 @@
             </q-popup-edit>
           </q-td>
 
-
           <q-td key="b_mean" :props="props">
             {{ props.row.b_mean }}
             <q-popup-edit v-model="props.row.b_mean" title="调整产品B均价" buttons persistent>
@@ -191,7 +192,6 @@
               />
             </q-popup-edit>
           </q-td>
-
 
           <q-td key="b_share" :props="props">
             {{ props.row.b_share }}
@@ -219,7 +219,6 @@
             </q-popup-edit>
           </q-td>
 
-
           <q-td key="c_mean" :props="props">
             {{ props.row.c_mean }}
             <q-popup-edit v-model="props.row.c_mean" title="调整产品C均价" buttons persistent>
@@ -232,7 +231,6 @@
               />
             </q-popup-edit>
           </q-td>
-
 
           <q-td key="c_share" :props="props">
             {{ props.row.c_share }}
@@ -247,7 +245,6 @@
             </q-popup-edit>
           </q-td>
 
-
           <q-td key="hc_strategy" :props="props">
             {{ props.row.hc_strategy }}
             <q-popup-edit v-model="props.row.hc_strategy" title="调整HC决策" buttons persistent>
@@ -261,10 +258,14 @@
             </q-popup-edit>
           </q-td>
 
-
           <q-td key="advertising_strategy" :props="props">
             {{ props.row.advertising_strategy }}
-            <q-popup-edit v-model="props.row.advertising_strategy" title="调整推广决策" buttons persistent>
+            <q-popup-edit
+              v-model="props.row.advertising_strategy"
+              title="调整推广决策"
+              buttons
+              persistent
+            >
               <q-input
                 type="number"
                 v-model="props.row.advertising_strategy"
@@ -274,7 +275,6 @@
               />
             </q-popup-edit>
           </q-td>
-
 
           <q-td key="a_strategy" :props="props">
             {{ props.row.a_strategy }}
@@ -315,7 +315,6 @@
             </q-popup-edit>
           </q-td>
 
-
           <q-td key="channel" :props="props">
             {{ props.row.channel }}
             <q-popup-edit v-model="props.row.channel" title="调整渠道牌" buttons persistent>
@@ -329,7 +328,6 @@
             </q-popup-edit>
           </q-td>
 
-
           <q-td key="permission" :props="props">
             {{ props.row.permission }}
             <q-popup-edit v-model="props.row.permission" title="调整准入牌" buttons persistent>
@@ -342,7 +340,6 @@
               />
             </q-popup-edit>
           </q-td>
-
 
           <q-td key="info" :props="props">
             {{ props.row.info }}
@@ -369,21 +366,21 @@ export default {
   props: {
     url: {
       type: String,
-      default: "uuid2url"
+      default: "uuid2url",
     },
     company_id: {
       type: String,
-      default: "a"
+      default: "a",
     },
     company_name: {
       type: String,
-      default: "Company X"
-    }
+      default: "Company X",
+    },
   },
   data() {
     return {
-      game_id:1,
-      rounds:1,
+      game_id: 1,
+      rounds: 1,
       is_company_checked: false,
       filter: "",
       loading: false,
@@ -645,7 +642,7 @@ export default {
           style: "width:200px",
           format: (val) => `${val}`,
           sortable: true,
-        }
+        },
       ],
       data: [],
       original: [],
@@ -740,10 +737,10 @@ export default {
       return count;
     },
     get_current_game() {
-      let id = localStorage.getItem('current_game_id');
+      let id = localStorage.getItem("current_game_id");
       this.game_id = Number(id);
-      let r = localStorage.getItem('current_rounds');
-      this.rounds = Number(r)
+      let r = localStorage.getItem("current_rounds");
+      this.rounds = Number(r);
     },
 
     get_company_strategy() {
@@ -788,22 +785,20 @@ export default {
       );
     },
 
-    all_check(){
+    all_check() {
       this.is_company_checked = !this.is_company_checked;
       let msg = {
-        company_id:this.company_id,
-        is_checked:this.is_company_checked,
-        data:this.data
+        company_id: this.company_id,
+        is_checked: this.is_company_checked,
+        data: this.data,
         // TODO 要把表内的数据data也传过去
-      }
-      this.$emit('company_check',msg); //this.value为向父组件传递的数据
+      };
+      this.$emit("company_check", msg); //this.value为向父组件传递的数据
     },
 
     enter_game(id) {
       alert("进入游戏" + "id:" + id);
     },
-
-
 
     commit() {
       alert("提交信息");
@@ -862,4 +857,24 @@ h4 {
   line-height: 50px;
   height: 50px;
 }
+</style>
+<style lang="sass">
+.my-sticky-virtscroll-table
+  /* height or max-height is important */
+  height: 600px
+
+  .q-table__top,
+  .q-table__bottom,
+  thead tr:first-child th /* bg color is important for th; just specify one */
+    background-color: #fff
+
+  thead tr th
+    position: sticky
+    z-index: 1
+  /* this will be the loading indicator */
+  thead tr:last-child th
+    /* height of all previous header rows */
+    top: 48px
+  thead tr:first-child th
+    top: 0
 </style>
