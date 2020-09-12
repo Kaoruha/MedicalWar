@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <h4>Game Manager</h4>
+    <h4>{{game_name}}</h4>
     <q-card class="my-card">
       <q-img src="https://cdn.quasar.dev/img/parallax2.jpg">
         <div class="absolute-bottom">
@@ -9,15 +9,17 @@
         </div>
       </q-img>
       <div class="row">
-        <div class="col info">总资金：{{capital}}</div>
-        <div class="col">可分配人数：{{hc_limit}}</div>
+        <div
+          class="col info"
+        >总资金：{{capital-hc_price*total_hc-channel_price*total_channel-permission_price*total_permission-info_price*total_info}}</div>
+        <div class="col">可分配人数：{{hc_limit-total_hc}}</div>
         <div class="col">人力成本:{{hc_price}}</div>
         <div class="col">渠道牌价格：{{channel_price}}</div>
-        <div class="col">渠道牌数量：{{channel_count}}</div>
+        <div class="col">渠道牌数量：{{channel_count-total_channel}}</div>
         <div class="col">准入牌价格：{{permission_price}}</div>
-        <div class="col">准入牌数量：{{permission_count}}</div>
+        <div class="col">准入牌数量：{{permission_count-total_permission}}</div>
         <div class="col">信息牌价格：{{info_price}}</div>
-        <div class="col">信息牌数量：{{info_count}}</div>
+        <div class="col">信息牌数量：{{info_count-total_info}}</div>
         <div class="col">营收：{{profit}}</div>
       </div>
     </q-card>
@@ -213,8 +215,14 @@ export default {
   name: "Game_player",
   data() {
     return {
+      total_channel: 0,
+      total_permission: 0,
+      total_info: 0,
+      total_hc: 0,
+      total_advertising: 0,
       uuid: "",
       game_id: 1,
+      game_name:'',
       rounds: 1,
       company_id: "a",
       capital: 0,
@@ -433,6 +441,20 @@ export default {
     this.get_uuid();
     this.get_current_game_info();
   },
+
+  watch: {
+    data: {
+      handler: function (val, oldval) {
+        // console.log('修改后',val,'修改前',oldval);
+        // 取整
+        this.int_pars();
+        // 计算
+        this.calculate();
+      },
+      deep: true,
+    },
+  },
+
   methods: {
     onRequest(props) {
       const { page, rowsPerPage, sortBy, descending } = props.pagination;
@@ -558,6 +580,7 @@ export default {
       this.ready_to_delete.name = name;
     },
 
+    // 获取公司基本数据
     get_company_info() {
       const _this = this;
       Game.GetCompanyInfo(this.game_id, this.rounds).then((response) => {
@@ -613,6 +636,7 @@ export default {
         _this.company_id = data.company_id;
         _this.company_name = "Company " + _this.company_id;
         _this.rounds = data.player_rounds;
+        _this.game_name=data.name
         _this.onRequest({
           pagination: this.pagination,
           filter: this.filter,
@@ -634,6 +658,46 @@ export default {
           }
         }
       );
+    },
+
+    int_pars(){
+      for (let index = 0; index < this.data.length; index++) {
+        const element = this.data[index];
+        element.hc = Math.round(element.hc)
+        element.advertising = Number(element.advertising).toFixed(2)
+        element.a_price = Number(element.a_price).toFixed(2)
+        element.a_share = Number(element.a_share).toFixed(2)
+        element.b_price = Number(element.b_price).toFixed(2)
+        element.b_share = Number(element.b_share).toFixed(2)
+        element.c_price = Number(element.c_price).toFixed(2)
+        element.c_share = Number(element.c_share).toFixed(2)
+        element.hc_strategy = Math.round(element.hc_strategy)
+        element.advertising_strategy = Number(element.advertising_strategy).toFixed(2)
+        element.a_strategy = Number(element.a_strategy).toFixed(2)
+        element.b_strategy = Number(element.b_strategy).toFixed(2)
+        element.c_strategy = Number(element.c_strategy).toFixed(2)
+        element.channel = Math.round(element.channel)
+        element.permission = Math.round(element.permission)
+        element.info = Math.round(element.info)
+      }
+    },
+
+    calculate() {
+      const _this = this;
+      this.total_hc = 0;
+      this.total_advertising = 0;
+      this.total_permission = 0;
+      this.total_channel = 0;
+      this.total_info = 0;
+
+      for (let index = 0; index < this.data.length; index++) {
+        const element = this.data[index];
+        _this.total_hc += Number(element.hc_strategy);
+        _this.total_advertising += Number(element.advertising_strategy);
+        _this.total_permission += Number(element.permission);
+        _this.total_channel += Number(element.channel);
+        _this.total_info += Number(element.info);
+      }
     },
   },
 };

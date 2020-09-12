@@ -241,4 +241,5 @@ def query_by_uuid():
         else:
             game = Game.query.filter_by(id=result['game_id']).first()
             result['player_rounds'] = game.player_rounds
+            result['name'] = game.name
     return NoException(data=result)
