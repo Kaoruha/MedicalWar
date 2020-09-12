@@ -89,6 +89,19 @@
             </q-popup-edit>
           </q-td>
 
+          <q-td key="share" :props="props">
+            {{ props.row.share }}
+            <q-popup-edit v-model="props.row.share" title="调整份额" buttons persistent>
+              <q-input
+                type="number"
+                v-model="props.row.share"
+                dense
+                autofocus
+                hint="Use buttons to close"
+              />
+            </q-popup-edit>
+          </q-td>
+
           <q-td key="hc" :props="props">
             {{ props.row.hc }}
             <q-popup-edit v-model="props.row.hc" title="调整当前HC" buttons persistent>
@@ -104,7 +117,7 @@
 
           <q-td key="hc_low_limit" :props="props">
             {{ props.row.hc_low_limit }}
-            <q-popup-edit v-model="props.row.hc_low_limit" title="调整当前HC" buttons persistent>
+            <q-popup-edit v-model="props.row.hc_low_limit" title="调整HC上限" buttons persistent>
               <q-input
                 type="number"
                 v-model="props.row.hc_low_limit"
@@ -444,6 +457,16 @@ export default {
           sortable: true,
         },
         {
+          name: "share",
+          required: true,
+          label: "份额",
+          align: "left",
+          field: (row) => row.share,
+          style: "width:200px",
+          format: (val) => `${val}`,
+          sortable: true,
+        },
+        {
           name: "hc",
           required: true,
           label: "当前HC",
@@ -760,6 +783,7 @@ export default {
               advertising_sensitivity: data[i].advertising_sensitivity,
               price_sensitivity: data[i].price_sensitivity,
               hc: data[i].hc,
+              share: data[i].share,
               hc_low_limit: data[i].hc_low_limit,
               advertising: data[i].advertising,
               a_price: data[i].a_price,

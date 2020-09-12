@@ -6,6 +6,7 @@ from datetime import datetime
 from sqlalchemy import Column, String, Integer, SmallInteger
 from ..models.base import Base, db
 from .company import Company
+from ..libs.wargame import result_calculate
 
 
 class Game(Base):
@@ -34,16 +35,16 @@ class Game(Base):
         # 创建公司
         game = cls.query.filter_by(name=name, status=1).first()
         print(game.id)
-        Company.creat_Company(str(game.id),'a')
-        Company.creat_Company(str(game.id),'b')
-        Company.creat_Company(str(game.id),'c')
-        Company.creat_Company(str(game.id),'d')
+        Company.creat_Company(str(game.id), 'a')
+        Company.creat_Company(str(game.id), 'b')
+        Company.creat_Company(str(game.id), 'c')
+        Company.creat_Company(str(game.id), 'd')
         game.a_uuid = Company.get_com_uuid(game_id=game.id, company_id='a')
         game.b_uuid = Company.get_com_uuid(game_id=game.id, company_id='b')
         game.c_uuid = Company.get_com_uuid(game_id=game.id, company_id='c')
         game.d_uuid = Company.get_com_uuid(game_id=game.id, company_id='d')
         db.session.commit()
-            
+
         # 本地生成目录
         path = 'app/data/game_' + name
         if not os.path.exists(path):
@@ -59,7 +60,8 @@ class Game(Base):
                 source_path = os.getcwd() + '/app/data/mould/' + file
                 df = pd.read_excel(source_path)
                 df = df.fillna(0)
-                df.to_csv(path + '/round1/' + file.split('.')[0] + '.csv', index=0)
+                df.to_csv(path + '/round1/' + file.split('.')[0] + '.csv',
+                          index=0)
             except Exception as e:
                 print(e)
 
@@ -76,7 +78,7 @@ class Game(Base):
             return True
         else:
             return False
-    
+
     @classmethod
     def get_com_data(cls, game_id: int, rounds: int, company_id: str):
         if not cls.is_exist(game_id=game_id):
@@ -118,12 +120,12 @@ class Game(Base):
 
     @classmethod
     def next_round(cls, game, df_list):
-        if (game.rounds - game.player_rounds) >1:
+        if (game.rounds - game.player_rounds) > 1:
             print('需要开始当前回合能允许下一回合')
-            return # 需要开始当前回合能允许下一回合
+            return  # 需要开始当前回合能允许下一回合
 
         game.rounds += 1
-        db.session.commit()
+
         files = [
             'companyInfo', 'InputTableA', 'InputTableB', 'InputTableC',
             'InputTableD'
@@ -152,6 +154,7 @@ class Game(Base):
             'advertising_sensitivity': '推广敏感度',
             'price_sensitivity': '价格敏感度',
             'hc': '当前HC',
+            'share': '份额',
             'hc_low_limit': 'HC下限',
             'advertising': '推广费用',
             'a_price': '产品A价格',
@@ -172,20 +175,45 @@ class Game(Base):
             'permission': '准入牌',
             'info': '信息牌'
         }
+
         for i in range(len(files)):
             try:
                 if not os.path.exists(path):
                     os.makedirs(path)
                 if i == 0:
                     df[i].rename(columns=dict1, inplace=True)
+                    # company_info = df[i]
                 else:
                     df[i].rename(columns=dict2, inplace=True)
+                    # company_list.append(df[i])
                 # 生成下一轮的csv
                 # TODO 传到后面去，拿到返回再写入
                 # 目前直接返回把拿到的值
+                # cls.test()
                 df[i].to_csv(path + '/' + files[i] + '.csv', index=0)
             except Exception as e:
                 print(e)
+
+        company_list = []
+        for i in range(len(files)):
+
+            if i == 0:
+                print(path + '/' + files[i] + '.csv')
+                company_info = pd.read_csv(path + '/' + files[i] + '.csv')
+            else:
+                print(path + '/' + files[i] + '.csv')
+                company_list.append(pd.read_csv(path + '/' + files[i] +
+                                                '.csv'))
+
+        db.session.commit()
+        c_list, c_info = result_calculate(company_list=company_list,
+                                          company_info=company_info,
+                                          game=game.rounds)
+
+        for i in range(len(c_list)):
+            c_list[i].to_csv(path + '/' + files[i + 1] + '.csv')
+
+        c_info.to_csv(path + '/' + 'companyInfo.csv', index=0)
 
     @classmethod
     def player_commit(cls, game_id: int, company_id: str, rounds: int, data):
@@ -199,20 +227,28 @@ class Game(Base):
             print('游戏回合超出')
             return
 
-        path = path = os.getcwd(
+        path = os.getcwd(
         ) + '/app/data/game_' + game.name + '/' + 'round' + str(
             game.player_rounds) + '/' + 'InputTable' + company_id.upper(
             ) + '.csv'
         col_dict = {
             'name': '医院名称',
             'operation_count': '年手术台数',
+            'hc_sensitivity': 'HC敏感度',
+            'advertising_sensitivity': '推广敏感度',
+            'price_sensitivity': '价格敏感度',
             'hc': '当前HC',
+            'share': '份额',
+            'hc_low_limit': 'HC下限',
             'advertising': '推广费用',
             'a_price': '产品A价格',
+            'a_mean': '产品A均价',
             'a_share': '产品A份额',
             'b_price': '产品B价格',
+            'b_mean': '产品B均价',
             'b_share': '产品B份额',
             'c_price': '产品C价格',
+            'c_mean': '产品C均价',
             'c_share': '产品C份额',
             'hc_strategy': 'HC决策',
             'advertising_strategy': '推广决策',
@@ -224,18 +260,23 @@ class Game(Base):
             'info': '信息牌'
         }
         try:
-            df1 = pd.read_csv(path)
+            # df1 = pd.read_csv(path)
 
             df2 = pd.DataFrame(data)
             df2.rename(columns=col_dict, inplace=True)
-            s = pd.merge(df2,df1[['医院名称','HC敏感度', '推广敏感度', '价格敏感度', 'HC下限','产品A均价','产品B均价','产品C均价']],on='医院名称')
-            s.to_csv(path)
+            # s = pd.merge(df2,
+            #              df1[[
+            #                  '医院名称', 'HC敏感度', '推广敏感度', '价格敏感度', 'HC下限',
+            #                  '产品A均价', '产品B均价', '产品C均价'
+            #              ]],
+            #              on='医院名称')
+            df2.to_csv(path)
             print(path)
         except Exception as e:
             print(e)
 
     @classmethod
-    def round_start(cls, game_id:int):
+    def round_start(cls, game_id: int):
         if not cls.is_exist(game_id=game_id):
             print('不存在该局游戏')
             return
@@ -243,5 +284,3 @@ class Game(Base):
         if game.player_rounds < game.rounds:
             game.player_rounds += 1
             db.session.commit()
-
-        

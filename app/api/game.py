@@ -128,6 +128,7 @@ def get_com_data():
             "advertising_sensitivity": row['推广敏感度'],
             "price_sensitivity": row['价格敏感度'],
             "hc": row['当前HC'],
+            "share":row['份额'],
             "hc_low_limit": row['HC下限'],
             "advertising": row['推广费用'],
             "a_price": row['产品A价格'],
