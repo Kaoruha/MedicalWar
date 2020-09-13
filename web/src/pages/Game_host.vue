@@ -248,7 +248,8 @@ export default {
   },
   data() {
     return {
-      host: "http://localhost:8080/#/game_player?uuid=",
+      // host: "http://localhost:8080/#/game_player?uuid=",
+      host:"http://49.235.80.242/#/game_player?uuid=",
       is_commit_show: false,
       current_round_started: false,
       game_name: "default",
