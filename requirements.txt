@@ -1,0 +1,33 @@
+astroid @ file:///opt/concourse/worker/volumes/live/b22b518b-f584-4586-5ee9-55bfa4fca96e/volume/astroid_1592495912194/work
+certifi==2020.6.20
+cffi @ file:///opt/concourse/worker/volumes/live/0df07f09-9875-42dd-4a5c-3f900d1fbce2/volume/cffi_1598370762311/work
+click==7.1.2
+cryptography @ file:///opt/concourse/worker/volumes/live/823033e5-92f5-43de-539e-bdc7bc36c81a/volume/cryptography_1598892026131/work
+Flask==1.1.2
+Flask-SQLAlchemy @ file:///tmp/build/80754af9/flask-sqlalchemy_1596836624296/work
+idna @ file:///tmp/build/80754af9/idna_1593446292537/work
+isort @ file:///opt/concourse/worker/volumes/live/e7eb0d6d-5d58-493b-6745-1e58f38b59d3/volume/isort_1598376196187/work
+itsdangerous==1.1.0
+Jinja2==2.11.2
+lazy-object-proxy==1.4.3
+MarkupSafe==1.1.1
+mccabe==0.6.1
+mkl-fft==1.1.0
+mkl-random==1.1.1
+mkl-service==2.3.0
+numpy @ file:///opt/concourse/worker/volumes/live/40d975a3-7e82-44c8-53df-feccdbce8b96/volume/numpy_and_numpy_base_1596233859108/work
+pandas @ file:///opt/concourse/worker/volumes/live/993437e5-6177-49a4-48b9-0912ecc50f00/volume/pandas_1598371475214/work
+pycparser @ file:///tmp/build/80754af9/pycparser_1594388511720/work
+pylint @ file:///opt/concourse/worker/volumes/live/9eebf2dc-3c74-4778-701c-c55b13929def/volume/pylint_1598624018844/work
+PyMySQL==0.9.3
+python-dateutil==2.8.1
+pytz==2020.1
+six==1.15.0
+SQLAlchemy @ file:///opt/concourse/worker/volumes/live/c8ccb658-c55f-4a2e-6c0c-7f57021ac0b1/volume/sqlalchemy_1598374749865/work
+toml @ file:///tmp/build/80754af9/toml_1592853716807/work
+typed-ast==1.4.1
+Werkzeug==1.0.1
+wrapt==1.11.2
+WTForms @ file:///tmp/build/80754af9/wtforms_1597707484216/work
+xlrd==1.2.0
+yapf @ file:///tmp/build/80754af9/yapf_1593528177422/work
