@@ -1,6 +1,6 @@
 import BaseModule from './base.js';
 
-const url = 'local_api/user';
+const url = 'api/user';
 
 class User extends BaseModule {
   constructor() {

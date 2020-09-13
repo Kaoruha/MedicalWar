@@ -1,6 +1,6 @@
 import BaseModule from './base.js'
 
-const url = 'local_api/tag'
+const url = 'api/tag'
 
 class Tag extends BaseModule {
   constructor() {

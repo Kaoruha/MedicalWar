@@ -1,6 +1,6 @@
 import BaseModule from './base.js';
 
-const url = 'local_api/game';
+const url = 'api/game';
 
 class Game extends BaseModule {
   constructor() {
