@@ -212,6 +212,7 @@ class Game(Base):
 
         for i in range(len(c_list)):
             c_list[i].to_csv(path + '/' + files[i + 1] + '.csv')
+            # c_list[i].to_csv(path + '/' + files[i + 1] + '_hah.csv')
 
         c_info.to_csv(path + '/' + 'companyInfo.csv', index=0)
 

@@ -215,7 +215,7 @@
         </q-card-section>
       </q-card>
     </q-expansion-item>
-
+    <div class="com_strategy"></div>
     <!--提交弹窗-->
     <q-dialog v-model="is_commit_show" persistent>
       <q-card style="min-width: 350px">
@@ -624,6 +624,11 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.com_strategy{
+  margin-bottom: 40px;
+}
+
+
 .my-card {
   width: 100%;
   margin-bottom: 24px;
