@@ -78,7 +78,7 @@ module.exports = function(/* ctx */) {
           target:'http://0.0.0.0:5000/api/',
           changeOrigin:true,
           pathRewrite:{
-            '^/local_api':''
+            '^/api':''
           },
         }
       }

@@ -2,7 +2,7 @@
   "name": "web",
   "version": "0.0.1",
   "description": "A Quasar Framework app",
-  "productName": "Quasar App",
+  "productName": "MedicalWar",
   "author": "Sunyu <33867159+Kaoruha@users.noreply.github.com>",
   "private": true,
   "scripts": {
