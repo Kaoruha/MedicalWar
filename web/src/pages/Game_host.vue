@@ -6,6 +6,7 @@
         <div class="absolute-bottom">
           <div class="text-h6">{{game_name}}</div>
           <div class="text-subtitle2">Current Round ：{{rounds}}</div>
+          <div class="text-subtitle2">Player Round ：{{player_rounds}}</div>
         </div>
       </q-img>
 
@@ -249,11 +250,12 @@ export default {
   data() {
     return {
       // host: "http://localhost:8080/#/game_player?uuid=",
-      host:"http://49.235.80.242/#/game_player?uuid=",
+      host: "http://49.235.80.242/#/game_player?uuid=",
       is_commit_show: false,
       current_round_started: false,
       game_name: "default",
       rounds: 1,
+      player_rounds: 0,
       game_id: 1,
       company_ids: ["a", "b", "c", "d"],
       company_name: ["Company A", "Company B", "Company C", "Company D"],
@@ -399,9 +401,7 @@ export default {
     // get initial data from server (1st page)
     this.get_current_game();
   },
-  watch: {
-    
-  },
+  watch: {},
   methods: {
     onRequest(props) {
       const { page, rowsPerPage, sortBy, descending } = props.pagination;
@@ -516,7 +516,9 @@ export default {
       this.game_id = Number(t); // 目前是把id显示出来，回头用id去查询这一局的情况
       Game.GetGameInfo(this.game_id).then((response) => {
         const { data } = response;
+        console.log(data);
         _this.rounds = data["rounds"];
+        _this.player_rounds = data["player_rounds"];
         this.$store.commit("current_game/updateCurrentRounds", data.rounds);
         // 存储四个公司的UUID
         _this.uuid.push(_this.host + data.a_uuid);
@@ -526,6 +528,9 @@ export default {
 
         //TODO store更新存储rounds
         _this.game_name = data["name"];
+        if (_this.player_rounds >= _this.rounds) {
+          _this.current_round_started = true;
+        }
 
         this.onRequest({
           pagination: this.pagination,
@@ -565,10 +570,9 @@ export default {
       }
     },
     start_this_round() {
-      this.current_round_started = true;
-      alert(this.game_id);
-      alert("做个二次确认");
-      Game.Start(this.game_id);
+      Game.Start(this.game_id).then((response) => {
+        this.get_current_game();
+      });
     },
     company_check(msg) {
       // 子组件发起的函数
@@ -625,10 +629,9 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.com_strategy{
+.com_strategy {
   margin-bottom: 40px;
 }
-
 
 .my-card {
   width: 100%;
