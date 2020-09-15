@@ -61,7 +61,7 @@ class Game(Base):
                 df = pd.read_excel(source_path)
                 df = df.fillna(0)
                 df.to_csv(path + '/round1/' + file.split('.')[0] + '.csv',
-                          index=0)
+                          index=0,encoding="utf_8")
             except Exception as e:
                 print(e)
 
@@ -190,7 +190,7 @@ class Game(Base):
                 # TODO 传到后面去，拿到返回再写入
                 # 目前直接返回把拿到的值
                 # cls.test()
-                df[i].to_csv(path + '/' + files[i] + '.csv', index=0)
+                df[i].to_csv(path + '/' + files[i] + '.csv', index=0,encoding="utf_8")
             except Exception as e:
                 print(e)
 
@@ -211,10 +211,10 @@ class Game(Base):
                                           game=game.rounds)
 
         for i in range(len(c_list)):
-            c_list[i].to_csv(path + '/' + files[i + 1] + '.csv')
+            c_list[i].to_csv(path + '/' + files[i + 1] + '.csv',encoding="utf_8")
             # c_list[i].to_csv(path + '/' + files[i + 1] + '_hah.csv')
 
-        c_info.to_csv(path + '/' + 'companyInfo.csv', index=0)
+        c_info.to_csv(path + '/' + 'companyInfo.csv', index=0,encoding="utf_8")
 
     @classmethod
     def player_commit(cls, game_id: int, company_id: str, rounds: int, data):
@@ -271,13 +271,13 @@ class Game(Base):
             #                  '产品A均价', '产品B均价', '产品C均价'
             #              ]],
             #              on='医院名称')
-            df2.to_csv(path)
+            df2.to_csv(path,encoding="utf_8")
             print(path)
         except Exception as e:
             print(e)
 
     @classmethod
-    def round_start(cls, game_id: int):
+    def round_start(cls, game_id: int, df_list):
         if not cls.is_exist(game_id=game_id):
             print('不存在该局游戏')
             return

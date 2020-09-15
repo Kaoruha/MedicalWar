@@ -67,9 +67,10 @@ class Game extends BaseModule {
     })
   }
 
-  Start(game_id) {
+  Start(game_id, data) {
     return this.post('/start', {
       "game_id": game_id,
+      "data":data
     })
   }
 

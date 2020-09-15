@@ -189,6 +189,11 @@
               />
             </q-popup-edit>
           </q-td>
+
+          <q-td key="last_profit" :props="props">
+            {{ props.row.last_profit }}
+          </q-td>
+
         </q-tr>
       </template>
     </q-table>
@@ -386,6 +391,15 @@ export default {
           style: "width:200px",
           format: (val) => `${val}`,
           sortable: true,
+        },{
+          name: "last_profit",
+          required: true,
+          label: "上轮营收",
+          align: "left",
+          field: (row) => row.last_profit,
+          style: "width:200px",
+          format: (val) => `${val}`,
+          sortable: true,
         },
       ],
       uuid: [],
@@ -503,6 +517,7 @@ export default {
             info_price: data[i].info_price,
             info: data[i].info,
             profit: data[i].profit,
+            last_profit: data[i].last_profit
           });
         }
       });
@@ -570,7 +585,15 @@ export default {
       }
     },
     start_this_round() {
-      Game.Start(this.game_id).then((response) => {
+      const _this = this;
+      let data = [
+        this.data,
+        this.data_a,
+        this.data_b,
+        this.data_c,
+        this.data_d,
+      ];
+      Game.Start(this.game_id,data).then((response) => {
         this.get_current_game();
       });
     },

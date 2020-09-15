@@ -175,7 +175,8 @@ def get_com_info():
             "permission": row['准入牌剩余数量'],
             "info_price": row['信息牌价格'],
             "info": row['信息牌剩余数量'],
-            "profit": row['营收']
+            "profit": row['营收'],
+            "last_profit": row['上轮营收']
         }
         data.append(t)
 
@@ -222,8 +223,18 @@ def next_round():
 @yp_game.route('/start', methods=['POST'])
 def start_round():
     game_id = request.get_json()['game_id']
-    Game.round_start(game_id=game_id)
+    data = request.get_json()['data']
+    if not Game.is_exist(game_id):
+        return '不存在'  # TODO回头用Exception抱一下
+    else:
+        game = Game.query.filter_by(id=game_id).first()
+        df_list = []
+        for d in data:
+            df_list.append(pd.DataFrame(d))
+        Game.round_start(game_id=game_id,df_list=df_list)
+        return NoException(msg='提交成功')
     return NoException()
+    
 
 
 # 根据uuid返回所处战局的id和玩家回合
