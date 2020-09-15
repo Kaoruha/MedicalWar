@@ -827,9 +827,11 @@ export default {
     commit() {
       alert("提交信息");
     },
-    end_the_game() {
-      alert("做个二次确认");
-    },
+
+    reset(){
+      this.is_company_checked = false
+    }
+  
   },
 };
 </script>

@@ -15,7 +15,7 @@
           flat
           color="light-blue"
           @click="start_this_round"
-          :disabled="current_round_started"
+          :disabled="!is_ok_to_start()"
           style="width: 120px"
         >开始当前回合</q-btn>
         <q-btn
@@ -578,7 +578,6 @@ export default {
 
     reset() {
       const _this = this;
-      this.current_round_started = false;
       this.is_all_com_check = false;
       for (let index = 0; index < this.is_company_checked.length; index++) {
         _this.is_company_checked[index].check = false;
@@ -629,6 +628,14 @@ export default {
 
     is_ok_to_commit() {
       if (this.is_all_com_check && this.current_round_started) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+
+    is_ok_to_start() {
+      if (this.is_all_com_check && !this.current_round_started) {
         return true;
       } else {
         return false;
