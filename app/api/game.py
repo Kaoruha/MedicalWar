@@ -127,8 +127,13 @@ def get_com_data():
             "hc_sensitivity": row['HC敏感度'],
             "advertising_sensitivity": row['推广敏感度'],
             "price_sensitivity": row['价格敏感度'],
-            "hc": row['当前HC'],
             "share":row['份额'],
+            "share_visibility":row['份额可见'],
+            "total_share":row['总份额'],
+            "last_share":row['上轮份额'],
+            "share_change":row['份额增长净值'],
+            "share_change_ratio":row['份额增长比例'],
+            "hc": row['当前HC'],
             "hc_low_limit": row['HC下限'],
             "advertising": row['推广费用'],
             "a_price": row['产品A价格'],
@@ -140,6 +145,10 @@ def get_com_data():
             "c_price": row['产品C价格'],
             "c_mean": row['产品C均价'],
             "c_share": row['产品C份额'],
+            "last_operation_count": row['上轮台数'],
+            "current_operation_count": row['本轮台数'],
+            "operation_count_change": row['台数增长净值'],
+            "operation_count_change_ratio": row['台数增长比例'],
             "hc_strategy": row['HC决策'],
             "advertising_strategy": row['推广决策'],
             "a_strategy": row['产品A价格决策'],
@@ -163,25 +172,40 @@ def get_com_info():
 
     df = Game.get_com_info(game_id=game_id, rounds=rounds)
     data = []
-    for index, row in df.iterrows():
-        t = {
-            "name": row['公司名称'],
-            "capital": row['总资金'],
-            "hc_limit": row['可分配人数'],
-            "hc_price": row['人力成本'],
-            "channel_price": row['渠道牌价格'],
-            "channel": row['渠道牌剩余数量'],
-            "permission_price": row['准入牌价格'],
-            "permission": row['准入牌剩余数量'],
-            "info_price": row['信息牌价格'],
-            "info": row['信息牌剩余数量'],
-            "profit": row['营收'],
-            "last_profit": row['上轮营收']
-        }
-        data.append(t)
+    try:
+        for index, row in df.iterrows():
+            t = {
+                "name": row['公司名称'],
+                "capital": row['总资金'],
+                "hc_limit": row['可分配人数'],
+                "hc_price": row['人力成本'],
+                "channel_price": row['渠道牌价格'],
+                "channel": row['渠道牌剩余数量'],
+                "permission_price": row['准入牌价格'],
+                "permission": row['准入牌剩余数量'],
+                "info_price": row['信息牌价格'],
+                "info": row['信息牌剩余数量'],
+                "vbp_price": row['VBP价格'],
+                "vbp_share": row['VBP份额'],
+                "profit": row['营收'],
+                "last_profit": row['上轮营收'],
+                "total_profit": row['总营收'],
+                "profit_change": row['营收增长净值'],
+                "profit_change_ratio": row['营收增长比例'],
+
+                "a_cost": row['产品A成本'],
+                "b_cost": row['产品B成本'],
+                "c_cost": row['产品C成本'],
+                "total_investment": row['总资金投入'],
+                "total_cost": row['总生产成本']
+                
+            }
+            data.append(t)
+    except Exception as e:
+        print(e)
+    
 
     return NoException(data=data, msg=f'成功获取第{game_id}局游戏，第{rounds}轮公司信息')
-
 
 # 获取某局的信息
 @yp_game.route('/get_game_info', methods=['POST'])

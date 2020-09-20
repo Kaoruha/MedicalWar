@@ -45,6 +45,31 @@
             </q-popup-edit>
           </q-td>
 
+          <q-td key="current_operation_count" :props="props">
+            {{ props.row.current_operation_count }}
+            <q-popup-edit
+              v-model="props.row.current_operation_count"
+              title="调整本轮台数"
+              buttons
+              persistent
+            >
+              <q-input
+                type="number"
+                v-model="props.row.current_operation_count"
+                dense
+                autofocus
+                hint="Use buttons to close"
+              />
+            </q-popup-edit>
+          </q-td>
+
+          <q-td key="last_operation_count" :props="props">{{ props.row.last_operation_count }}</q-td>
+          <q-td key="operation_count_change" :props="props">{{ props.row.operation_count_change }}</q-td>
+          <q-td
+            key="operation_count_change_ratio"
+            :props="props"
+          >{{ props.row.operation_count_change_ratio }}</q-td>
+
           <q-td key="hc_sensitivity" :props="props">
             {{ props.row.hc_sensitivity }}
             <q-popup-edit v-model="props.row.hc_sensitivity" title="调整HC敏感度" buttons persistent>
@@ -62,7 +87,7 @@
             {{ props.row.advertising_sensitivity }}
             <q-popup-edit
               v-model="props.row.advertising_sensitivity"
-              title="调整推广敏感度"
+              title="调整市场敏感度"
               buttons
               persistent
             >
@@ -102,6 +127,71 @@
             </q-popup-edit>
           </q-td>
 
+          <q-td key="share_visibility" :props="props">
+            {{ props.row.share_visibility }}
+            <q-popup-edit v-model="props.row.share_visibility" title="份额可见" buttons persistent>
+              <q-input
+                type="number"
+                v-model="props.row.share_visibility"
+                dense
+                autofocus
+                hint="Use buttons to close"
+              />
+            </q-popup-edit>
+          </q-td>
+
+          <q-td key="total_share" :props="props">
+            {{ props.row.total_share }}
+            <q-popup-edit v-model="props.row.total_share" title="总份额" buttons persistent>
+              <q-input
+                type="number"
+                v-model="props.row.total_share"
+                dense
+                autofocus
+                hint="Use buttons to close"
+              />
+            </q-popup-edit>
+          </q-td>
+
+          <q-td key="last_share" :props="props">
+            {{ props.row.last_share }}
+            <q-popup-edit v-model="props.row.last_share" title="上轮份额" buttons persistent>
+              <q-input
+                type="number"
+                v-model="props.row.last_share"
+                dense
+                autofocus
+                hint="Use buttons to close"
+              />
+            </q-popup-edit>
+          </q-td>
+
+          <q-td key="share_change" :props="props">
+            {{ props.row.share_change }}
+            <q-popup-edit v-model="props.row.share_change" title="份额增长净值" buttons persistent>
+              <q-input
+                type="number"
+                v-model="props.row.share_change"
+                dense
+                autofocus
+                hint="Use buttons to close"
+              />
+            </q-popup-edit>
+          </q-td>
+
+          <q-td key="share_change_ratio" :props="props">
+            {{ props.row.share_change_ratio }}
+            <q-popup-edit v-model="props.row.share_change_ratio" title="份额增长比例" buttons persistent>
+              <q-input
+                type="number"
+                v-model="props.row.share_change_ratio"
+                dense
+                autofocus
+                hint="Use buttons to close"
+              />
+            </q-popup-edit>
+          </q-td>
+
           <q-td key="hc" :props="props">
             {{ props.row.hc }}
             <q-popup-edit v-model="props.row.hc" title="调整当前HC" buttons persistent>
@@ -130,7 +220,7 @@
 
           <q-td key="advertising" :props="props">
             {{ props.row.advertising }}
-            <q-popup-edit v-model="props.row.advertising" title="调整推广费用" buttons persistent>
+            <q-popup-edit v-model="props.row.advertising" title="调整市场费用" buttons persistent>
               <q-input
                 type="number"
                 v-model="props.row.advertising"
@@ -275,7 +365,7 @@
             {{ props.row.advertising_strategy }}
             <q-popup-edit
               v-model="props.row.advertising_strategy"
-              title="调整推广决策"
+              title="调整市场决策"
               buttons
               persistent
             >
@@ -427,6 +517,46 @@ export default {
           sortable: false,
         },
         {
+          name: "current_operation_count",
+          required: true,
+          label: "本轮台数",
+          align: "left",
+          field: (row) => row.current_operation_count,
+          style: "width:100px",
+          format: (val) => `${val}`,
+          sortable: false,
+        },
+        {
+          name: "last_operation_count",
+          required: true,
+          label: "上轮台数",
+          align: "left",
+          field: (row) => row.last_operation_count,
+          style: "width:100px",
+          format: (val) => `${val}`,
+          sortable: false,
+        },
+        {
+          name: "operation_count_change",
+          required: true,
+          label: "台数增长净值",
+          align: "left",
+          field: (row) => row.operation_count_change,
+          style: "width:100px",
+          format: (val) => `${val}`,
+          sortable: false,
+        },
+        {
+          name: "operation_count_change_ratio",
+          required: true,
+          label: "台数增长比例",
+          align: "left",
+          field: (row) => row.operation_count_change_ratio,
+          style: "width:100px",
+          format: (val) => `${val}`,
+          sortable: false,
+        },
+        {
           name: "hc_sensitivity",
           required: false,
           label: "HC敏感度",
@@ -439,7 +569,7 @@ export default {
         {
           name: "advertising_sensitivity",
           required: false,
-          label: "推广敏感度",
+          label: "市场敏感度",
           align: "left",
           field: (row) => row.advertising_sensitivity,
           style: "width:100px",
@@ -467,6 +597,56 @@ export default {
           sortable: true,
         },
         {
+          name: "share_visibility",
+          required: true,
+          label: "份额可见",
+          align: "left",
+          field: (row) => row.share_visibility,
+          style: "width:200px",
+          format: (val) => `${val}`,
+          sortable: true,
+        },
+        {
+          name: "total_share",
+          required: true,
+          label: "总份额",
+          align: "left",
+          field: (row) => row.total_share,
+          style: "width:200px",
+          format: (val) => `${val}`,
+          sortable: true,
+        },
+        {
+          name: "last_share",
+          required: true,
+          label: "上轮份额",
+          align: "left",
+          field: (row) => row.last_share,
+          style: "width:200px",
+          format: (val) => `${val}`,
+          sortable: true,
+        },
+        {
+          name: "share_change",
+          required: true,
+          label: "份额增长净值",
+          align: "left",
+          field: (row) => row.share_change,
+          style: "width:200px",
+          format: (val) => `${val}`,
+          sortable: true,
+        },
+        {
+          name: "share_change_ratio",
+          required: true,
+          label: "份额增长比例",
+          align: "left",
+          field: (row) => row.share_change_ratio,
+          style: "width:200px",
+          format: (val) => `${val}`,
+          sortable: true,
+        },
+        {
           name: "hc",
           required: true,
           label: "当前HC",
@@ -489,7 +669,7 @@ export default {
         {
           name: "advertising",
           required: true,
-          label: "推广费用",
+          label: "市场费用",
           align: "left",
           field: (row) => row.advertising,
           style: "width:200px",
@@ -599,7 +779,7 @@ export default {
         {
           name: "advertising_strategy",
           required: true,
-          label: "推广决策",
+          label: "市场费用决策",
           align: "left",
           field: (row) => row.advertising_strategy,
           style: "width:200px",
@@ -779,11 +959,19 @@ export default {
             _this.original.push({
               name: data[i].name,
               operation_count: data[i].operation_count,
+
               hc_sensitivity: data[i].hc_sensitivity,
               advertising_sensitivity: data[i].advertising_sensitivity,
               price_sensitivity: data[i].price_sensitivity,
-              hc: data[i].hc,
+
               share: data[i].share,
+              share_visibility: data[i].share_visibility,
+              total_share: data[i].total_share,
+              last_share: data[i].last_share,
+              share_change: data[i].share_change,
+              share_change_ratio: data[i].share_change_ratio,
+
+              hc: data[i].hc,
               hc_low_limit: data[i].hc_low_limit,
               advertising: data[i].advertising,
               a_price: data[i].a_price,
@@ -795,6 +983,13 @@ export default {
               c_price: data[i].c_price,
               c_mean: data[i].c_mean,
               c_share: data[i].c_share,
+
+              last_operation_count: data[i].last_operation_count,
+              current_operation_count: data[i].current_operation_count,
+              operation_count_change: data[i].operation_count_change,
+              operation_count_change_ratio:
+                data[i].operation_count_change_ratio,
+
               hc_strategy: data[i].hc_strategy,
               advertising_strategy: data[i].advertising_strategy,
               a_strategy: data[i].a_strategy,
@@ -805,6 +1000,8 @@ export default {
               info: data[i].info,
             });
           }
+          _this.int_parse();
+        
         }
       );
     },
@@ -828,10 +1025,48 @@ export default {
       alert("提交信息");
     },
 
-    reset(){
-      this.is_company_checked = false
-    }
-  
+    reset() {
+      this.is_company_checked = false;
+    },
+
+    int_parse() {
+      for (let index = 0; index < this.original.length; index++) {
+        const element = this.original[index];
+        // element.hc = Number(element.hc).toFixed(1);
+        element.hc = 121;
+        element.advertising = Number(element.advertising).toFixed(2);
+        element.a_price = Number(element.a_price).toFixed(2);
+        element.a_share = Number(element.a_share).toFixed(2);
+        element.b_price = Number(element.b_price).toFixed(2);
+        element.b_share = Number(element.b_share).toFixed(2);
+        element.c_price = Number(element.c_price).toFixed(2);
+        element.c_share = Number(element.c_share).toFixed(2);
+        element.hc_strategy = Number(element.hc_strategy).toFixed(1);
+        element.operation_count = Math.round(element.operation_count);
+
+        element.hc_sensitivity = Number(element.hc_sensitivity).toFixed(2);
+        element.advertising_sensitivity = Number(
+          element.advertising_sensitivity
+        ).toFixed(2);
+        element.price_sensitivity = Number(element.price_sensitivity).toFixed(
+          2
+        );
+
+        element.share = Number(element.share).toFixed(2);
+        element.total_share = Number(element.total_share).toFixed(2);
+        element.last_share = Number(element.last_share).toFixed(2);
+        element.share_change = Number(element.share_change).toFixed(2);
+        element.share_change_ratio = Number(element.share_change_ratio).toFixed(
+          2
+        );
+
+        element.operation_count = Math.round(element.operation_count);
+        element.last_operation_count = Math.round(element.last_operation_count);
+        element.current_operation_count = Math.round(element.current_operation_count);
+        element.operation_count_change = Math.round(element.operation_count_change);
+        element.operation_count_change_ratio = Number(element.operation_count_change_ratio).toFixed(2);
+      }
+    },
   },
 };
 </script>

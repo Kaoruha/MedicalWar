@@ -9,18 +9,41 @@
         </div>
       </q-img>
       <div class="row">
-        <div
-          class="col info"
-        >总资金：{{capital-hc_price*total_hc-channel_price*total_channel-permission_price*total_permission-info_price*total_info}}</div>
-        <div class="col">可分配人数：{{hc_limit-total_hc}}</div>
+        <div class="col" :style="{color:(capital_check?'#666':'#FF0000')}">总资金：{{this.temp_capital}}</div>
+
         <div class="col">人力成本:{{hc_price}}</div>
         <div class="col">渠道牌价格：{{channel_price}}</div>
-        <div class="col">渠道牌数量：{{channel_count-total_channel}}</div>
+
         <div class="col">准入牌价格：{{permission_price}}</div>
-        <div class="col">准入牌数量：{{permission_count-total_permission}}</div>
+
         <div class="col">信息牌价格：{{info_price}}</div>
-        <div class="col">信息牌数量：{{info_count-total_info}}</div>
+        <div class="col">VBP价格：{{vbp_price}}</div>
+        <div class="col">VBP份额：{{vbp_share}}</div>
+
+        <div class="col" :style="{color:(a_check?'#666':'#FF0000')}">A成本：{{a_cost}}</div>
+        <div class="col" :style="{color:(b_check?'#666':'#FF0000')}">B成本：{{b_cost}}</div>
+        <div class="col" :style="{color:(c_check?'#666':'#FF0000')}">C成本：{{c_cost}}</div>
+      </div>
+      <div class="row">
+        <div class="col" :style="{color:(hc_check?'#666':'#FF0000')}">可分配人数：{{hc_limit-total_hc}}</div>
+        <div
+          class="col"
+          :style="{color:(channel_check?'#666':'#FF0000')}"
+        >渠道牌数量：{{channel_count-total_channel}}</div>
+        <div
+          class="col"
+          :style="{color:(permission_check?'#666':'#FF0000')}"
+        >准入牌数量：{{permission_count-total_permission}}</div>
+        <div
+          class="col"
+          :style="{color:(info_check?'#666':'#FF0000')}"
+        >信息牌数量：{{info_count-total_info}}</div>
+
         <div class="col">营收：{{profit}}</div>
+        <div class="col">上轮营收：{{last_profit}}</div>
+        <div class="col">总营收：{{total_profit}}</div>
+        <div class="col">营收增长净值：{{profit_change}}</div>
+        <div class="col">营收增长比例：{{profit_change_ratio}}</div>
       </div>
     </q-card>
 
@@ -49,6 +72,7 @@
           rounded
           icon="skip_next"
           label="Next Round"
+          :disabled="!is_able_to_submit"
           @click="is_submit_show=true"
         />
       </template>
@@ -57,7 +81,10 @@
       <template v-slot:body="props">
         <q-tr :props="props">
           <q-td key="name" :props="props">{{ props.row.name }}</q-td>
-          <q-td key="operation_count" :props="props">{{ props.row.operation_count }}</q-td>
+          <q-td
+            key="operation_count"
+            :props="props"
+          >{{ props.row.share_visibility ==1?props.row.operation_count: '*暂不可见*'}}</q-td>
           <q-td key="hc" :props="props">{{ props.row.hc }}</q-td>
           <q-td key="advertising" :props="props">{{ props.row.advertising }}</q-td>
 
@@ -70,7 +97,15 @@
           <q-td key="c_price" :props="props">{{ props.row.c_price }}</q-td>
           <q-td key="c_share" :props="props">{{ props.row.c_share }}</q-td>
 
-          <q-td key="hc_strategy" :props="props">
+          <q-td key="last_operation_count" :props="props">{{ props.row.last_operation_count }}</q-td>
+          <q-td key="current_operation_count" :props="props">{{ props.row.current_operation_count }}</q-td>
+          <q-td key="operation_count_change" :props="props">{{ props.row.operation_count_change }}</q-td>
+          <q-td
+            key="operation_count_change_ratio"
+            :props="props"
+          >{{ props.row.operation_count_change_ratio }}</q-td>
+
+          <q-td key="hc_strategy" class="editable" :props="props">
             {{ props.row.hc_strategy }}
             <q-popup-edit v-model="props.row.info" title="Update HC" buttons persistent>
               <q-input
@@ -83,7 +118,7 @@
             </q-popup-edit>
           </q-td>
 
-          <q-td key="advertising_strategy" :props="props">
+          <q-td key="advertising_strategy" class="editable" :props="props">
             {{ props.row.advertising_strategy }}
             <q-popup-edit
               v-model="props.row.advertising_strategy"
@@ -101,7 +136,7 @@
             </q-popup-edit>
           </q-td>
 
-          <q-td key="a_strategy" :props="props">
+          <q-td key="a_strategy" class="editable" :props="props">
             {{ props.row.a_strategy }}
             <q-popup-edit v-model="props.row.a_strategy" title="Update A Price" buttons persistent>
               <q-input
@@ -114,7 +149,7 @@
             </q-popup-edit>
           </q-td>
 
-          <q-td key="b_strategy" :props="props">
+          <q-td key="b_strategy" class="editable" :props="props">
             {{ props.row.b_strategy }}
             <q-popup-edit v-model="props.row.b_strategy" title="Update B Price" buttons persistent>
               <q-input
@@ -127,7 +162,7 @@
             </q-popup-edit>
           </q-td>
 
-          <q-td key="c_strategy" :props="props">
+          <q-td key="c_strategy" class="editable" :props="props">
             {{ props.row.c_strategy }}
             <q-popup-edit v-model="props.row.c_strategy" title="Update C Price" buttons persistent>
               <q-input
@@ -140,7 +175,7 @@
             </q-popup-edit>
           </q-td>
 
-          <q-td key="channel" :props="props">
+          <q-td key="channel" class="editable" :props="props">
             {{ props.row.channel }}
             <q-popup-edit v-model="props.row.channel" title="Update Channel" buttons persistent>
               <q-input
@@ -153,7 +188,7 @@
             </q-popup-edit>
           </q-td>
 
-          <q-td key="permission" :props="props">
+          <q-td key="permission" class="editable" :props="props">
             {{ props.row.permission }}
             <q-popup-edit
               v-model="props.row.permission"
@@ -171,7 +206,7 @@
             </q-popup-edit>
           </q-td>
 
-          <q-td key="info" :props="props">
+          <q-td key="info" class="editable" :props="props">
             {{ props.row.info }}
             <q-popup-edit v-model="props.row.info" title="Update Info" buttons persistent>
               <q-input
@@ -187,7 +222,7 @@
       </template>
     </q-table>
 
-    <!--删除弹窗-->
+    <!--弹窗-->
     <q-dialog v-model="is_submit_show" persistent>
       <q-card style="min-width: 350px">
         <q-card-section>
@@ -215,6 +250,15 @@ export default {
   name: "Game_player",
   data() {
     return {
+      is_able_to_submit: true,
+      a_check: true,
+      b_check: true,
+      c_check: true,
+      capital_check: true,
+      hc_check: true,
+      channel_check: true,
+      permission_check: true,
+      info_check: true,
       total_channel: 0,
       total_permission: 0,
       total_info: 0,
@@ -222,10 +266,11 @@ export default {
       total_advertising: 0,
       uuid: "",
       game_id: 1,
-      game_name:'',
+      game_name: "",
       rounds: 1,
       company_id: "a",
       capital: 0,
+      temp_capital: 0,
       hc_limit: 0,
       hc_price: 1000,
       channel_count: 10,
@@ -235,6 +280,17 @@ export default {
       info_count: 12,
       info_price: 1001,
       profit: 0,
+      last_profit: 0,
+      total_profit: 0,
+      profit_change: 0,
+      profit_change_ratio:0,
+      vbp_price: 0,
+      vbp_share: 0,
+      a_cost: 0,
+      b_cost: 0,
+      c_cost: 0,
+      total_investment: 0,
+      total_cost: 0,
       is_submit_show: false,
       ready_to_submit: {
         id: 0,
@@ -285,7 +341,7 @@ export default {
         {
           name: "advertising",
           required: true,
-          label: "推广费用",
+          label: "市场费用",
           align: "left",
           field: (row) => row.advertising,
           style: "width:200px",
@@ -353,6 +409,46 @@ export default {
           sortable: true,
         },
         {
+          name: "last_operation_count",
+          required: true,
+          label: "上轮台数",
+          align: "left",
+          field: (row) => row.last_operation_count,
+          style: "width:200px",
+          format: (val) => `${val}`,
+          sortable: true,
+        },
+        {
+          name: "current_operation_count",
+          required: true,
+          label: "本轮台数",
+          align: "left",
+          field: (row) => row.current_operation_count,
+          style: "width:200px",
+          format: (val) => `${val}`,
+          sortable: true,
+        },
+        {
+          name: "operation_count_change",
+          required: true,
+          label: "台数增长净值",
+          align: "left",
+          field: (row) => row.operation_count_change,
+          style: "width:200px",
+          format: (val) => `${val}`,
+          sortable: true,
+        },
+        {
+          name: "operation_count_change_ratio",
+          required: true,
+          label: "台数增长比例",
+          align: "left",
+          field: (row) => row.operation_count_change_ratio,
+          style: "width:200px",
+          format: (val) => `${val}`,
+          sortable: true,
+        },
+        {
           name: "hc_strategy",
           required: true,
           label: "HC决策",
@@ -365,7 +461,7 @@ export default {
         {
           name: "advertising_strategy",
           required: true,
-          label: "推广决策",
+          label: "市场决策",
           align: "left",
           field: (row) => row.advertising_strategy,
           style: "width:200px",
@@ -447,9 +543,12 @@ export default {
       handler: function (val, oldval) {
         // console.log('修改后',val,'修改前',oldval);
         // 取整
-        this.int_pars();
+        this.int_parse();
         // 计算
         this.calculate();
+        // 合法校验
+        this.check();
+        console.log(this.is_able_to_submit)
       },
       deep: true,
     },
@@ -547,11 +646,19 @@ export default {
             _this.original.push({
               name: data[i].name,
               operation_count: data[i].operation_count,
+
               hc_sensitivity: data[i].hc_sensitivity,
               advertising_sensitivity: data[i].advertising_sensitivity,
               price_sensitivity: data[i].price_sensitivity,
-              hc: data[i].hc,
+
               share: data[i].share,
+              share_visibility: data[i].share_visibility,
+              total_share: data[i].total_share,
+              last_share: data[i].last_share,
+              share_change: data[i].share_change,
+              share_change_ratio: data[i].share_change_ratio,
+
+              hc: data[i].hc,
               hc_low_limit: data[i].hc_low_limit,
               advertising: data[i].advertising,
               a_price: data[i].a_price,
@@ -563,6 +670,13 @@ export default {
               c_price: data[i].c_price,
               c_mean: data[i].c_mean,
               c_share: data[i].c_share,
+
+              last_operation_count: data[i].last_operation_count,
+              current_operation_count: data[i].current_operation_count,
+              operation_count_change: data[i].operation_count_change,
+              operation_count_change_ratio:
+                data[i].operation_count_change_ratio,
+
               hc_strategy: data[i].hc_strategy,
               advertising_strategy: data[i].advertising_strategy,
               a_strategy: data[i].a_strategy,
@@ -611,6 +725,7 @@ export default {
           default:
             break;
         }
+        _this.name = data[index].name;
         _this.capital = data[index].capital;
         _this.hc_limit = data[index].hc_limit;
         _this.hc_price = data[index].hc_price;
@@ -621,6 +736,18 @@ export default {
         _this.info_price = data[index].info_price;
         _this.info_count = data[index].info;
         _this.profit = data[index].profit;
+        _this.last_profit = data[index].last_profit;
+        _this.total_profit = data[index].total_profit;
+        _this.profit_change = data[index].profit_change;
+        _this.profit_change_ratio = data[index].profit_change_ratio;
+        _this.vbp_price = data[index].vbp_price;
+        _this.vbp_share = data[index].vbp_share;
+
+        _this.a_cost = data[index].a_cost;
+        _this.b_cost = data[index].b_cost;
+        _this.c_cost = data[index].c_cost;
+        _this.total_investment = data[index].total_investment;
+        _this.total_cost = data[index].total_cost;
       });
     },
 
@@ -642,9 +769,25 @@ export default {
         console.log(data);
         _this.game_id = data.game_id;
         _this.company_id = data.company_id;
-        _this.company_name = "Company " + _this.company_id;
+        switch (_this.company_id) {
+          case "a":
+            _this.company_name = "长庆";
+            break;
+          case "b":
+            _this.company_name = "吉业";
+            break;
+          case "c":
+            _this.company_name = "洛华";
+            break;
+          case "d":
+            _this.company_name = "柳树威";
+            break;
+
+          default:
+            break;
+        }
         _this.rounds = data.player_rounds;
-        _this.game_name=data.name
+        _this.game_name = data.name;
         _this.onRequest({
           pagination: this.pagination,
           filter: this.filter,
@@ -668,25 +811,40 @@ export default {
       );
     },
 
-    int_pars(){
+    int_parse() {
       for (let index = 0; index < this.data.length; index++) {
         const element = this.data[index];
-        element.hc = Math.round(element.hc)
-        element.advertising = Number(element.advertising).toFixed(2)
-        element.a_price = Number(element.a_price).toFixed(2)
-        element.a_share = Number(element.a_share).toFixed(2)
-        element.b_price = Number(element.b_price).toFixed(2)
-        element.b_share = Number(element.b_share).toFixed(2)
-        element.c_price = Number(element.c_price).toFixed(2)
-        element.c_share = Number(element.c_share).toFixed(2)
-        element.hc_strategy = Math.round(element.hc_strategy)
-        element.advertising_strategy = Number(element.advertising_strategy).toFixed(2)
-        element.a_strategy = Number(element.a_strategy).toFixed(2)
-        element.b_strategy = Number(element.b_strategy).toFixed(2)
-        element.c_strategy = Number(element.c_strategy).toFixed(2)
-        element.channel = Math.round(element.channel)
-        element.permission = Math.round(element.permission)
-        element.info = Math.round(element.info)
+        element.hc = Number(element.hc).toFixed(1);
+        element.advertising = Number(element.advertising).toFixed(2);
+        element.a_price = Number(element.a_price).toFixed(2);
+        element.a_share = Number(element.a_share).toFixed(2);
+        element.b_price = Number(element.b_price).toFixed(2);
+        element.b_share = Number(element.b_share).toFixed(2);
+        element.c_price = Number(element.c_price).toFixed(2);
+        element.c_share = Number(element.c_share).toFixed(2);
+        element.hc_strategy = Math.round(element.hc_strategy);
+        element.advertising_strategy = Number(
+          element.advertising_strategy
+        ).toFixed(2);
+        element.a_strategy = Number(element.a_strategy).toFixed(2);
+        element.b_strategy = Number(element.b_strategy).toFixed(2);
+        element.c_strategy = Number(element.c_strategy).toFixed(2);
+        element.channel = Math.round(element.channel);
+        element.permission = Math.round(element.permission);
+        element.info = Math.round(element.info);
+
+        element.last_operation_count = Math.round(element.last_operation_count);
+        element.current_operation_count = Math.round(
+          element.current_operation_count
+        );
+        element.operation_count_change = Number(
+          element.operation_count_change
+        ).toFixed(2);
+        element.operation_count_change_ratio = Number(
+          element.operation_count_change_ratio
+        ).toFixed(2);
+        // element.info = Math.round(element.info);
+        // element.info = Math.round(element.info);
       }
     },
 
@@ -706,12 +864,84 @@ export default {
         _this.total_channel += Number(element.channel);
         _this.total_info += Number(element.info);
       }
+      this.temp_capital = Number(
+        this.capital -
+          this.hc_price * this.total_hc -
+          this.channel_price * this.total_channel -
+          this.permission_price * this.total_permission -
+          this.info_price * this.total_info -
+          this.total_advertising
+      ).toFixed(2);
+    },
+
+    check() {
+      if (this.company_id == "d") {
+        this.hc_check = this.hc_limit * 2 - this.total_hc >= 0;
+        this.capital_check =
+          Number(
+            this.capital * 1.2 -
+              this.hc_price * this.total_hc -
+              this.channel_price * this.total_channel -
+              this.permission_price * this.total_permission -
+              this.info_price * this.total_info -
+              this.total_advertising
+          ).toFixed(2) >= 0;
+      } else {
+        this.hc_check = this.hc_limit - this.total_hc >= 0;
+        this.capital_check = this.temp_capital >= 0;
+        console.log(this.temp_capital)
+      }
+      // this.hc_check = this.hc_limit - this.total_hc >= 0;
+      // this.capital_check = this.temp_capital >= 0;
+      this.permission_check =
+        this.permission_count - this.total_permission >= 0;
+      this.channel_check = this.channel_count - this.total_channel >= 0;
+      this.info_check = this.info_count - this.total_info >= 0;
+
+      this.a_check = true;
+      this.b_check = true;
+      this.c_check = true;
+
+      for (let index = 0; index < this.data.length; index++) {
+        const element = this.data[index];
+        if (element.a_strategy < this.a_cost) {
+          this.a_check = false;
+          break;
+        }
+      }
+      for (let index = 0; index < this.data.length; index++) {
+        const element = this.data[index];
+        if (element.b_strategy < this.b_cost) {
+          this.b_check = false;
+          break;
+        }
+      }
+      for (let index = 0; index < this.data.length; index++) {
+        const element = this.data[index];
+        if (element.c_strategy < this.c_cost) {
+          this.c_check = false;
+          break;
+        }
+      }
+
+      this.is_able_to_submit =
+        this.a_check &&
+        this.b_check &&
+        this.c_check &&
+        this.capital_check &&
+        this.hc_check &&
+        this.channel_check &&
+        this.permission_check &&
+        this.info_check;
     },
   },
 };
 </script>
 
 <style scoped lang="scss">
+.editable {
+  background-color: #e6f3f5;
+}
 .row {
   padding: 0 20px;
   height: 40px;

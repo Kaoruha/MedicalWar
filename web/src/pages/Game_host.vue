@@ -190,9 +190,102 @@
             </q-popup-edit>
           </q-td>
 
-          <q-td key="last_profit" :props="props">
-            {{ props.row.last_profit }}
+          <q-td key="last_profit" :props="props">{{ props.row.last_profit }}</q-td>
+
+          <q-td key="total_profit" :props="props">{{ props.row.total_profit }}</q-td>
+
+          <q-td key="profit_change" :props="props">{{ props.row.profit_change }}</q-td>
+
+          <q-td key="profit_change_ratio" :props="props">{{ props.row.profit_change_ratio }}</q-td>
+
+          <q-td key="vbp_price" :props="props">
+            {{ props.row.vbp_price }}
+            <q-popup-edit v-model="props.row.vbp_price" title="调整VBP价格" buttons persistent>
+              <q-input
+                type="number"
+                v-model="props.row.vbp_price"
+                dense
+                autofocus
+                hint="Use buttons to close"
+              />
+            </q-popup-edit>
           </q-td>
+
+          <q-td key="vbp_share" :props="props">
+            {{ props.row.vbp_share }}
+            <q-popup-edit v-model="props.row.vbp_share" title="调整VBP" buttons persistent>
+              <q-input
+                type="number"
+                v-model="props.row.vbp_share"
+                dense
+                autofocus
+                hint="Use buttons to close"
+              />
+            </q-popup-edit>
+          </q-td>
+
+          <q-td key="a_cost" :props="props">
+            {{ props.row.a_cost }}
+            <q-popup-edit v-model="props.row.vbpa_cost_share" title="调整产品A成本" buttons persistent>
+              <q-input
+                type="number"
+                v-model="props.row.a_cost"
+                dense
+                autofocus
+                hint="Use buttons to close"
+              />
+            </q-popup-edit>
+          </q-td>
+          <q-td key="b_cost" :props="props">
+            {{ props.row.b_cost }}
+            <q-popup-edit v-model="props.row.b_cost" title="调整产品B成本" buttons persistent>
+              <q-input
+                type="number"
+                v-model="props.row.b_cost"
+                dense
+                autofocus
+                hint="Use buttons to close"
+              />
+            </q-popup-edit>
+          </q-td>
+          <q-td key="c_cost" :props="props">
+            {{ props.row.c_cost }}
+            <q-popup-edit v-model="props.row.c_cost" title="调整产品C成本" buttons persistent>
+              <q-input
+                type="number"
+                v-model="props.row.c_cost"
+                dense
+                autofocus
+                hint="Use buttons to close"
+              />
+            </q-popup-edit>
+          </q-td>
+          <q-td key="total_investment" :props="props">
+            {{ props.row.total_investment }}
+            <q-popup-edit v-model="props.row.total_investment" title="调整总资金投入" buttons persistent>
+              <q-input
+                type="number"
+                v-model="props.row.total_investment"
+                dense
+                autofocus
+                hint="Use buttons to close"
+              />
+            </q-popup-edit>
+          </q-td>
+          <q-td key="total_cost" :props="props">
+            {{ props.row.total_cost }}
+            <q-popup-edit v-model="props.row.total_cost" title="调整总生产成本" buttons persistent>
+              <q-input
+                type="number"
+                v-model="props.row.total_cost"
+                dense
+                autofocus
+                hint="Use buttons to close"
+              />
+            </q-popup-edit>
+          </q-td>
+
+
 
         </q-tr>
       </template>
@@ -254,8 +347,8 @@ export default {
   },
   data() {
     return {
-      // host: "http://localhost:8080/#/game_player?uuid=",
-      host: "http://49.235.80.242/#/game_player?uuid=",
+      host: "http://localhost:8080/#/game_player?uuid=",
+      // host: "http://49.235.80.242/#/game_player?uuid=",
       is_commit_show: false,
       current_round_started: false,
       game_name: "default",
@@ -391,12 +484,113 @@ export default {
           style: "width:200px",
           format: (val) => `${val}`,
           sortable: true,
-        },{
+        },
+        {
           name: "last_profit",
           required: true,
           label: "上轮营收",
           align: "left",
           field: (row) => row.last_profit,
+          style: "width:200px",
+          format: (val) => `${val}`,
+          sortable: true,
+        },
+        {
+          name: "total_profit",
+          required: true,
+          label: "总营收",
+          align: "left",
+          field: (row) => row.total_profit,
+          style: "width:200px",
+          format: (val) => `${val}`,
+          sortable: true,
+        },
+        {
+          name: "profit_change",
+          required: true,
+          label: "营收增长净值",
+          align: "left",
+          field: (row) => row.profit_change,
+          style: "width:200px",
+          format: (val) => `${val}`,
+          sortable: true,
+        },
+        {
+          name: "profit_change_ratio",
+          required: true,
+          label: "营收增长比例",
+          align: "left",
+          field: (row) => row.profit_change_ratio,
+          style: "width:200px",
+          format: (val) => `${val}`,
+          sortable: true,
+        },
+        {
+          name: "vbp_price",
+          required: true,
+          label: "VBP价格",
+          align: "left",
+          field: (row) => row.vbp_price,
+          style: "width:200px",
+          format: (val) => `${val}`,
+          sortable: true,
+        },
+        {
+          name: "vbp_share",
+          required: true,
+          label: "VBP份额",
+          align: "left",
+          field: (row) => row.vbp_share,
+          style: "width:200px",
+          format: (val) => `${val}`,
+          sortable: true,
+        },
+        {
+          name: "a_cost",
+          required: true,
+          label: "产品A成本",
+          align: "left",
+          field: (row) => row.a_cost,
+          style: "width:200px",
+          format: (val) => `${val}`,
+          sortable: true,
+        },
+        {
+          name: "b_cost",
+          required: true,
+          label: "产品B成本",
+          align: "left",
+          field: (row) => row.b_cost,
+          style: "width:200px",
+          format: (val) => `${val}`,
+          sortable: true,
+        },
+        {
+          name: "c_cost",
+          required: true,
+          label: "产品C成本",
+          align: "left",
+          field: (row) => row.c_cost,
+          style: "width:200px",
+          format: (val) => `${val}`,
+          sortable: true,
+        },
+        {
+          name: "total_investment",
+          required: true,
+          label: "总资金投入",
+          align: "left",
+          field: (row) => row.total_investment,
+          style: "width:200px",
+          format: (val) => `${val}`,
+          sortable: true,
+        },
+        {
+          name: "total_cost",
+          required: true,
+          label: "总生产成本",
+          align: "left",
+          field: (row) => row.total_cost,
           style: "width:200px",
           format: (val) => `${val}`,
           sortable: true,
@@ -517,7 +711,18 @@ export default {
             info_price: data[i].info_price,
             info: data[i].info,
             profit: data[i].profit,
-            last_profit: data[i].last_profit
+            last_profit: data[i].last_profit,
+            total_profit: data[i].total_profit,
+            profit_change: data[i].profit_change,
+            profit_change_ratio: data[i].profit_change_ratio,
+            vbp_price: data[i].vbp_price,
+            vbp_share: data[i].vbp_share,
+
+            a_cost: data[i].a_cost,
+            b_cost: data[i].b_cost,
+            c_cost: data[i].c_cost,
+            total_investment: data[i].total_investment,
+            total_cost: data[i].total_cost,
           });
         }
       });
@@ -592,8 +797,9 @@ export default {
         this.data_c,
         this.data_d,
       ];
-      Game.Start(this.game_id,data).then((response) => {
-        this.get_current_game();
+      console.log(data);
+      Game.Start(this.game_id, data).then((response) => {
+        location.reload();
       });
     },
     company_check(msg) {
@@ -606,6 +812,7 @@ export default {
         case "a":
           index = 0;
           this.data_a = data;
+          console.log(this.data_a);
           break;
         case "b":
           index = 1;

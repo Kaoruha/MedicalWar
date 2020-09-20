@@ -57,11 +57,12 @@ class Game(Base):
         ]
         for file in files:
             try:
-                source_path = os.getcwd() + '/app/data/mould/' + file
+                source_path = os.getcwd() + '/app/data/mould_new/' + file
                 df = pd.read_excel(source_path)
                 df = df.fillna(0)
                 df.to_csv(path + '/round1/' + file.split('.')[0] + '.csv',
-                          index=0, encoding="utf_8")
+                          index=0,
+                          encoding="utf_8")
             except Exception as e:
                 print(e)
 
@@ -107,6 +108,9 @@ class Game(Base):
         if rounds > cls.query.filter_by(id=game_id, status=1).first().rounds:
             print('游戏回合超出')
             return
+        if rounds == 0:
+            print('游戏还未开始')
+            return
         # 允许输入a,b,c,d,A,B,C,D
         game_name = cls.query.filter_by(id=game_id, status=1).first().name
         path = os.getcwd() + '/app/data/game_' + game_name + '/round' + str(
@@ -134,48 +138,48 @@ class Game(Base):
         path = os.getcwd(
         ) + '/app/data/game_' + game.name + '/' + 'round' + str(game.rounds)
         print(path)
-        dict1 = {
-            'name': '公司名称',
-            'capital': '总资金',
-            'hc_limit': '可分配人数',
-            'hc_price': '人力成本',
-            'channel_price': '渠道牌价格',
-            'channel': '渠道牌剩余数量',
-            'permission_price': '准入牌价格',
-            'permission': '准入牌剩余数量',
-            'info_price': '信息牌价格',
-            'info': '信息牌剩余数量',
-            'profit': '营收',
-            'last_profit': '上轮营收'
-        }
-        dict2 = {
-            'name': '医院名称',
-            'operation_count': '年手术台数',
-            'hc_sensitivity': 'HC敏感度',
-            'advertising_sensitivity': '推广敏感度',
-            'price_sensitivity': '价格敏感度',
-            'hc': '当前HC',
-            'share': '份额',
-            'hc_low_limit': 'HC下限',
-            'advertising': '推广费用',
-            'a_price': '产品A价格',
-            'a_mean': '产品A均价',
-            'a_share': '产品A份额',
-            'b_price': '产品B价格',
-            'b_mean': '产品B均价',
-            'b_share': '产品B份额',
-            'c_price': '产品C价格',
-            'c_mean': '产品C均价',
-            'c_share': '产品C份额',
-            'hc_strategy': 'HC决策',
-            'advertising_strategy': '推广决策',
-            'a_strategy': '产品A价格决策',
-            'b_strategy': '产品B价格决策',
-            'c_strategy': '产品C价格决策',
-            'channel': '渠道牌',
-            'permission': '准入牌',
-            'info': '信息牌'
-        }
+        # dict1 = {
+        #     'name': '公司名称',
+        #     'capital': '总资金',
+        #     'hc_limit': '可分配人数',
+        #     'hc_price': '人力成本',
+        #     'channel_price': '渠道牌价格',
+        #     'channel': '渠道牌剩余数量',
+        #     'permission_price': '准入牌价格',
+        #     'permission': '准入牌剩余数量',
+        #     'info_price': '信息牌价格',
+        #     'info': '信息牌剩余数量',
+        #     'profit': '营收',
+        #     'last_profit': '上轮营收'
+        # }
+        # dict2 = {
+        #     'name': '医院名称',
+        #     'operation_count': '年手术台数',
+        #     'hc_sensitivity': 'HC敏感度',
+        #     'advertising_sensitivity': '推广敏感度',
+        #     'price_sensitivity': '价格敏感度',
+        #     'hc': '当前HC',
+        #     'share': '份额',
+        #     'hc_low_limit': 'HC下限',
+        #     'advertising': '推广费用',
+        #     'a_price': '产品A价格',
+        #     'a_mean': '产品A均价',
+        #     'a_share': '产品A份额',
+        #     'b_price': '产品B价格',
+        #     'b_mean': '产品B均价',
+        #     'b_share': '产品B份额',
+        #     'c_price': '产品C价格',
+        #     'c_mean': '产品C均价',
+        #     'c_share': '产品C份额',
+        #     'hc_strategy': 'HC决策',
+        #     'advertising_strategy': '推广决策',
+        #     'a_strategy': '产品A价格决策',
+        #     'b_strategy': '产品B价格决策',
+        #     'c_strategy': '产品C价格决策',
+        #     'channel': '渠道牌',
+        #     'permission': '准入牌',
+        #     'info': '信息牌'
+        # }
 
         for i in range(len(files)):
             try:
@@ -191,7 +195,9 @@ class Game(Base):
                 # TODO 传到后面去，拿到返回再写入
                 # 目前直接返回把拿到的值
                 # cls.test()
-                df[i].to_csv(path + '/' + files[i] + '.csv', index=0, encoding="utf_8")
+                df[i].to_csv(path + '/' + files[i] + '.csv',
+                             index=0,
+                             encoding="utf_8")
             except Exception as e:
                 print(e)
 
@@ -212,10 +218,13 @@ class Game(Base):
                                           game=game.rounds)
 
         for i in range(len(c_list)):
-            c_list[i].to_csv(path + '/' + files[i + 1] + '.csv', encoding="utf_8")
+            c_list[i].to_csv(path + '/' + files[i + 1] + '.csv',
+                             encoding="utf_8")
             # c_list[i].to_csv(path + '/' + files[i + 1] + '_hah.csv')
 
-        c_info.to_csv(path + '/' + 'companyInfo.csv', index=0, encoding="utf_8")
+        c_info.to_csv(path + '/' + 'companyInfo.csv',
+                      index=0,
+                      encoding="utf_8")
 
     @classmethod
     def player_commit(cls, game_id: int, company_id: str, rounds: int, data):
@@ -232,40 +241,40 @@ class Game(Base):
         path = os.getcwd(
         ) + '/app/data/game_' + game.name + '/' + 'round' + str(
             game.player_rounds) + '/' + 'InputTable' + company_id.upper(
-        ) + '.csv'
-        col_dict = {
-            'name': '医院名称',
-            'operation_count': '年手术台数',
-            'hc_sensitivity': 'HC敏感度',
-            'advertising_sensitivity': '推广敏感度',
-            'price_sensitivity': '价格敏感度',
-            'hc': '当前HC',
-            'share': '份额',
-            'hc_low_limit': 'HC下限',
-            'advertising': '推广费用',
-            'a_price': '产品A价格',
-            'a_mean': '产品A均价',
-            'a_share': '产品A份额',
-            'b_price': '产品B价格',
-            'b_mean': '产品B均价',
-            'b_share': '产品B份额',
-            'c_price': '产品C价格',
-            'c_mean': '产品C均价',
-            'c_share': '产品C份额',
-            'hc_strategy': 'HC决策',
-            'advertising_strategy': '推广决策',
-            'a_strategy': '产品A价格决策',
-            'b_strategy': '产品B价格决策',
-            'c_strategy': '产品C价格决策',
-            'channel': '渠道牌',
-            'permission': '准入牌',
-            'info': '信息牌'
-        }
+            ) + '.csv'
+        # col_dict = {
+        #     'name': '医院名称',
+        #     'operation_count': '年手术台数',
+        #     'hc_sensitivity': 'HC敏感度',
+        #     'advertising_sensitivity': '推广敏感度',
+        #     'price_sensitivity': '价格敏感度',
+        #     'hc': '当前HC',
+        #     'share': '份额',
+        #     'hc_low_limit': 'HC下限',
+        #     'advertising': '推广费用',
+        #     'a_price': '产品A价格',
+        #     'a_mean': '产品A均价',
+        #     'a_share': '产品A份额',
+        #     'b_price': '产品B价格',
+        #     'b_mean': '产品B均价',
+        #     'b_share': '产品B份额',
+        #     'c_price': '产品C价格',
+        #     'c_mean': '产品C均价',
+        #     'c_share': '产品C份额',
+        #     'hc_strategy': 'HC决策',
+        #     'advertising_strategy': '推广决策',
+        #     'a_strategy': '产品A价格决策',
+        #     'b_strategy': '产品B价格决策',
+        #     'c_strategy': '产品C价格决策',
+        #     'channel': '渠道牌',
+        #     'permission': '准入牌',
+        #     'info': '信息牌'
+        # }
         try:
             # df1 = pd.read_csv(path)
 
             df2 = pd.DataFrame(data)
-            df2.rename(columns=col_dict, inplace=True)
+            df2.rename(columns=dict2, inplace=True)
             # s = pd.merge(df2,
             #              df1[[
             #                  '医院名称', 'HC敏感度', '推广敏感度', '价格敏感度', 'HC下限',
@@ -290,48 +299,48 @@ class Game(Base):
         ]
         df = df_list
 
-        dict1 = {
-            'name': '公司名称',
-            'capital': '总资金',
-            'hc_limit': '可分配人数',
-            'hc_price': '人力成本',
-            'channel_price': '渠道牌价格',
-            'channel': '渠道牌剩余数量',
-            'permission_price': '准入牌价格',
-            'permission': '准入牌剩余数量',
-            'info_price': '信息牌价格',
-            'info': '信息牌剩余数量',
-            'profit': '营收',
-            'last_profit': '上轮营收'
-        }
-        dict2 = {
-            'name': '医院名称',
-            'operation_count': '年手术台数',
-            'hc_sensitivity': 'HC敏感度',
-            'advertising_sensitivity': '推广敏感度',
-            'price_sensitivity': '价格敏感度',
-            'hc': '当前HC',
-            'share': '份额',
-            'hc_low_limit': 'HC下限',
-            'advertising': '推广费用',
-            'a_price': '产品A价格',
-            'a_mean': '产品A均价',
-            'a_share': '产品A份额',
-            'b_price': '产品B价格',
-            'b_mean': '产品B均价',
-            'b_share': '产品B份额',
-            'c_price': '产品C价格',
-            'c_mean': '产品C均价',
-            'c_share': '产品C份额',
-            'hc_strategy': 'HC决策',
-            'advertising_strategy': '推广决策',
-            'a_strategy': '产品A价格决策',
-            'b_strategy': '产品B价格决策',
-            'c_strategy': '产品C价格决策',
-            'channel': '渠道牌',
-            'permission': '准入牌',
-            'info': '信息牌'
-        }
+        # dict1 = {
+        #     'name': '公司名称',
+        #     'capital': '总资金',
+        #     'hc_limit': '可分配人数',
+        #     'hc_price': '人力成本',
+        #     'channel_price': '渠道牌价格',
+        #     'channel': '渠道牌剩余数量',
+        #     'permission_price': '准入牌价格',
+        #     'permission': '准入牌剩余数量',
+        #     'info_price': '信息牌价格',
+        #     'info': '信息牌剩余数量',
+        #     'profit': '营收',
+        #     'last_profit': '上轮营收'
+        # }
+        # dict2 = {
+        #     'name': '医院名称',
+        #     'operation_count': '年手术台数',
+        #     'hc_sensitivity': 'HC敏感度',
+        #     'advertising_sensitivity': '推广敏感度',
+        #     'price_sensitivity': '价格敏感度',
+        #     'hc': '当前HC',
+        #     'share': '份额',
+        #     'hc_low_limit': 'HC下限',
+        #     'advertising': '推广费用',
+        #     'a_price': '产品A价格',
+        #     'a_mean': '产品A均价',
+        #     'a_share': '产品A份额',
+        #     'b_price': '产品B价格',
+        #     'b_mean': '产品B均价',
+        #     'b_share': '产品B份额',
+        #     'c_price': '产品C价格',
+        #     'c_mean': '产品C均价',
+        #     'c_share': '产品C份额',
+        #     'hc_strategy': 'HC决策',
+        #     'advertising_strategy': '推广决策',
+        #     'a_strategy': '产品A价格决策',
+        #     'b_strategy': '产品B价格决策',
+        #     'c_strategy': '产品C价格决策',
+        #     'channel': '渠道牌',
+        #     'permission': '准入牌',
+        #     'info': '信息牌'
+        # }
         path = os.getcwd(
         ) + '/app/data/game_' + game.name + '/' + 'round' + str(game.rounds)
 
@@ -344,10 +353,103 @@ class Game(Base):
                 else:
                     df[i].rename(columns=dict2, inplace=True)
 
-                df[i].to_csv(path + '/' + files[i] + '.csv', index=0, encoding='utf_8')
+                df[i].to_csv(path + '/' + files[i] + '.csv',
+                             index=0,
+                             encoding='utf_8')
             except Exception as e:
                 print(e)
 
         if game.player_rounds < game.rounds:
             game.player_rounds += 1
             db.session.commit()
+
+
+dict1 = {
+    'name': '公司名称',
+    'capital': '总资金',
+    'hc_limit': '可分配人数',
+    'hc_price': '人力成本',
+    'channel_price': '渠道牌价格',
+    'channel': '渠道牌剩余数量',
+    'permission_price': '准入牌价格',
+    'permission': '准入牌剩余数量',
+    'info_price': '信息牌价格',
+    'info': '信息牌剩余数量',
+    'profit': '营收',
+    'last_profit': '上轮营收',
+    "total_profit": '总营收',
+    "profit_change": '营收增长净值',
+    "profit_change_ratio": '营收增长比例',
+    "vbp_price": 'VBP价格',
+    "vbp_share": 'VBP份额',
+    "a_cost": '产品A成本',
+    "b_cost": '产品B成本',
+    "c_cost": '产品C成本',
+    "total_investment": '总资金投入',
+    "total_cost": '总生产成本'
+}
+dict2 = {
+    'name': '医院名称',
+    'operation_count': '年手术台数',
+    'hc_sensitivity': 'HC敏感度',
+    'advertising_sensitivity': '推广敏感度',
+    'price_sensitivity': '价格敏感度',
+    'hc': '当前HC',
+    'share': '份额',
+    'hc_low_limit': 'HC下限',
+    'advertising': '推广费用',
+    'a_price': '产品A价格',
+    'a_mean': '产品A均价',
+    'a_share': '产品A份额',
+    'b_price': '产品B价格',
+    'b_mean': '产品B均价',
+    'b_share': '产品B份额',
+    'c_price': '产品C价格',
+    'c_mean': '产品C均价',
+    'c_share': '产品C份额',
+    'hc_strategy': 'HC决策',
+    'advertising_strategy': '推广决策',
+    'a_strategy': '产品A价格决策',
+    'b_strategy': '产品B价格决策',
+    'c_strategy': '产品C价格决策',
+    'channel': '渠道牌',
+    'permission': '准入牌',
+    'info': '信息牌',
+    'share_visibility': '份额可见',
+    'total_share': '总份额',
+    'last_share': '上轮份额',
+    'share_change': '份额增长净值',
+    'share_change_ratio': '份额增长比例',
+    'last_operation_count': '上轮台数',
+    'current_operation_count': '本轮台数',
+    'operation_count_change': '台数增长净值',
+    'operation_count_change_ratio': '台数增长比例'
+}
+col_dict = {
+    'name': '医院名称',
+    'operation_count': '年手术台数',
+    'hc_sensitivity': 'HC敏感度',
+    'advertising_sensitivity': '推广敏感度',
+    'price_sensitivity': '价格敏感度',
+    'hc': '当前HC',
+    'share': '份额',
+    'hc_low_limit': 'HC下限',
+    'advertising': '推广费用',
+    'a_price': '产品A价格',
+    'a_mean': '产品A均价',
+    'a_share': '产品A份额',
+    'b_price': '产品B价格',
+    'b_mean': '产品B均价',
+    'b_share': '产品B份额',
+    'c_price': '产品C价格',
+    'c_mean': '产品C均价',
+    'c_share': '产品C份额',
+    'hc_strategy': 'HC决策',
+    'advertising_strategy': '推广决策',
+    'a_strategy': '产品A价格决策',
+    'b_strategy': '产品B价格决策',
+    'c_strategy': '产品C价格决策',
+    'channel': '渠道牌',
+    'permission': '准入牌',
+    'info': '信息牌'
+}
