@@ -269,17 +269,13 @@ def result_calculate(company_list, company_info, game):
         new_company_info['上轮营收'][c]  = company_info['营收'][c]
 
         # 营收结算
-        revenueA = sum(new_company_list[c]['年手术台数'] * new_company_list[c]['份额'] * new_company_list[c]['产品A份额'] * new_company_list[c]['产品A价格']) / 100
-        revenueB = sum(new_company_list[c]['年手术台数'] * new_company_list[c]['份额'] * new_company_list[c]['产品B份额'] * new_company_list[c]['产品B价格'])/ 100
-        revenueC = sum(new_company_list[c]['年手术台数'] * new_company_list[c]['份额'] * new_company_list[c]['产品C份额'] * new_company_list[c]['产品C价格'])/ 100
-        
-        revenue = sum(new_company_list[c]['年手术台数'] * new_company_list[c]['份额'] * (new_company_list[c]['产品A份额'] * new_company_list[c]['产品A价格'] + new_company_list[c]['产品B份额'] * new_company_list[c]['产品B价格'] + new_company_list[c]['份额'] * new_company_list[c]['产品C份额'] * new_company_list[c]['产品C价格'])) 
-        
+        revenueA = sum(new_company_list[c]['年手术台数'] * new_company_list[c]['份额'] * new_company_list[c]['产品A份额']/100 * new_company_list[c]['产品A价格'])
+        revenueB = sum(new_company_list[c]['年手术台数'] * new_company_list[c]['份额'] * new_company_list[c]['产品B份额']/100 * new_company_list[c]['产品B价格'])
+        revenueC = sum(new_company_list[c]['年手术台数'] * new_company_list[c]['份额'] * new_company_list[c]['产品C份额']/100 * new_company_list[c]['产品C价格'])
 
         if game <2 :
             # 第一轮没有VBP，营收为全部产品线营收
-            #new_company_info['营收'][c] = revenueA+revenueB+revenueC
-            new_company_info['营收'][c] = revenue
+            new_company_info['营收'][c] = revenueA+revenueB+revenueC
         else:
             #第二轮之后有VBP，营收分两部分计算
             normal_income =  (revenueA+revenueB+revenueC) * 0.5
