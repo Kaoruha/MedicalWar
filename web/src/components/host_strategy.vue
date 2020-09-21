@@ -31,6 +31,11 @@
 
       <template v-slot:body="props">
         <q-tr :props="props">
+          <q-tooltip anchor="top left" self="top middle" :offset="[10, 10]">
+            <strong>{{ props.row.name }}</strong>
+            <br />
+            <em>{{ props.row.operation_count }}</em>
+          </q-tooltip>
           <q-td key="name" :props="props">{{ props.row.name }}</q-td>
           <q-td key="operation_count" :props="props">
             {{ props.row.operation_count }}
@@ -1001,7 +1006,6 @@ export default {
             });
           }
           _this.int_parse();
-        
         }
       );
     },
@@ -1032,8 +1036,7 @@ export default {
     int_parse() {
       for (let index = 0; index < this.original.length; index++) {
         const element = this.original[index];
-        // element.hc = Number(element.hc).toFixed(1);
-        element.hc = 121;
+        element.hc = Number(element.hc).toFixed(1);
         element.advertising = Number(element.advertising).toFixed(2);
         element.a_price = Number(element.a_price).toFixed(2);
         element.a_share = Number(element.a_share).toFixed(2);
@@ -1062,9 +1065,15 @@ export default {
 
         element.operation_count = Math.round(element.operation_count);
         element.last_operation_count = Math.round(element.last_operation_count);
-        element.current_operation_count = Math.round(element.current_operation_count);
-        element.operation_count_change = Math.round(element.operation_count_change);
-        element.operation_count_change_ratio = Number(element.operation_count_change_ratio).toFixed(2);
+        element.current_operation_count = Math.round(
+          element.current_operation_count
+        );
+        element.operation_count_change = Math.round(
+          element.operation_count_change
+        );
+        element.operation_count_change_ratio = Number(
+          element.operation_count_change_ratio
+        ).toFixed(2);
       }
     },
   },

@@ -1,7 +1,7 @@
 // BaseModule.js
 import axios from 'axios';
-import routes from '../router/index.js';
-
+import Router from '../router/index.js';
+import { Notify } from 'quasar'
 // const baseURL = 'http://0.0.0.0:5000/api';
 
 class BaseModule {
@@ -40,21 +40,62 @@ class BaseModule {
       // console.log('Interceptor=====')
       switch (response.data.code) {
         case 200:
-          console.log('信息获取成功')
+          console.log('尝试获取信息')
+          // Notify.create({
+          //   message: "尝试获取信息",
+          //   // 可用的值: 'positive', 'negative', 'warning', 'info'
+          //   type: "info",
+          //   textColor: "white",
+          //   // 'top', 'left', 'bottom-left'等
+          //   position: "top",
+          // })
           break
         // 异常处理
         case 403:
+
           console.log('权限不足,权限不足')
-          routes.push("/login")
+          window.router.push("/login")
+          Notify.create({
+            message: "权限不足，请登录后尝试",
+            // 可用的值: 'positive', 'negative', 'warning', 'info'
+            type: "negative",
+            textColor: "white",
+            // 'top', 'left', 'bottom-left'等
+            position: "top",
+          })
+          // routes.push("/login")
+          // Vue.Router.push("/login")
+          // Router.push({ path:'/user'})
           break
         case 600:
-          console.log('表单信息错误')
+          Notify.create({
+            message: "表单信息错误",
+            // 可用的值: 'positive', 'negative', 'warning', 'info'
+            type: "negative",
+            textColor: "white",
+            // 'top', 'left', 'bottom-left'等
+            position: "top",
+          })
           break
         case 601:
-          console.log('用户名重复')
+          Notify.create({
+            message: "用户名重复",
+            // 可用的值: 'positive', 'negative', 'warning', 'info'
+            type: "negative",
+            textColor: "white",
+            // 'top', 'left', 'bottom-left'等
+            position: "top",
+          })
           break
         case 602:
-          console.log('登录失败')
+          Notify.create({
+            message: "登录失败",
+            // 可用的值: 'positive', 'negative', 'warning', 'info'
+            type: "negative",
+            textColor: "white",
+            // 'top', 'left', 'bottom-left'等
+            position: "top",
+          })
           break
       }
       return response.data

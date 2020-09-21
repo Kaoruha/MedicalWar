@@ -13,7 +13,7 @@ yp_game = YellowPrint('yp_game', url_prefix='/game')
 
 
 @yp_game.route('/register', methods=['POST'])
-# @login_required
+@login_required
 def game_register():
     # data = request.json
     # account = data['account']
@@ -39,7 +39,7 @@ def game_register():
 
 
 @yp_game.route('/filter', methods=['POST'])
-# @login_required
+@login_required
 def game_get():
     # data = request.get_json()
     # page = data['page']
@@ -229,6 +229,7 @@ def get_game_info():
 
 # 下一回合
 @yp_game.route('/next', methods=['POST'])
+@login_required
 def next_round():
     game_id = request.get_json()['game_id']
     data = request.get_json()['data']
@@ -245,6 +246,7 @@ def next_round():
 
 # 开启这回合
 @yp_game.route('/start', methods=['POST'])
+@login_required
 def start_round():
     game_id = request.get_json()['game_id']
     data = request.get_json()['data']

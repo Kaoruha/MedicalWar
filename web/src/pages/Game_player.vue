@@ -80,11 +80,16 @@
 
       <template v-slot:body="props">
         <q-tr :props="props">
+          <q-tooltip anchor="top left" self="top middle" :offset="[10, 10]">
+            <strong>{{ props.row.name }}</strong>
+            <br />
+            <em>{{ props.row.share_visibility ==1?props.row.operation_count: '暂不可见'}}</em>
+          </q-tooltip>
           <q-td key="name" :props="props">{{ props.row.name }}</q-td>
           <q-td
             key="operation_count"
             :props="props"
-          >{{ props.row.share_visibility ==1?props.row.operation_count: '*暂不可见*'}}</q-td>
+          >{{ props.row.share_visibility ==1?props.row.operation_count: '暂不可见'}}</q-td>
           <q-td key="hc" :props="props">{{ props.row.hc }}</q-td>
           <q-td key="advertising" :props="props">{{ props.row.advertising }}</q-td>
 
@@ -804,7 +809,14 @@ export default {
             default:
               break;
             case 200:
-              alert("提交成功");
+              _this.$q.notify({
+              message: "提交成功",
+              // 可用的值: 'positive', 'negative', 'warning', 'info'
+              type: "positive",
+              textColor: "white",
+              // 'top', 'left', 'bottom-left'等
+              position: "top",
+            });
               break;
           }
         }

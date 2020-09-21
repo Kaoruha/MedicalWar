@@ -45,7 +45,7 @@
 
 <script>
 import User from "../api/user.js";
-
+import { Notify } from "quasar";
 export default {
   name: "List",
   components: {},
@@ -66,10 +66,26 @@ export default {
         console.log("VUE=====");
         switch (response.code) {
           default:
+            _this.$q.notify({
+              message: "用户名或密码错误",
+              // 可用的值: 'positive', 'negative', 'warning', 'info'
+              type: "negative",
+              textColor: "white",
+              // 'top', 'left', 'bottom-left'等
+              position: "top",
+            });
             break;
           case 200:
             _this.$store.commit("authorization/updateToken", response.data);
             _this.$router.push("manager");
+            _this.$q.notify({
+              message: "登录成功",
+              // 可用的值: 'positive', 'negative', 'warning', 'info'
+              type: "positive",
+              textColor: "white",
+              // 'top', 'left', 'bottom-left'等
+              position: "top",
+            });
             break;
           case 400:
             break;
@@ -135,7 +151,8 @@ $radius: 16px;
 
 .father {
   background-image: linear-gradient(to bottom right, #4f4f4f, #2e2e2e);
-  width: 99.1vw;
+  // width: 99.1vw;
+  width: 100vw;
   height: 100vh;
   padding-top: 10px;
 }

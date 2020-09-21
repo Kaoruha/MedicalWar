@@ -284,9 +284,6 @@
               />
             </q-popup-edit>
           </q-td>
-
-
-
         </q-tr>
       </template>
     </q-table>
@@ -347,8 +344,8 @@ export default {
   },
   data() {
     return {
-      // host: "http://localhost:8080/#/game_player?uuid=",
-      host: "http://49.235.80.242/#/game_player?uuid=",
+      host: "http://localhost:8080/#/game_player?uuid=",
+      // host: "http://49.235.80.242/#/game_player?uuid=",
       is_commit_show: false,
       current_round_started: false,
       game_name: "default",
@@ -771,6 +768,14 @@ export default {
       Game.Next(this.game_id, data).then((response) => {
         _this.reset();
         _this.get_current_game();
+        _this.$q.notify({
+          message: "提交成功",
+          // 可用的值: 'positive', 'negative', 'warning', 'info'
+          type: "positive",
+          textColor: "white",
+          // 'top', 'left', 'bottom-left'等
+          position: "top",
+        });
       });
 
       // 将gameid和rounds 和5个dataframe拼起来传到后端
@@ -836,6 +841,14 @@ export default {
     is_ok_to_commit() {
       if (this.is_all_com_check && this.current_round_started) {
         return true;
+        _this.$q.notify({
+          message: "可以提交",
+          // 可用的值: 'positive', 'negative', 'warning', 'info'
+          type: "positive",
+          textColor: "white",
+          // 'top', 'left', 'bottom-left'等
+          position: "top",
+        });
       } else {
         return false;
       }
@@ -844,6 +857,14 @@ export default {
     is_ok_to_start() {
       if (this.is_all_com_check && !this.current_round_started) {
         return true;
+        _this.$q.notify({
+          message: "可以开始回合",
+          // 可用的值: 'positive', 'negative', 'warning', 'info'
+          type: "positive",
+          textColor: "white",
+          // 'top', 'left', 'bottom-left'等
+          position: "top",
+        });
       } else {
         return false;
       }
