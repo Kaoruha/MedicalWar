@@ -53,7 +53,7 @@ class BaseModule {
         // 异常处理
         case 403:
 
-          console.log('权限不足,权限不足')
+          console.log(response.data)
           window.router.push("/login")
           Notify.create({
             message: "权限不足，请登录后尝试",
