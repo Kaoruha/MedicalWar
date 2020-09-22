@@ -240,8 +240,6 @@ def result_calculate(company_list, company_info, game):
     company_info['公司名称'].cat.reorder_categories(list_custom, inplace=True)
     # inplace = True，使 df生效
     company_info.sort_values('公司名称', inplace=True)
-    company_info = company_info.reset_index(drop=True)  
-
     
     # Tidy the company_list
     list_custom = HOSPITAL_LIST
@@ -250,7 +248,7 @@ def result_calculate(company_list, company_info, game):
         company_list[c]['医院名称'].cat.reorder_categories(list_custom, inplace=True)
         # inplace = True，使 df生效
         company_list[c].sort_values('医院名称', inplace=True)
-        company_list[c] = company_list[c].reset_index(drop=True) 
+    
     
     
     

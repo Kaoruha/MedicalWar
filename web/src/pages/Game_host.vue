@@ -741,14 +741,15 @@ export default {
         const { data } = response;
         console.log(response);
         // console.log(data);
+
         for (let i = 0; i < data.length; i++) {
           _this.original.push({
             name: data[i].name,
             capital: data[i].capital,
             // hc_limit: data[i].hc_limit,
-            hc_init:data[i].hc_init,
-            hc_assigned:data[i].hc_assigned,
-            hc_init:data[i].hc_init,
+            hc_init: data[i].hc_init,
+            hc_assigned: data[i].hc_assigned,
+            hc_init: data[i].hc_init,
             hc_can_be_added: data[i].hc_can_be_added,
             hc_price: data[i].hc_price,
             channel_price: data[i].channel_price,
@@ -771,6 +772,40 @@ export default {
             total_investment: data[i].total_investment,
             total_cost: data[i].total_cost,
           });
+        }
+
+        for (let i = 0; i < data.length; i++) {
+          if (data[i].name == "柳树威力") {
+            _this.original.push({
+              name: data[i].name,
+              capital: data[i].capital,
+              // hc_limit: data[i].hc_limit,
+              hc_init: data[i].hc_init,
+              hc_assigned: data[i].hc_assigned,
+              hc_init: data[i].hc_init,
+              hc_can_be_added: data[i].hc_can_be_added,
+              hc_price: data[i].hc_price,
+              channel_price: data[i].channel_price,
+              channel: data[i].channel,
+              permission_price: data[i].permission_price,
+              permission: data[i].permission,
+              info_price: data[i].info_price,
+              info: data[i].info,
+              profit: data[i].profit,
+              last_profit: data[i].last_profit,
+              total_profit: data[i].total_profit,
+              profit_change: data[i].profit_change,
+              profit_change_ratio: data[i].profit_change_ratio,
+              vbp_price: data[i].vbp_price,
+              vbp_share: data[i].vbp_share,
+
+              a_cost: data[i].a_cost,
+              b_cost: data[i].b_cost,
+              c_cost: data[i].c_cost,
+              total_investment: data[i].total_investment,
+              total_cost: data[i].total_cost,
+            });
+          }
         }
       });
     },
@@ -863,7 +898,6 @@ export default {
           // 'top', 'left', 'bottom-left'等
           position: "top",
         });
-        
       });
     },
     company_check(msg) {

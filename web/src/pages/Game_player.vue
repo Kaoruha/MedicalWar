@@ -653,15 +653,15 @@ export default {
       Game.GetCompanyData(this.game_id, this.company_id, this.rounds).then(
         (response) => {
           console.log("111");
-          console.log(typeof(response)==typeof "")
+          console.log(typeof response == typeof "");
           let { data } = Object;
-          if (typeof(response)==typeof "") {
+          if (typeof response == typeof "") {
             data = eval("(" + response + ")")["data"];
-          }else{
+          } else {
             data = response["data"];
           }
           // const { data } = eval("(" + response + ")");
-           console.log("222");
+          console.log("222");
           console.log(data);
           for (let i = 0; i < data.length; i++) {
             _this.original.push({
@@ -733,50 +733,54 @@ export default {
       Game.GetCompanyInfo(this.game_id, this.rounds).then((response) => {
         const { data } = response;
         console.log(data);
-        let index = 0;
+        let temp_name = "";
         switch (_this.company_id) {
           case "a":
-            index = 0;
+            temp_name = "长庆";
             break;
           case "b":
-            index = 1;
+            temp_name = "吉业";
             break;
           case "c":
-            index = 2;
+            temp_name = "洛华";
             break;
           case "d":
-            index = 3;
+            temp_name = "柳树威";
             break;
           default:
             break;
         }
-        _this.name = data[index].name;
-        _this.capital = data[index].capital;
-        // _this.hc_limit = data[index].hc_limit;
-        _this.hc_init = data[index].hc_init;
-        _this.hc_assigned = data[index].hc_assigned;
-        _this.hc_can_be_added = data[index].hc_can_be_added;
+        for (let index = 0; index < data.length; index++) {
+          if (data[index].name == temp_name) {
+            _this.name = data[index].name;
+            _this.capital = data[index].capital;
+            // _this.hc_limit = data[index].hc_limit;
+            _this.hc_init = data[index].hc_init;
+            _this.hc_assigned = data[index].hc_assigned;
+            _this.hc_can_be_added = data[index].hc_can_be_added;
 
-        _this.hc_price = data[index].hc_price;
-        _this.channel_price = data[index].channel_price;
-        _this.channel_count = data[index].channel;
-        _this.permission_price = data[index].permission_price;
-        _this.permission_count = data[index].permission;
-        _this.info_price = data[index].info_price;
-        _this.info_count = data[index].info;
-        _this.profit = data[index].profit;
-        _this.last_profit = data[index].last_profit;
-        _this.total_profit = data[index].total_profit;
-        _this.profit_change = data[index].profit_change;
-        _this.profit_change_ratio = data[index].profit_change_ratio;
-        _this.vbp_price = data[index].vbp_price;
-        _this.vbp_share = data[index].vbp_share;
+            _this.hc_price = data[index].hc_price;
+            _this.channel_price = data[index].channel_price;
+            _this.channel_count = data[index].channel;
+            _this.permission_price = data[index].permission_price;
+            _this.permission_count = data[index].permission;
+            _this.info_price = data[index].info_price;
+            _this.info_count = data[index].info;
+            _this.profit = data[index].profit;
+            _this.last_profit = data[index].last_profit;
+            _this.total_profit = data[index].total_profit;
+            _this.profit_change = data[index].profit_change;
+            _this.profit_change_ratio = data[index].profit_change_ratio;
+            _this.vbp_price = data[index].vbp_price;
+            _this.vbp_share = data[index].vbp_share;
 
-        _this.a_cost = data[index].a_cost;
-        _this.b_cost = data[index].b_cost;
-        _this.c_cost = data[index].c_cost;
-        _this.total_investment = data[index].total_investment;
-        _this.total_cost = data[index].total_cost;
+            _this.a_cost = data[index].a_cost;
+            _this.b_cost = data[index].b_cost;
+            _this.c_cost = data[index].c_cost;
+            _this.total_investment = data[index].total_investment;
+            _this.total_cost = data[index].total_cost;
+          }
+        }
       });
     },
 

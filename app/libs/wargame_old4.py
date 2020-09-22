@@ -9,76 +9,6 @@ import pandas as pd
 from numpy import *
 from random import *
 
-HOSPITAL_LIST = ['大型医院1',
- '大型医院2',
- '大型医院3',
- '大型医院4',
- '大型医院5',
- '大型医院6',
- '大型医院7',
- '大型医院8',
- '大型医院9',
- '大型医院10',
- '大型医院11',
- '大型医院12',
- '大型医院13',
- '大型医院14',
- '大型医院15',
- '大型医院16',
- '大型医院17',
- '大型医院18',
- '大型医院19',
- '中型医院1',
- '中型医院2',
- '中型医院3',
- '中型医院4',
- '中型医院5',
- '中型医院6',
- '中型医院7',
- '中型医院8',
- '中型医院9',
- '中型医院10',
- '中型医院11',
- '中型医院12',
- '中型医院13',
- '中型医院14',
- '中型医院15',
- '中型医院16',
- '中型医院17',
- '中型医院18',
- '中型医院19',
- '中型医院20',
- '小型医院1',
- '小型医院2',
- '小型医院3',
- '小型医院4',
- '小型医院5',
- '小型医院6',
- '小型医院7',
- '小型医院8',
- '小型医院9',
- '小型医院10',
- '小型医院11',
- '小型医院12',
- '小型医院13',
- '小型医院14',
- '小型医院15',
- '小型医院16',
- '小型医院17',
- '小型医院18',
- '小型医院19',
- '小型医院20',
- '小型医院21',
- '小型医院22',
- '小型医院23',
- '小型医院24',
- '小型医院25',
- '私立医院1',
- '私立医院2',
- '私立医院3',
- '私立医院4',
- '私立医院5']
-
 
 
 # 计算对某家公司本轮HC决策对份额的影响
@@ -233,27 +163,6 @@ def result_calculate(company_list, company_info, game):
     总份额为VBP与非VBP台数相加，除以医院总台数
     
     '''
-    
-    # Tidy the company_info data
-    list_custom = ['长庆', '吉业', '洛华','柳树威']
-    company_info['公司名称'] = company_info['公司名称'].astype('category')
-    company_info['公司名称'].cat.reorder_categories(list_custom, inplace=True)
-    # inplace = True，使 df生效
-    company_info.sort_values('公司名称', inplace=True)
-    company_info = company_info.reset_index(drop=True)  
-
-    
-    # Tidy the company_list
-    list_custom = HOSPITAL_LIST
-    for c in range(len(company_list)):
-        company_list[c]['医院名称'] = company_list[c]['医院名称'].astype('category')
-        company_list[c]['医院名称'].cat.reorder_categories(list_custom, inplace=True)
-        # inplace = True，使 df生效
-        company_list[c].sort_values('医院名称', inplace=True)
-        company_list[c] = company_list[c].reset_index(drop=True) 
-    
-    
-    
     game = int(game)
     company_num = len(company_list)
     hospital_num = len(company_list[0])
