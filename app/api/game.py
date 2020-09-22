@@ -139,12 +139,15 @@ def get_com_data():
             "a_price": row['产品A价格'],
             "a_mean": row['产品A均价'],
             "a_share": row['产品A份额'],
+            'a_count': row['产品A台数'],
             "b_price": row['产品B价格'],
             "b_mean": row['产品B均价'],
             "b_share": row['产品B份额'],
+            'b_count': row['产品B台数'],
             "c_price": row['产品C价格'],
             "c_mean": row['产品C均价'],
             "c_share": row['产品C份额'],
+            'c_count': row['产品C台数'],
             "last_operation_count": row['上轮台数'],
             "current_operation_count": row['本轮台数'],
             "operation_count_change": row['台数增长净值'],
@@ -177,7 +180,9 @@ def get_com_info():
             t = {
                 "name": row['公司名称'],
                 "capital": row['总资金'],
-                "hc_limit": row['可分配人数'],
+                'hc_init':row['起始人数'],
+                'hc_assigned':row['已分配人数'],
+                'hc_can_be_added':row['可新增人数'],
                 "hc_price": row['人力成本'],
                 "channel_price": row['渠道牌价格'],
                 "channel": row['渠道牌剩余数量'],
@@ -246,7 +251,7 @@ def next_round():
 
 # 开启这回合
 @yp_game.route('/start', methods=['POST'])
-@login_required
+# @login_required
 def start_round():
     game_id = request.get_json()['game_id']
     data = request.get_json()['data']

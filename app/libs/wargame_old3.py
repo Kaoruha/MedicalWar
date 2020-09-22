@@ -136,10 +136,10 @@ def product_change(company_df, hospital_id):
         else:
             share_A = 0
     else:
-        share_A = c['产品A份额'] * (1 + ((c['产品A均价']-pa) / c['产品A均价'] / 0.1) * 0.05)
+        share_A = c['产品A份额']/100 * (1 + ((c['产品A均价']-pa) / c['产品A均价'] / 0.1) * 0.05)
     
     # product B
-    share_B = c['产品B份额'] * (1 + ((c['产品B均价']-pb) / c['产品B均价'] / 0.1) * 0.05)
+    share_B = c['产品B份额']/100 * (1 + ((c['产品B均价']-pb) / c['产品B均价'] / 0.1) * 0.05)
     
     # product C
     share_C = 1-(share_A + share_B)
@@ -163,15 +163,11 @@ def result_calculate(company_list, company_info, game):
     总份额为VBP与非VBP台数相加，除以医院总台数
     
     '''
-    game = int(game)
+    
     company_num = len(company_list)
     hospital_num = len(company_list[0])
-    
-    
-    company_info['营收增长比例'] = company_info['营收增长比例'].astype(float)
 
     new_company_info = company_info.copy()
-    #print(new_company_info)
     new_company_list = []
 
     for x in range(company_num):
@@ -184,8 +180,8 @@ def result_calculate(company_list, company_info, game):
         for c in range(len(new_shares)):
             #print(h,c)
             new_company_list[c]['份额'][h] = new_shares[c]
-    
     #对每家医院，每个企业，更新其三种产品份额
+
     for h in range(hospital_num):
         for c in range(company_num):
             (share_A,share_B,share_C,pa,pb,pc) = product_change(company_list[c],h)
@@ -195,17 +191,6 @@ def result_calculate(company_list, company_info, game):
             new_company_list[c]['产品A份额'][h] = share_A
             new_company_list[c]['产品B份额'][h] = share_B
             new_company_list[c]['产品C份额'][h] = share_C
-            # 更新产品台数
-            if game == 1:
-                new_company_list[c]['产品A台数'][h] = int(new_company_list[c]['年手术台数'][h] * new_company_list[c]['份额'][h] * new_company_list[c]['产品A份额'][h] )
-                new_company_list[c]['产品B台数'][h] = int(new_company_list[c]['年手术台数'][h] * new_company_list[c]['份额'][h] * new_company_list[c]['产品B份额'][h] )
-                new_company_list[c]['产品C台数'][h] = int(new_company_list[c]['年手术台数'][h] * new_company_list[c]['份额'][h] * new_company_list[c]['产品C份额'][h] )
-            else:
-                new_company_list[c]['产品A台数'][h] = int(new_company_list[c]['年手术台数'][h] * new_company_list[c]['份额'][h] * new_company_list[c]['产品A份额'][h] * 0.5  )
-                new_company_list[c]['产品B台数'][h] = int(new_company_list[c]['年手术台数'][h] * new_company_list[c]['份额'][h] * new_company_list[c]['产品B份额'][h] * 0.5 )
-                new_company_list[c]['产品C台数'][h] = int(new_company_list[c]['年手术台数'][h] * new_company_list[c]['份额'][h] * new_company_list[c]['产品C份额'][h] * 0.5 )
-            
-            
 
     # 对每家医院，更新三种产品均价：
 
@@ -236,14 +221,12 @@ def result_calculate(company_list, company_info, game):
         new_company_info['渠道牌剩余数量'][c] = max(0, company_info['渠道牌剩余数量'][c] - sum(company_list[c]['渠道牌']))
         new_company_info['准入牌剩余数量'][c] = max(0, company_info['准入牌剩余数量'][c] - sum(company_list[c]['准入牌']))
         new_company_info['信息牌剩余数量'][c] = max(0, company_info['信息牌剩余数量'][c] - sum(company_list[c]['信息牌']))
-        new_company_info['已分配人数'][c] = int(sum(company_list[c]['HC决策']))
-
 
         # 开销结算
         cost = sum(company_list[c]['渠道牌']) * company_info['渠道牌价格'][c] 
         cost += sum(company_list[c]['准入牌']) * company_info['准入牌价格'][c]
         cost += sum(company_list[c]['信息牌']) * company_info['信息牌价格'][c]
-        cost += (new_company_info['已分配人数'][c] - new_company_info['起始人数'][c]) * company_info['人力成本'][c]
+        cost += sum(company_list[c]['HC决策']) * company_info['人力成本'][c]
         cost += sum(company_list[c]['推广决策'])
 
         # 利用开销，结算资金
@@ -286,13 +269,11 @@ def result_calculate(company_list, company_info, game):
         new_company_info['上轮营收'][c]  = company_info['营收'][c]
 
         # 营收结算
-#         revenueA = sum(new_company_list[c]['年手术台数'] * new_company_list[c]['份额'] * new_company_list[c]['产品A份额'] * new_company_list[c]['产品A价格']) / 100
-#         revenueB = sum(new_company_list[c]['年手术台数'] * new_company_list[c]['份额'] * new_company_list[c]['产品B份额'] * new_company_list[c]['产品B价格'])/ 100
-#         revenueC = sum(new_company_list[c]['年手术台数'] * new_company_list[c]['份额'] * new_company_list[c]['产品C份额'] * new_company_list[c]['产品C价格'])/ 100
+        revenueA = sum(new_company_list[c]['年手术台数'] * new_company_list[c]['份额'] * new_company_list[c]['产品A份额'] * new_company_list[c]['产品A价格']) / 100
+        revenueB = sum(new_company_list[c]['年手术台数'] * new_company_list[c]['份额'] * new_company_list[c]['产品B份额'] * new_company_list[c]['产品B价格'])/ 100
+        revenueC = sum(new_company_list[c]['年手术台数'] * new_company_list[c]['份额'] * new_company_list[c]['产品C份额'] * new_company_list[c]['产品C价格'])/ 100
         
-        #revenue = sum(new_company_list[c]['年手术台数'] * new_company_list[c]['份额'] * (new_company_list[c]['产品A份额'] * new_company_list[c]['产品A价格'] + new_company_list[c]['产品B份额'] * new_company_list[c]['产品B价格'] + new_company_list[c]['份额'] * new_company_list[c]['产品C份额'] * new_company_list[c]['产品C价格'])) 
-        
-        revenue = sum(new_company_list[c]['产品A台数']* new_company_list[c]['产品A价格']) + sum(new_company_list[c]['产品B台数']* new_company_list[c]['产品B价格']) + sum(new_company_list[c]['产品C台数']* new_company_list[c]['产品C价格'])
+        revenue = sum(new_company_list[c]['年手术台数'] * new_company_list[c]['份额'] * (new_company_list[c]['产品A份额'] * new_company_list[c]['产品A价格'] + new_company_list[c]['产品B份额'] * new_company_list[c]['产品B价格'] + new_company_list[c]['份额'] * new_company_list[c]['产品C份额'] * new_company_list[c]['产品C价格'])) 
         
 
         if game <2 :
@@ -301,24 +282,19 @@ def result_calculate(company_list, company_info, game):
             new_company_info['营收'][c] = revenue
         else:
             #第二轮之后有VBP，营收分两部分计算
-            normal_income =  revenue * 0.5
+            normal_income =  (revenueA+revenueB+revenueC) * 0.5
             VBP_income = sum(company_info['VBP价格'][c] * company_info['VBP份额'][c] * new_company_list[c]['年手术台数'])
             new_company_info['营收'][c] = normal_income + VBP_income
         
         # 计算总营收、增长：
-        new_company_info['总营收'][c] = new_company_info['总营收'][c] + new_company_info['营收'][c]
+        new_company_info['总营收'][c] += new_company_info['营收'][c]
         new_company_info['营收增长净值'][c] = new_company_info['营收'][c] - new_company_info['上轮营收'][c]
-        new_company_info['营收增长比例'][c] = new_company_info['营收增长净值'][c] / new_company_info['上轮营收'][c]
-
+        new_company_info['营收增长比例'][c] = new_company_info['营收增长净值'][c] / max(new_company_info['营收'][c],1)
             
         # -------------------------成本结算
-#         costA = sum(new_company_list[c]['年手术台数'] * new_company_list[c]['份额'] * new_company_list[c]['产品A份额']/100 * new_company_info['产品A成本'][c])
-#         costB = sum(new_company_list[c]['年手术台数'] * new_company_list[c]['份额'] * new_company_list[c]['产品B份额']/100 * new_company_info['产品B成本'][c])
-#         costC = sum(new_company_list[c]['年手术台数'] * new_company_list[c]['份额'] * new_company_list[c]['产品C份额']/100 * new_company_info['产品C成本'][c])
-        costA = sum(new_company_list[c]['产品A台数'])* new_company_info['产品A成本'][c]
-        costB = sum(new_company_list[c]['产品B台数'])* new_company_info['产品B成本'][c]
-        costC = sum(new_company_list[c]['产品C台数'])* new_company_info['产品C成本'][c]
-
+        costA = sum(new_company_list[c]['年手术台数'] * new_company_list[c]['份额'] * new_company_list[c]['产品A份额']/100 * new_company_info['产品A成本'][c])
+        costB = sum(new_company_list[c]['年手术台数'] * new_company_list[c]['份额'] * new_company_list[c]['产品B份额']/100 * new_company_info['产品B成本'][c])
+        costC = sum(new_company_list[c]['年手术台数'] * new_company_list[c]['份额'] * new_company_list[c]['产品C份额']/100 * new_company_info['产品C成本'][c])
 
         if game < 2:
             # 第一轮，成本直接核算

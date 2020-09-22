@@ -262,12 +262,12 @@
             </q-popup-edit>
           </q-td>
 
-          <q-td key="a_share" :props="props">
-            {{ props.row.a_share }}
-            <q-popup-edit v-model="props.row.a_share" title="调整产品A份额" buttons persistent>
+          <q-td key="a_count" :props="props">
+            {{ props.row.a_count }}
+            <q-popup-edit v-model="props.row.a_count" title="调整产品A台数" buttons persistent>
               <q-input
                 type="number"
-                v-model="props.row.a_share"
+                v-model="props.row.a_count"
                 dense
                 autofocus
                 hint="Use buttons to close"
@@ -301,12 +301,12 @@
             </q-popup-edit>
           </q-td>
 
-          <q-td key="b_share" :props="props">
-            {{ props.row.b_share }}
-            <q-popup-edit v-model="props.row.b_share" title="调整产品B份额" buttons persistent>
+          <q-td key="b_count" :props="props">
+            {{ props.row.b_count }}
+            <q-popup-edit v-model="props.row.b_count" title="调整产品B台数" buttons persistent>
               <q-input
                 type="number"
-                v-model="props.row.b_share"
+                v-model="props.row.b_count"
                 dense
                 autofocus
                 hint="Use buttons to close"
@@ -340,12 +340,12 @@
             </q-popup-edit>
           </q-td>
 
-          <q-td key="c_share" :props="props">
-            {{ props.row.c_share }}
-            <q-popup-edit v-model="props.row.c_share" title="调整产品C份额" buttons persistent>
+          <q-td key="c_count" :props="props">
+            {{ props.row.c_count }}
+            <q-popup-edit v-model="props.row.c_count" title="调整产品C台数" buttons persistent>
               <q-input
                 type="number"
-                v-model="props.row.c_share"
+                v-model="props.row.c_count"
                 dense
                 autofocus
                 hint="Use buttons to close"
@@ -702,11 +702,11 @@ export default {
           sortable: true,
         },
         {
-          name: "a_share",
+          name: "a_count",
           required: true,
-          label: "产品A份额",
+          label: "产品A台数",
           align: "left",
-          field: (row) => row.a_share,
+          field: (row) => row.a_count,
           style: "width:200px",
           format: (val) => `${val}`,
           sortable: true,
@@ -732,11 +732,11 @@ export default {
           sortable: true,
         },
         {
-          name: "b_share",
+          name: "b_count",
           required: true,
-          label: "产品B份额",
+          label: "产品B台数",
           align: "left",
-          field: (row) => row.b_share,
+          field: (row) => row.b_count,
           style: "width:200px",
           format: (val) => `${val}`,
           sortable: true,
@@ -762,11 +762,11 @@ export default {
           sortable: true,
         },
         {
-          name: "c_share",
+          name: "c_count",
           required: true,
-          label: "产品C份额",
+          label: "产品C台数",
           align: "left",
-          field: (row) => row.c_share,
+          field: (row) => row.c_count,
           style: "width:200px",
           format: (val) => `${val}`,
           sortable: true,
@@ -957,7 +957,21 @@ export default {
 
       Game.GetCompanyData(this.game_id, this.company_id, this.rounds).then(
         (response) => {
-          const { data } = response;
+          // if (_this.company_id == "b") {
+          //   const { data } = eval("(" + response + ")");
+          // } else {
+          //   const { data } = response;
+          // }
+          let { data } = Object;
+          if (typeof(response)==typeof "") {
+            data = eval("(" + response + ")")["data"];
+          }else{
+            data = response["data"];
+          }
+          // const { data } = eval("(" + response + ")");
+           console.log("222");
+          console.log(data);
+          // const { data } = eval("(" + response + ")");
           // console.log(response);
           // console.log(data);
           for (let i = 0; i < data.length; i++) {
@@ -988,6 +1002,11 @@ export default {
               c_price: data[i].c_price,
               c_mean: data[i].c_mean,
               c_share: data[i].c_share,
+
+              // 0922 新增各个产品的台数
+              a_count: data[i].a_count,
+              b_count: data[i].b_count,
+              c_count: data[i].c_count,
 
               last_operation_count: data[i].last_operation_count,
               current_operation_count: data[i].current_operation_count,
@@ -1046,6 +1065,10 @@ export default {
         element.c_share = Number(element.c_share).toFixed(2);
         element.hc_strategy = Number(element.hc_strategy).toFixed(1);
         element.operation_count = Math.round(element.operation_count);
+
+        element.a_count = Math.round(element.a_count);
+        element.b_count = Math.round(element.b_count);
+        element.c_count = Math.round(element.c_count);
 
         element.hc_sensitivity = Number(element.hc_sensitivity).toFixed(2);
         element.advertising_sensitivity = Number(

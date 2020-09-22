@@ -73,12 +73,38 @@
             </q-popup-edit>
           </q-td>
 
-          <q-td key="hc_limit" :props="props">
-            {{ props.row.hc_limit }}
-            <q-popup-edit v-model="props.row.hc_limit" title="调整可分配人数" buttons persistent>
+          <q-td key="hc_init" :props="props">
+            {{ props.row.hc_init }}
+            <q-popup-edit v-model="props.row.hc_init" title="调整起始人数" buttons persistent>
               <q-input
                 type="number"
-                v-model="props.row.hc_limit"
+                v-model="props.row.hc_init"
+                dense
+                autofocus
+                hint="Use buttons to close"
+              />
+            </q-popup-edit>
+          </q-td>
+
+          <q-td key="hc_assigned" :props="props">
+            {{ props.row.hc_assigned }}
+            <q-popup-edit v-model="props.row.hc_assigned" title="调整已分配人数" buttons persistent>
+              <q-input
+                type="number"
+                v-model="props.row.hc_assigned"
+                dense
+                autofocus
+                hint="Use buttons to close"
+              />
+            </q-popup-edit>
+          </q-td>
+
+          <q-td key="hc_can_be_added" :props="props">
+            {{ props.row.hc_can_be_added }}
+            <q-popup-edit v-model="props.row.hc_can_be_added" title="调整可新增人数" buttons persistent>
+              <q-input
+                type="number"
+                v-model="props.row.hc_can_be_added"
                 dense
                 autofocus
                 hint="Use buttons to close"
@@ -344,8 +370,8 @@ export default {
   },
   data() {
     return {
-      // host: "http://localhost:8080/#/game_player?uuid=",
-      host: "http://49.235.80.242/#/game_player?uuid=",
+      host: "http://localhost:8080/#/game_player?uuid=",
+      // host: "http://49.235.80.242/#/game_player?uuid=",
       is_commit_show: false,
       current_round_started: false,
       game_name: "default",
@@ -393,11 +419,31 @@ export default {
           sortable: false,
         },
         {
-          name: "hc_limit",
+          name: "hc_init",
           required: false,
-          label: "可分配人数",
+          label: "起始人数",
           align: "left",
-          field: (row) => row.hc_limit,
+          field: (row) => row.hc_init,
+          style: "width:100px",
+          format: (val) => `${val}`,
+          sortable: false,
+        },
+        {
+          name: "hc_assigned",
+          required: false,
+          label: "已分配人数",
+          align: "left",
+          field: (row) => row.hc_assigned,
+          style: "width:100px",
+          format: (val) => `${val}`,
+          sortable: false,
+        },
+        {
+          name: "hc_can_be_added",
+          required: false,
+          label: "可新增人数",
+          align: "left",
+          field: (row) => row.hc_can_be_added,
           style: "width:100px",
           format: (val) => `${val}`,
           sortable: false,
@@ -693,13 +739,17 @@ export default {
       // alert(this.rounds)
       Game.GetCompanyInfo(this.game_id, this.rounds).then((response) => {
         const { data } = response;
-        // console.log(response);
+        console.log(response);
         // console.log(data);
         for (let i = 0; i < data.length; i++) {
           _this.original.push({
             name: data[i].name,
             capital: data[i].capital,
-            hc_limit: data[i].hc_limit,
+            // hc_limit: data[i].hc_limit,
+            hc_init:data[i].hc_init,
+            hc_assigned:data[i].hc_assigned,
+            hc_init:data[i].hc_init,
+            hc_can_be_added: data[i].hc_can_be_added,
             hc_price: data[i].hc_price,
             channel_price: data[i].channel_price,
             channel: data[i].channel,
@@ -805,6 +855,15 @@ export default {
       console.log(data);
       Game.Start(this.game_id, data).then((response) => {
         location.reload();
+        _this.$q.notify({
+          message: "开始当前回合",
+          // 可用的值: 'positive', 'negative', 'warning', 'info'
+          type: "positive",
+          textColor: "white",
+          // 'top', 'left', 'bottom-left'等
+          position: "top",
+        });
+        
       });
     },
     company_check(msg) {

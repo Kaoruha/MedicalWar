@@ -9,7 +9,8 @@
         </div>
       </q-img>
       <div class="row">
-        <div class="col" :style="{color:(capital_check?'#666':'#FF0000')}">总资金：{{this.temp_capital}}</div>
+        <div class="col">总资金：{{this.capital}}</div>
+        <div class="col" :style="{color:(capital_check?'#666':'#FF0000')}">使用：{{this.temp_capital}}</div>
 
         <div class="col">人力成本:{{hc_price}}</div>
         <div class="col">渠道牌价格：{{channel_price}}</div>
@@ -25,7 +26,10 @@
         <div class="col" :style="{color:(c_check?'#666':'#FF0000')}">C成本：{{c_cost}}</div>
       </div>
       <div class="row">
-        <div class="col" :style="{color:(hc_check?'#666':'#FF0000')}">可分配人数：{{hc_limit-total_hc}}</div>
+        <div class="col">可分配人数：{{hc_init}}</div>
+        <div class="col">已分配人数：{{hc_assigned}}</div>
+        <div class="col" :style="{color:(hc_check?'#666':'#FF0000')}">新分配人数：{{total_hc}}</div>
+        <div class="col">可新增人数:{{hc_can_be_added}}</div>
         <div
           class="col"
           :style="{color:(channel_check?'#666':'#FF0000')}"
@@ -94,13 +98,13 @@
           <q-td key="advertising" :props="props">{{ props.row.advertising }}</q-td>
 
           <q-td key="a_price" :props="props">{{ props.row.a_price }}</q-td>
-          <q-td key="a_share" :props="props">{{ props.row.a_share }}</q-td>
+          <q-td key="a_count" :props="props">{{ props.row.a_count }}</q-td>
 
           <q-td key="b_price" :props="props">{{ props.row.b_price }}</q-td>
-          <q-td key="b_share" :props="props">{{ props.row.b_share }}</q-td>
+          <q-td key="b_count" :props="props">{{ props.row.b_count }}</q-td>
 
           <q-td key="c_price" :props="props">{{ props.row.c_price }}</q-td>
-          <q-td key="c_share" :props="props">{{ props.row.c_share }}</q-td>
+          <q-td key="c_count" :props="props">{{ props.row.c_count }}</q-td>
 
           <q-td key="last_operation_count" :props="props">{{ props.row.last_operation_count }}</q-td>
           <q-td key="current_operation_count" :props="props">{{ props.row.current_operation_count }}</q-td>
@@ -278,6 +282,9 @@ export default {
       temp_capital: 0,
       hc_limit: 0,
       hc_price: 1000,
+      hc_init: 0,
+      hc_assigned: 0,
+      hc_can_be_added: 0,
       channel_count: 10,
       channel_price: 1100,
       permission_count: 11,
@@ -288,7 +295,7 @@ export default {
       last_profit: 0,
       total_profit: 0,
       profit_change: 0,
-      profit_change_ratio:0,
+      profit_change_ratio: 0,
       vbp_price: 0,
       vbp_share: 0,
       a_cost: 0,
@@ -364,11 +371,11 @@ export default {
           sortable: false,
         },
         {
-          name: "a_share",
+          name: "a_count",
           required: false,
-          label: "产品A份额",
+          label: "产品A台数",
           align: "left",
-          field: (row) => row.a_share,
+          field: (row) => row.a_count,
           style: "width:200px",
           format: (val) => `${val}`,
           sortable: false,
@@ -384,11 +391,11 @@ export default {
           sortable: false,
         },
         {
-          name: "b_share",
+          name: "b_count",
           required: true,
-          label: "产品B份额",
+          label: "产品B台数",
           align: "left",
-          field: (row) => row.b_share,
+          field: (row) => row.b_count,
           style: "width:200px",
           format: (val) => `${val}`,
           sortable: true,
@@ -404,11 +411,11 @@ export default {
           sortable: true,
         },
         {
-          name: "c_share",
+          name: "c_count",
           required: true,
-          label: "产品C份额",
+          label: "产品C台数",
           align: "left",
-          field: (row) => row.c_share,
+          field: (row) => row.c_count,
           style: "width:200px",
           format: (val) => `${val}`,
           sortable: true,
@@ -553,7 +560,7 @@ export default {
         this.calculate();
         // 合法校验
         this.check();
-        console.log(this.is_able_to_submit)
+        console.log(this.is_able_to_submit);
       },
       deep: true,
     },
@@ -645,7 +652,16 @@ export default {
       const _this = this;
       Game.GetCompanyData(this.game_id, this.company_id, this.rounds).then(
         (response) => {
-          const { data } = response;
+          console.log("111");
+          console.log(typeof(response)==typeof "")
+          let { data } = Object;
+          if (typeof(response)==typeof "") {
+            data = eval("(" + response + ")")["data"];
+          }else{
+            data = response["data"];
+          }
+          // const { data } = eval("(" + response + ")");
+           console.log("222");
           console.log(data);
           for (let i = 0; i < data.length; i++) {
             _this.original.push({
@@ -675,6 +691,10 @@ export default {
               c_price: data[i].c_price,
               c_mean: data[i].c_mean,
               c_share: data[i].c_share,
+
+              a_count: data[i].a_count,
+              b_count: data[i].b_count,
+              c_count: data[i].c_count,
 
               last_operation_count: data[i].last_operation_count,
               current_operation_count: data[i].current_operation_count,
@@ -732,7 +752,11 @@ export default {
         }
         _this.name = data[index].name;
         _this.capital = data[index].capital;
-        _this.hc_limit = data[index].hc_limit;
+        // _this.hc_limit = data[index].hc_limit;
+        _this.hc_init = data[index].hc_init;
+        _this.hc_assigned = data[index].hc_assigned;
+        _this.hc_can_be_added = data[index].hc_can_be_added;
+
         _this.hc_price = data[index].hc_price;
         _this.channel_price = data[index].channel_price;
         _this.channel_count = data[index].channel;
@@ -810,13 +834,13 @@ export default {
               break;
             case 200:
               _this.$q.notify({
-              message: "提交成功",
-              // 可用的值: 'positive', 'negative', 'warning', 'info'
-              type: "positive",
-              textColor: "white",
-              // 'top', 'left', 'bottom-left'等
-              position: "top",
-            });
+                message: "提交成功",
+                // 可用的值: 'positive', 'negative', 'warning', 'info'
+                type: "positive",
+                textColor: "white",
+                // 'top', 'left', 'bottom-left'等
+                position: "top",
+              });
               break;
           }
         }
@@ -834,6 +858,11 @@ export default {
         element.b_share = Number(element.b_share).toFixed(2);
         element.c_price = Number(element.c_price).toFixed(2);
         element.c_share = Number(element.c_share).toFixed(2);
+
+        element.a_count = Math.round(element.a_count);
+        element.b_count = Math.round(element.b_count);
+        element.c_count = Math.round(element.c_count);
+
         element.hc_strategy = Math.round(element.hc_strategy);
         element.advertising_strategy = Number(
           element.advertising_strategy
@@ -877,31 +906,21 @@ export default {
         _this.total_info += Number(element.info);
       }
       this.temp_capital = Number(
-        this.capital -
-          this.hc_price * this.total_hc -
-          this.channel_price * this.total_channel -
-          this.permission_price * this.total_permission -
-          this.info_price * this.total_info -
+        this.hc_price * this.total_hc +
+          this.channel_price * this.total_channel +
+          this.permission_price * this.total_permission +
+          this.info_price * this.total_info +
           this.total_advertising
       ).toFixed(2);
     },
 
     check() {
       if (this.company_id == "d") {
-        this.hc_check = this.hc_limit * 2 - this.total_hc >= 0;
-        this.capital_check =
-          Number(
-            this.capital * 1.2 -
-              this.hc_price * this.total_hc -
-              this.channel_price * this.total_channel -
-              this.permission_price * this.total_permission -
-              this.info_price * this.total_info -
-              this.total_advertising
-          ).toFixed(2) >= 0;
+        this.hc_check = this.hc_can_be_added * 2 - this.total_hc >= 0;
+        this.capital_check = this.capital * 1.2 - this.temp_capital;
       } else {
-        this.hc_check = this.hc_limit - this.total_hc >= 0;
-        this.capital_check = this.temp_capital >= 0;
-        console.log(this.temp_capital)
+        this.hc_check = this.hc_can_be_added - this.total_hc >= 0;
+        this.capital_check = this.capital - this.temp_capital >= 0;
       }
       // this.hc_check = this.hc_limit - this.total_hc >= 0;
       // this.capital_check = this.temp_capital >= 0;

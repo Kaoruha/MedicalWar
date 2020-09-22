@@ -138,48 +138,6 @@ class Game(Base):
         path = os.getcwd(
         ) + '/app/data/game_' + game.name + '/' + 'round' + str(game.rounds)
         print(path)
-        # dict1 = {
-        #     'name': '公司名称',
-        #     'capital': '总资金',
-        #     'hc_limit': '可分配人数',
-        #     'hc_price': '人力成本',
-        #     'channel_price': '渠道牌价格',
-        #     'channel': '渠道牌剩余数量',
-        #     'permission_price': '准入牌价格',
-        #     'permission': '准入牌剩余数量',
-        #     'info_price': '信息牌价格',
-        #     'info': '信息牌剩余数量',
-        #     'profit': '营收',
-        #     'last_profit': '上轮营收'
-        # }
-        # dict2 = {
-        #     'name': '医院名称',
-        #     'operation_count': '年手术台数',
-        #     'hc_sensitivity': 'HC敏感度',
-        #     'advertising_sensitivity': '推广敏感度',
-        #     'price_sensitivity': '价格敏感度',
-        #     'hc': '当前HC',
-        #     'share': '份额',
-        #     'hc_low_limit': 'HC下限',
-        #     'advertising': '推广费用',
-        #     'a_price': '产品A价格',
-        #     'a_mean': '产品A均价',
-        #     'a_share': '产品A份额',
-        #     'b_price': '产品B价格',
-        #     'b_mean': '产品B均价',
-        #     'b_share': '产品B份额',
-        #     'c_price': '产品C价格',
-        #     'c_mean': '产品C均价',
-        #     'c_share': '产品C份额',
-        #     'hc_strategy': 'HC决策',
-        #     'advertising_strategy': '推广决策',
-        #     'a_strategy': '产品A价格决策',
-        #     'b_strategy': '产品B价格决策',
-        #     'c_strategy': '产品C价格决策',
-        #     'channel': '渠道牌',
-        #     'permission': '准入牌',
-        #     'info': '信息牌'
-        # }
 
         for i in range(len(files)):
             try:
@@ -219,6 +177,7 @@ class Game(Base):
 
         for i in range(len(c_list)):
             c_list[i].to_csv(path + '/' + files[i + 1] + '.csv',
+                             index=0,
                              encoding="utf_8")
             # c_list[i].to_csv(path + '/' + files[i + 1] + '_hah.csv')
 
@@ -242,46 +201,13 @@ class Game(Base):
         ) + '/app/data/game_' + game.name + '/' + 'round' + str(
             game.player_rounds) + '/' + 'InputTable' + company_id.upper(
             ) + '.csv'
-        # col_dict = {
-        #     'name': '医院名称',
-        #     'operation_count': '年手术台数',
-        #     'hc_sensitivity': 'HC敏感度',
-        #     'advertising_sensitivity': '推广敏感度',
-        #     'price_sensitivity': '价格敏感度',
-        #     'hc': '当前HC',
-        #     'share': '份额',
-        #     'hc_low_limit': 'HC下限',
-        #     'advertising': '推广费用',
-        #     'a_price': '产品A价格',
-        #     'a_mean': '产品A均价',
-        #     'a_share': '产品A份额',
-        #     'b_price': '产品B价格',
-        #     'b_mean': '产品B均价',
-        #     'b_share': '产品B份额',
-        #     'c_price': '产品C价格',
-        #     'c_mean': '产品C均价',
-        #     'c_share': '产品C份额',
-        #     'hc_strategy': 'HC决策',
-        #     'advertising_strategy': '推广决策',
-        #     'a_strategy': '产品A价格决策',
-        #     'b_strategy': '产品B价格决策',
-        #     'c_strategy': '产品C价格决策',
-        #     'channel': '渠道牌',
-        #     'permission': '准入牌',
-        #     'info': '信息牌'
-        # }
         try:
             # df1 = pd.read_csv(path)
 
             df2 = pd.DataFrame(data)
             df2.rename(columns=dict2, inplace=True)
-            # s = pd.merge(df2,
-            #              df1[[
-            #                  '医院名称', 'HC敏感度', '推广敏感度', '价格敏感度', 'HC下限',
-            #                  '产品A均价', '产品B均价', '产品C均价'
-            #              ]],
-            #              on='医院名称')
-            df2.to_csv(path, encoding="utf_8")
+            df2.to_csv(path, index=0,
+                             encoding="utf_8")
             print(path)
         except Exception as e:
             print(e)
@@ -299,48 +225,6 @@ class Game(Base):
         ]
         df = df_list
 
-        # dict1 = {
-        #     'name': '公司名称',
-        #     'capital': '总资金',
-        #     'hc_limit': '可分配人数',
-        #     'hc_price': '人力成本',
-        #     'channel_price': '渠道牌价格',
-        #     'channel': '渠道牌剩余数量',
-        #     'permission_price': '准入牌价格',
-        #     'permission': '准入牌剩余数量',
-        #     'info_price': '信息牌价格',
-        #     'info': '信息牌剩余数量',
-        #     'profit': '营收',
-        #     'last_profit': '上轮营收'
-        # }
-        # dict2 = {
-        #     'name': '医院名称',
-        #     'operation_count': '年手术台数',
-        #     'hc_sensitivity': 'HC敏感度',
-        #     'advertising_sensitivity': '推广敏感度',
-        #     'price_sensitivity': '价格敏感度',
-        #     'hc': '当前HC',
-        #     'share': '份额',
-        #     'hc_low_limit': 'HC下限',
-        #     'advertising': '推广费用',
-        #     'a_price': '产品A价格',
-        #     'a_mean': '产品A均价',
-        #     'a_share': '产品A份额',
-        #     'b_price': '产品B价格',
-        #     'b_mean': '产品B均价',
-        #     'b_share': '产品B份额',
-        #     'c_price': '产品C价格',
-        #     'c_mean': '产品C均价',
-        #     'c_share': '产品C份额',
-        #     'hc_strategy': 'HC决策',
-        #     'advertising_strategy': '推广决策',
-        #     'a_strategy': '产品A价格决策',
-        #     'b_strategy': '产品B价格决策',
-        #     'c_strategy': '产品C价格决策',
-        #     'channel': '渠道牌',
-        #     'permission': '准入牌',
-        #     'info': '信息牌'
-        # }
         path = os.getcwd(
         ) + '/app/data/game_' + game.name + '/' + 'round' + str(game.rounds)
 
@@ -367,7 +251,11 @@ class Game(Base):
 dict1 = {
     'name': '公司名称',
     'capital': '总资金',
-    'hc_limit': '可分配人数',
+    # 'hc_limit': '可分配人数',
+    # 可分配人数修改为起始人数,已分配人数、可新增人数
+    'hc_init':'起始人数',
+    'hc_assigned':'已分配人数',
+    'hc_can_be_added':'可新增人数',
     'hc_price': '人力成本',
     'channel_price': '渠道牌价格',
     'channel': '渠道牌剩余数量',
@@ -401,12 +289,18 @@ dict2 = {
     'a_price': '产品A价格',
     'a_mean': '产品A均价',
     'a_share': '产品A份额',
+    # 0922 新增a台数
+    'a_count':'产品A台数',
     'b_price': '产品B价格',
     'b_mean': '产品B均价',
     'b_share': '产品B份额',
+    # 0922 新增b台数
+    'b_count':'产品B台数',
     'c_price': '产品C价格',
     'c_mean': '产品C均价',
     'c_share': '产品C份额',
+    # 0922 新增c台数
+    'c_count':'产品C台数',
     'hc_strategy': 'HC决策',
     'advertising_strategy': '推广决策',
     'a_strategy': '产品A价格决策',
