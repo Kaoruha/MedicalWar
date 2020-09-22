@@ -136,7 +136,7 @@ class Game(Base):
         ]
         df = df_list
         path = os.getcwd(
-        ) + '/app/data/game_' + game.name + '/' + 'round' + str(game.rounds)
+        ) + '/app/data/game_' + game.name + '/round' + str(game.rounds)
         print(path)
 
         for i in range(len(files)):
