@@ -117,7 +117,12 @@
 
           <q-td key="hc_strategy" class="editable" :props="props">
             {{ props.row.hc_strategy }}
-            <q-popup-edit title="Update HC" buttons>
+            <q-popup-edit
+              v-model.number="props.row.hc_strategy"
+              title="Update HC"
+              buttons
+              auto-save
+            >
               <q-input
                 type="number"
                 v-model="props.row.hc_strategy"
@@ -131,8 +136,10 @@
           <q-td key="advertising_strategy" class="editable" :props="props">
             {{ props.row.advertising_strategy }}
             <q-popup-edit
+              v-model="props.row.advertising_strategy"
               title="Update Advertising"
               buttons
+              auto-save
             >
               <q-input
                 type="number"
@@ -146,7 +153,7 @@
 
           <q-td key="a_strategy" class="editable" :props="props">
             {{ props.row.a_strategy }}
-            <q-popup-edit title="Update A Price" buttons>
+            <q-popup-edit v-model="props.row.a_strategy" title="Update A Price" buttons auto-save>
               <q-input
                 type="number"
                 v-model="props.row.a_strategy"
@@ -159,7 +166,7 @@
 
           <q-td key="b_strategy" class="editable" :props="props">
             {{ props.row.b_strategy }}
-            <q-popup-edit title="Update B Price" buttons>
+            <q-popup-edit v-model="props.row.b_strategy" title="Update B Price" buttons auto-save>
               <q-input
                 type="number"
                 v-model="props.row.b_strategy"
@@ -172,7 +179,7 @@
 
           <q-td key="c_strategy" class="editable" :props="props">
             {{ props.row.c_strategy }}
-            <q-popup-edit title="Update C Price" buttons>
+            <q-popup-edit v-model="props.row.c_strategy" title="Update C Price" buttons auto-save>
               <q-input
                 type="number"
                 v-model="props.row.c_strategy"
@@ -185,7 +192,7 @@
 
           <q-td key="channel" class="editable" :props="props">
             {{ props.row.channel }}
-            <q-popup-edit title="Update Channel" buttons>
+            <q-popup-edit v-model="props.row.channel" title="Update Channel" buttons auto-save>
               <q-input
                 type="number"
                 v-model="props.row.channel"
@@ -198,7 +205,12 @@
 
           <q-td key="permission" class="editable" :props="props">
             {{ props.row.permission }}
-            <q-popup-edit title="Update Permission" buttons>
+            <q-popup-edit
+              v-model="props.row.permission"
+              title="Update Permission"
+              buttons
+              auto-save
+            >
               <q-input
                 type="number"
                 v-model="props.row.permission"
@@ -211,7 +223,7 @@
 
           <q-td key="info" class="editable" :props="props">
             {{ props.row.info }}
-            <q-popup-edit title="Update Info" buttons>
+            <q-popup-edit v-model="props.row.info" title="Update Info" buttons auto-save>
               <q-input
                 type="number"
                 v-model="props.row.info"
@@ -548,7 +560,7 @@ export default {
     data: {
       handler: function (val, oldval) {
         // console.log('修改后',val,'修改前',oldval);
-        
+
         // 计算
         this.calculate();
         // 取整
@@ -562,6 +574,10 @@ export default {
   },
 
   methods: {
+    test: function (value, initialValue) {
+      alert(value);
+      alert(initialValue);
+    },
     onRequest(props) {
       const { page, rowsPerPage, sortBy, descending } = props.pagination;
       const { filter } = props;
