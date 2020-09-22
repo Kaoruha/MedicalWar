@@ -128,7 +128,7 @@ class Game(Base):
             print('需要开始当前回合能允许下一回合')
             return  # 需要开始当前回合能允许下一回合
 
-        
+        game.rounds += 1
 
         files = [
             'companyInfo', 'InputTableA', 'InputTableB', 'InputTableC',
@@ -172,7 +172,7 @@ class Game(Base):
         
         c_list, c_info = result_calculate(company_list=company_list,
                                           company_info=company_info,
-                                          game=game.rounds)
+                                          game=game.rounds -1)
 
         for i in range(len(c_list)):
             c_list[i].to_csv(path + '/' + files[i + 1] + '.csv',
@@ -183,7 +183,7 @@ class Game(Base):
         c_info.to_csv(path + '/' + 'companyInfo.csv',
                       index=0,
                       encoding="utf_8")
-        game.rounds += 1
+        
         db.session.commit()
 
     @classmethod
