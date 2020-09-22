@@ -848,6 +848,12 @@ export default {
     },
 
     int_parse() {
+      this.profit = Number(this.profit).toFixed(2);
+      this.last_profit = Number(this.last_profit).toFixed(2);
+      this.total_profit = Number(this.total_profit).toFixed(2);
+      this.profit_change = Number(this.profit_change).toFixed(2);
+      this.profit_change_ratio = Number(this.profit_change_ratio).toFixed(2);
+
       for (let index = 0; index < this.data.length; index++) {
         const element = this.data[index];
         element.hc = Number(element.hc).toFixed(1);
