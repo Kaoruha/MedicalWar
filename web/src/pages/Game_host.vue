@@ -62,7 +62,7 @@
           <q-td key="name" :props="props">{{ props.row.name }}</q-td>
           <q-td key="capital" :props="props">
             {{ props.row.capital }}
-            <q-popup-edit v-model="props.row.description" title="调整总资金" buttons persistent>
+            <q-popup-edit title="调整总资金" buttons>
               <q-input
                 type="number"
                 v-model="props.row.capital"
@@ -75,7 +75,7 @@
 
           <q-td key="hc_init" :props="props">
             {{ props.row.hc_init }}
-            <q-popup-edit v-model="props.row.hc_init" title="调整起始人数" buttons persistent>
+            <q-popup-edit title="调整起始人数" buttons>
               <q-input
                 type="number"
                 v-model="props.row.hc_init"
@@ -88,7 +88,7 @@
 
           <q-td key="hc_assigned" :props="props">
             {{ props.row.hc_assigned }}
-            <q-popup-edit v-model="props.row.hc_assigned" title="调整已分配人数" buttons persistent>
+            <q-popup-edit title="调整已分配人数" buttons>
               <q-input
                 type="number"
                 v-model="props.row.hc_assigned"
@@ -101,7 +101,7 @@
 
           <q-td key="hc_can_be_added" :props="props">
             {{ props.row.hc_can_be_added }}
-            <q-popup-edit v-model="props.row.hc_can_be_added" title="调整可新增人数" buttons persistent>
+            <q-popup-edit title="调整可新增人数" buttons>
               <q-input
                 type="number"
                 v-model="props.row.hc_can_be_added"
@@ -114,7 +114,7 @@
 
           <q-td key="hc_price" :props="props">
             {{ props.row.hc_price }}
-            <q-popup-edit v-model="props.row.hc_price" title="人力成本" buttons persistent>
+            <q-popup-edit title="人力成本" buttons>
               <q-input
                 type="number"
                 v-model="props.row.hc_price"
@@ -127,7 +127,7 @@
 
           <q-td key="channel_price" :props="props">
             {{ props.row.channel_price }}
-            <q-popup-edit v-model="props.row.channel_price" title="调整渠道牌价格" buttons persistent>
+            <q-popup-edit title="调整渠道牌价格" buttons>
               <q-input
                 type="number"
                 v-model="props.row.channel_price"
@@ -140,7 +140,7 @@
 
           <q-td key="channel" :props="props">
             {{ props.row.channel }}
-            <q-popup-edit v-model="props.row.channel" title="调整渠道牌剩余数量" buttons persistent>
+            <q-popup-edit title="调整渠道牌剩余数量" buttons>
               <q-input
                 type="number"
                 v-model="props.row.channel"
@@ -153,7 +153,7 @@
 
           <q-td key="permission_price" :props="props">
             {{ props.row.permission_price }}
-            <q-popup-edit v-model="props.row.permission_price" title="调整准入牌价格" buttons persistent>
+            <q-popup-edit title="调整准入牌价格" buttons>
               <q-input
                 type="number"
                 v-model="props.row.permission_price"
@@ -166,7 +166,7 @@
 
           <q-td key="permission" :props="props">
             {{ props.row.permission }}
-            <q-popup-edit v-model="props.row.permission" title="调整准入牌剩余数量" buttons persistent>
+            <q-popup-edit title="调整准入牌剩余数量" buttons>
               <q-input
                 type="number"
                 v-model="props.row.permission"
@@ -179,7 +179,7 @@
 
           <q-td key="info_price" :props="props">
             {{ props.row.info_price }}
-            <q-popup-edit v-model="props.row.info_price" title="调整信息牌价格" buttons persistent>
+            <q-popup-edit title="调整信息牌价格" buttons>
               <q-input
                 type="number"
                 v-model="props.row.info_price"
@@ -192,7 +192,7 @@
 
           <q-td key="info" :props="props">
             {{ props.row.info }}
-            <q-popup-edit v-model="props.row.info" title="调整信息牌剩余数量" buttons persistent>
+            <q-popup-edit title="调整信息牌剩余数量" buttons>
               <q-input
                 type="number"
                 v-model="props.row.info"
@@ -205,7 +205,7 @@
 
           <q-td key="profit" :props="props">
             {{ props.row.profit }}
-            <q-popup-edit v-model="props.row.profit" title="调整营收" buttons persistent>
+            <q-popup-edit title="调整营收" buttons>
               <q-input
                 type="number"
                 v-model="props.row.profit"
@@ -226,7 +226,7 @@
 
           <q-td key="vbp_price" :props="props">
             {{ props.row.vbp_price }}
-            <q-popup-edit v-model="props.row.vbp_price" title="调整VBP价格" buttons persistent>
+            <q-popup-edit title="调整VBP价格" buttons>
               <q-input
                 type="number"
                 v-model="props.row.vbp_price"
@@ -239,7 +239,7 @@
 
           <q-td key="vbp_share" :props="props">
             {{ props.row.vbp_share }}
-            <q-popup-edit v-model="props.row.vbp_share" title="调整VBP" buttons persistent>
+            <q-popup-edit title="调整VBP" buttons>
               <q-input
                 type="number"
                 v-model="props.row.vbp_share"
@@ -252,7 +252,7 @@
 
           <q-td key="a_cost" :props="props">
             {{ props.row.a_cost }}
-            <q-popup-edit v-model="props.row.vbpa_cost_share" title="调整产品A成本" buttons persistent>
+            <q-popup-edit title="调整产品A成本" buttons>
               <q-input
                 type="number"
                 v-model="props.row.a_cost"
@@ -264,7 +264,7 @@
           </q-td>
           <q-td key="b_cost" :props="props">
             {{ props.row.b_cost }}
-            <q-popup-edit v-model="props.row.b_cost" title="调整产品B成本" buttons persistent>
+            <q-popup-edit title="调整产品B成本" buttons>
               <q-input
                 type="number"
                 v-model="props.row.b_cost"
@@ -276,7 +276,7 @@
           </q-td>
           <q-td key="c_cost" :props="props">
             {{ props.row.c_cost }}
-            <q-popup-edit v-model="props.row.c_cost" title="调整产品C成本" buttons persistent>
+            <q-popup-edit title="调整产品C成本" buttons>
               <q-input
                 type="number"
                 v-model="props.row.c_cost"
@@ -288,7 +288,7 @@
           </q-td>
           <q-td key="total_investment" :props="props">
             {{ props.row.total_investment }}
-            <q-popup-edit v-model="props.row.total_investment" title="调整总资金投入" buttons persistent>
+            <q-popup-edit v-model="props.row.total_investment" title="调整总资金投入" buttons>
               <q-input
                 type="number"
                 v-model="props.row.total_investment"
@@ -300,7 +300,7 @@
           </q-td>
           <q-td key="total_cost" :props="props">
             {{ props.row.total_cost }}
-            <q-popup-edit v-model="props.row.total_cost" title="调整总生产成本" buttons persistent>
+            <q-popup-edit title="调整总生产成本" buttons>
               <q-input
                 type="number"
                 v-model="props.row.total_cost"
@@ -339,7 +339,7 @@
     </q-expansion-item>
     <div class="com_strategy"></div>
     <!--提交弹窗-->
-    <q-dialog v-model="is_commit_show" persistent>
+    <q-dialog v-model="is_commit_show">
       <q-card style="min-width: 350px">
         <q-card-section>
           <div class="text-h6">确认提交</div>

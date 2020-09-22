@@ -26,7 +26,7 @@
         <div class="col" :style="{color:(c_check?'#666':'#FF0000')}">C成本：{{c_cost}}</div>
       </div>
       <div class="row">
-        <div class="col">可分配人数：{{hc_init}}</div>
+        <div class="col">初始人数：{{hc_init}}</div>
         <div class="col">已分配人数：{{hc_assigned}}</div>
         <div class="col" :style="{color:(hc_check?'#666':'#FF0000')}">新分配人数：{{total_hc}}</div>
         <div class="col">可新增人数:{{hc_can_be_added}}</div>
@@ -42,7 +42,8 @@
           class="col"
           :style="{color:(info_check?'#666':'#FF0000')}"
         >信息牌数量：{{info_count-total_info}}</div>
-
+      </div>
+      <div class="row">
         <div class="col">营收：{{profit}}</div>
         <div class="col">上轮营收：{{last_profit}}</div>
         <div class="col">总营收：{{total_profit}}</div>
@@ -116,7 +117,7 @@
 
           <q-td key="hc_strategy" class="editable" :props="props">
             {{ props.row.hc_strategy }}
-            <q-popup-edit v-model="props.row.info" title="Update HC" buttons persistent>
+            <q-popup-edit title="Update HC" buttons>
               <q-input
                 type="number"
                 v-model="props.row.hc_strategy"
@@ -130,10 +131,8 @@
           <q-td key="advertising_strategy" class="editable" :props="props">
             {{ props.row.advertising_strategy }}
             <q-popup-edit
-              v-model="props.row.advertising_strategy"
               title="Update Advertising"
               buttons
-              persistent
             >
               <q-input
                 type="number"
@@ -147,7 +146,7 @@
 
           <q-td key="a_strategy" class="editable" :props="props">
             {{ props.row.a_strategy }}
-            <q-popup-edit v-model="props.row.a_strategy" title="Update A Price" buttons persistent>
+            <q-popup-edit title="Update A Price" buttons>
               <q-input
                 type="number"
                 v-model="props.row.a_strategy"
@@ -160,7 +159,7 @@
 
           <q-td key="b_strategy" class="editable" :props="props">
             {{ props.row.b_strategy }}
-            <q-popup-edit v-model="props.row.b_strategy" title="Update B Price" buttons persistent>
+            <q-popup-edit title="Update B Price" buttons>
               <q-input
                 type="number"
                 v-model="props.row.b_strategy"
@@ -173,7 +172,7 @@
 
           <q-td key="c_strategy" class="editable" :props="props">
             {{ props.row.c_strategy }}
-            <q-popup-edit v-model="props.row.c_strategy" title="Update C Price" buttons persistent>
+            <q-popup-edit title="Update C Price" buttons>
               <q-input
                 type="number"
                 v-model="props.row.c_strategy"
@@ -186,7 +185,7 @@
 
           <q-td key="channel" class="editable" :props="props">
             {{ props.row.channel }}
-            <q-popup-edit v-model="props.row.channel" title="Update Channel" buttons persistent>
+            <q-popup-edit title="Update Channel" buttons>
               <q-input
                 type="number"
                 v-model="props.row.channel"
@@ -199,12 +198,7 @@
 
           <q-td key="permission" class="editable" :props="props">
             {{ props.row.permission }}
-            <q-popup-edit
-              v-model="props.row.permission"
-              title="Update Permission"
-              buttons
-              persistent
-            >
+            <q-popup-edit title="Update Permission" buttons>
               <q-input
                 type="number"
                 v-model="props.row.permission"
@@ -217,7 +211,7 @@
 
           <q-td key="info" class="editable" :props="props">
             {{ props.row.info }}
-            <q-popup-edit v-model="props.row.info" title="Update Info" buttons persistent>
+            <q-popup-edit title="Update Info" buttons>
               <q-input
                 type="number"
                 v-model="props.row.info"
@@ -232,7 +226,7 @@
     </q-table>
 
     <!--弹窗-->
-    <q-dialog v-model="is_submit_show" persistent>
+    <q-dialog v-model="is_submit_show">
       <q-card style="min-width: 350px">
         <q-card-section>
           <div class="text-h6">结束回合</div>
@@ -554,10 +548,11 @@ export default {
     data: {
       handler: function (val, oldval) {
         // console.log('修改后',val,'修改前',oldval);
-        // 取整
-        this.int_parse();
+        
         // 计算
         this.calculate();
+        // 取整
+        this.int_parse();
         // 合法校验
         this.check();
         console.log(this.is_able_to_submit);
@@ -857,6 +852,7 @@ export default {
       this.total_profit = Number(this.total_profit).toFixed(2);
       this.profit_change = Number(this.profit_change).toFixed(2);
       this.profit_change_ratio = Number(this.profit_change_ratio).toFixed(2);
+      this.total_hc = Number(this.total_hc).toFixed(1);
 
       for (let index = 0; index < this.data.length; index++) {
         const element = this.data[index];
@@ -873,7 +869,7 @@ export default {
         element.b_count = Math.round(element.b_count);
         element.c_count = Math.round(element.c_count);
 
-        element.hc_strategy = Math.round(element.hc_strategy);
+        element.hc_strategy = Number(element.hc_strategy).toFixed(1);
         element.advertising_strategy = Number(
           element.advertising_strategy
         ).toFixed(2);
@@ -916,7 +912,7 @@ export default {
         _this.total_info += Number(element.info);
       }
       this.temp_capital = Number(
-        this.hc_price * this.total_hc +
+        this.hc_price * (this.total_hc - this.hc_init) +
           this.channel_price * this.total_channel +
           this.permission_price * this.total_permission +
           this.info_price * this.total_info +
@@ -926,10 +922,12 @@ export default {
 
     check() {
       if (this.company_id == "d") {
-        this.hc_check = this.hc_can_be_added * 2 - this.total_hc >= 0;
+        this.hc_check =
+          this.hc_can_be_added * 2 + this.hc_assigned - this.total_hc >= 0;
         this.capital_check = this.capital * 1.2 - this.temp_capital;
       } else {
-        this.hc_check = this.hc_can_be_added - this.total_hc >= 0;
+        this.hc_check =
+          this.hc_can_be_added + this.hc_assigned - this.total_hc >= 0;
         this.capital_check = this.capital - this.temp_capital >= 0;
       }
       // this.hc_check = this.hc_limit - this.total_hc >= 0;
