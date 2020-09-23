@@ -1,54 +1,64 @@
 <template>
   <div class="container">
-    <h4>{{game_name}}</h4>
+    <h4>{{ game_name }}</h4>
     <q-card class="my-card">
       <q-img src="https://cdn.quasar.dev/img/parallax2.jpg">
         <div class="absolute-bottom">
-          <div class="text-h6">{{company_name}}</div>
-          <div class="text-subtitle2">Current Round ：{{rounds}}</div>
+          <div class="text-h6">{{ company_name }}</div>
+          <div class="text-subtitle2">Current Round ：{{ rounds }}</div>
         </div>
       </q-img>
       <div class="row">
-        <div class="col">总资金：{{this.capital}}</div>
-        <div class="col" :style="{color:(capital_check?'#666':'#FF0000')}">使用：{{this.temp_capital}}</div>
+        <div class="col">总资金：{{ this.capital }}</div>
+        <div class="col" :style="{ color: capital_check ? '#666' : '#FF0000' }">
+          使用：{{ this.temp_capital }}
+        </div>
 
-        <div class="col">人力成本:{{hc_price}}</div>
-        <div class="col">渠道牌价格：{{channel_price}}</div>
+        <div class="col">人力成本:{{ hc_price }}</div>
+        <div class="col">渠道牌价格：{{ channel_price }}</div>
 
-        <div class="col">准入牌价格：{{permission_price}}</div>
+        <div class="col">准入牌价格：{{ permission_price }}</div>
 
-        <div class="col">信息牌价格：{{info_price}}</div>
-        <div class="col">VBP价格：{{vbp_price}}</div>
-        <div class="col">VBP份额：{{vbp_share}}</div>
+        <div class="col">信息牌价格：{{ info_price }}</div>
+        <div class="col">VBP价格：{{ vbp_price }}</div>
+        <div class="col">VBP份额：{{ vbp_share }}</div>
 
-        <div class="col" :style="{color:(a_check?'#666':'#FF0000')}">A成本：{{a_cost}}</div>
-        <div class="col" :style="{color:(b_check?'#666':'#FF0000')}">B成本：{{b_cost}}</div>
-        <div class="col" :style="{color:(c_check?'#666':'#FF0000')}">C成本：{{c_cost}}</div>
+        <div class="col" :style="{ color: a_check ? '#666' : '#FF0000' }">
+          A成本：{{ a_cost }}
+        </div>
+        <div class="col" :style="{ color: b_check ? '#666' : '#FF0000' }">
+          B成本：{{ b_cost }}
+        </div>
+        <div class="col" :style="{ color: c_check ? '#666' : '#FF0000' }">
+          C成本：{{ c_cost }}
+        </div>
       </div>
       <div class="row">
-        <div class="col">初始人数：{{hc_init}}</div>
-        <div class="col">已分配人数：{{hc_assigned}}</div>
-        <div class="col" :style="{color:(hc_check?'#666':'#FF0000')}">新分配人数：{{total_hc}}</div>
-        <div class="col">可新增人数:{{hc_can_be_added}}</div>
+        <div class="col">初始人数：{{ hc_init }}</div>
+        <div class="col">已分配人数：{{ hc_assigned }}</div>
+        <div class="col" :style="{ color: hc_check ? '#666' : '#FF0000' }">
+          新分配人数：{{ total_hc }}
+        </div>
+        <div class="col">可新增人数:{{ hc_can_be_added }}</div>
+        <div class="col" :style="{ color: channel_check ? '#666' : '#FF0000' }">
+          渠道牌数量：{{ channel_count - total_channel }}
+        </div>
         <div
           class="col"
-          :style="{color:(channel_check?'#666':'#FF0000')}"
-        >渠道牌数量：{{channel_count-total_channel}}</div>
-        <div
-          class="col"
-          :style="{color:(permission_check?'#666':'#FF0000')}"
-        >准入牌数量：{{permission_count-total_permission}}</div>
-        <div
-          class="col"
-          :style="{color:(info_check?'#666':'#FF0000')}"
-        >信息牌数量：{{info_count-total_info}}</div>
+          :style="{ color: permission_check ? '#666' : '#FF0000' }"
+        >
+          准入牌数量：{{ permission_count - total_permission }}
+        </div>
+        <div class="col" :style="{ color: info_check ? '#666' : '#FF0000' }">
+          信息牌数量：{{ info_count - total_info }}
+        </div>
       </div>
       <div class="row">
-        <div class="col">营收：{{profit}}</div>
-        <div class="col">上轮营收：{{last_profit}}</div>
-        <div class="col">总营收：{{total_profit}}</div>
-        <div class="col">营收增长净值：{{profit_change}}</div>
-        <div class="col">营收增长比例：{{profit_change_ratio}}</div>
+        <div class="col">营收：{{ profit }}</div>
+        <div class="col">上轮营收：{{ last_profit }}</div>
+        <div class="col">总营收：{{ total_profit }}</div>
+        <div class="col">营收增长净值：{{ profit_change }}</div>
+        <div class="col">营收增长比例：{{ profit_change_ratio }}</div>
       </div>
     </q-card>
 
@@ -78,25 +88,36 @@
           icon="skip_next"
           label="Next Round"
           :disabled="!is_able_to_submit"
-          @click="is_submit_show=true"
+          @click="is_submit_show = true"
         />
       </template>
       <!--搜索框插槽-->
 
       <template v-slot:body="props">
         <q-tr :props="props">
+
           <q-tooltip anchor="top left" self="top middle" :offset="[10, 10]">
             <strong>{{ props.row.name }}</strong>
             <br />
-            <em>{{ props.row.share_visibility ==1?props.row.operation_count: '暂不可见'}}</em>
+            <em>{{
+              props.row.share_visibility == 1
+                ? props.row.operation_count
+                : "暂不可见"
+            }}</em>
           </q-tooltip>
+          
           <q-td key="name" :props="props">{{ props.row.name }}</q-td>
-          <q-td
-            key="operation_count"
-            :props="props"
-          >{{ props.row.share_visibility ==1?props.row.operation_count: '暂不可见'}}</q-td>
+          <q-td key="operation_count" :props="props">
+            {{
+              props.row.share_visibility == 1
+                ? props.row.operation_count
+                : "暂不可见"
+            }}
+          </q-td>
           <q-td key="hc" :props="props">{{ props.row.hc }}</q-td>
-          <q-td key="advertising" :props="props">{{ props.row.advertising }}</q-td>
+          <q-td key="advertising" :props="props">{{
+            props.row.advertising
+          }}</q-td>
 
           <q-td key="a_price" :props="props">{{ props.row.a_price }}</q-td>
           <q-td key="a_count" :props="props">{{ props.row.a_count }}</q-td>
@@ -107,13 +128,18 @@
           <q-td key="c_price" :props="props">{{ props.row.c_price }}</q-td>
           <q-td key="c_count" :props="props">{{ props.row.c_count }}</q-td>
 
-          <q-td key="last_operation_count" :props="props">{{ props.row.last_operation_count }}</q-td>
-          <q-td key="current_operation_count" :props="props">{{ props.row.current_operation_count }}</q-td>
-          <q-td key="operation_count_change" :props="props">{{ props.row.operation_count_change }}</q-td>
-          <q-td
-            key="operation_count_change_ratio"
-            :props="props"
-          >{{ props.row.operation_count_change_ratio }}</q-td>
+          <q-td key="last_operation_count" :props="props">{{
+            props.row.last_operation_count
+          }}</q-td>
+          <q-td key="current_operation_count" :props="props">{{
+            props.row.current_operation_count
+          }}</q-td>
+          <q-td key="operation_count_change" :props="props">{{
+            props.row.operation_count_change
+          }}</q-td>
+          <q-td key="operation_count_change_ratio" :props="props">{{
+            props.row.operation_count_change_ratio
+          }}</q-td>
 
           <q-td key="hc_strategy" class="editable" :props="props">
             {{ props.row.hc_strategy }}
@@ -153,7 +179,12 @@
 
           <q-td key="a_strategy" class="editable" :props="props">
             {{ props.row.a_strategy }}
-            <q-popup-edit v-model="props.row.a_strategy" title="Update A Price" buttons auto-save>
+            <q-popup-edit
+              v-model="props.row.a_strategy"
+              title="Update A Price"
+              buttons
+              auto-save
+            >
               <q-input
                 type="number"
                 v-model="props.row.a_strategy"
@@ -166,7 +197,12 @@
 
           <q-td key="b_strategy" class="editable" :props="props">
             {{ props.row.b_strategy }}
-            <q-popup-edit v-model="props.row.b_strategy" title="Update B Price" buttons auto-save>
+            <q-popup-edit
+              v-model="props.row.b_strategy"
+              title="Update B Price"
+              buttons
+              auto-save
+            >
               <q-input
                 type="number"
                 v-model="props.row.b_strategy"
@@ -179,7 +215,12 @@
 
           <q-td key="c_strategy" class="editable" :props="props">
             {{ props.row.c_strategy }}
-            <q-popup-edit v-model="props.row.c_strategy" title="Update C Price" buttons auto-save>
+            <q-popup-edit
+              v-model="props.row.c_strategy"
+              title="Update C Price"
+              buttons
+              auto-save
+            >
               <q-input
                 type="number"
                 v-model="props.row.c_strategy"
@@ -192,7 +233,12 @@
 
           <q-td key="channel" class="editable" :props="props">
             {{ props.row.channel }}
-            <q-popup-edit v-model="props.row.channel" title="Update Channel" buttons auto-save>
+            <q-popup-edit
+              v-model="props.row.channel"
+              title="Update Channel"
+              buttons
+              auto-save
+            >
               <q-input
                 type="number"
                 v-model="props.row.channel"
@@ -223,7 +269,12 @@
 
           <q-td key="info" class="editable" :props="props">
             {{ props.row.info }}
-            <q-popup-edit v-model="props.row.info" title="Update Info" buttons auto-save>
+            <q-popup-edit
+              v-model="props.row.info"
+              title="Update Info"
+              buttons
+              auto-save
+            >
               <q-input
                 type="number"
                 v-model="props.row.info"
@@ -245,13 +296,19 @@
         </q-card-section>
 
         <q-card-section class="q-pt-none del-dialog">
-          <p class="msg">你确定提交第{{rounds}}回合策略么？</p>
+          <p class="msg">你确定提交第{{ rounds }}回合策略么？</p>
           <!-- <p class="name">{{ready_to_submit.name}}?</p> -->
         </q-card-section>
 
         <q-card-actions align="right" class="text-primary">
           <q-btn flat label="Cancel" v-close-popup />
-          <q-btn flat color="green" label="Submit" v-close-popup @click="submit()" />
+          <q-btn
+            flat
+            color="green"
+            label="Submit"
+            v-close-popup
+            @click="submit()"
+          />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -344,7 +401,7 @@ export default {
           field: (row) => row.operation_count,
           style: "width:200px",
           format: (val) => `${val}`,
-          sortable: false,
+          sortable: true,
         },
         {
           name: "hc",
@@ -354,7 +411,7 @@ export default {
           field: (row) => row.hc,
           style: "width:200px",
           format: (val) => `${val}`,
-          sortable: false,
+          sortable: true,
         },
         {
           name: "advertising",
@@ -364,7 +421,7 @@ export default {
           field: (row) => row.advertising,
           style: "width:200px",
           format: (val) => `${val}`,
-          sortable: false,
+          sortable: true,
         },
         {
           name: "a_price",
@@ -567,7 +624,7 @@ export default {
         this.int_parse();
         // 合法校验
         this.check();
-        console.log(this.is_able_to_submit);
+        // console.log(this.is_able_to_submit);
       },
       deep: true,
     },
@@ -663,8 +720,7 @@ export default {
       const _this = this;
       Game.GetCompanyData(this.game_id, this.company_id, this.rounds).then(
         (response) => {
-          console.log("111");
-          console.log(typeof response == typeof "");
+          // console.log(typeof response == typeof "");
           let { data } = Object;
           if (typeof response == typeof "") {
             data = eval("(" + response + ")")["data"];
@@ -672,7 +728,6 @@ export default {
             data = response["data"];
           }
           // const { data } = eval("(" + response + ")");
-          console.log("222");
           console.log(data);
           for (let i = 0; i < data.length; i++) {
             _this.original.push({
