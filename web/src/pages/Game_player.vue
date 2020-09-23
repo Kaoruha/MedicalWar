@@ -941,6 +941,9 @@ export default {
         this.hc_check =
           this.hc_can_be_added * 2 + this.hc_assigned - this.total_hc >= 0;
         this.capital_check = this.capital * 1.2 - this.temp_capital;
+      } else if (this.company_id == "c") {
+        this.hc_check =
+          this.hc_can_be_added * 2 + this.hc_assigned - this.total_hc >= 0;
       } else {
         this.hc_check =
           this.hc_can_be_added + this.hc_assigned - this.total_hc >= 0;
