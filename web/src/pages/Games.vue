@@ -166,7 +166,7 @@ export default {
           required: true,
           label: "Name",
           align: "left",
-          field: (row) => row.account,
+          field: (row) => row.name,
           style: "width:200px",
           format: (val) => `${val}`,
           sortable: false,
@@ -267,7 +267,7 @@ export default {
     // SELECT * FROM ... WHERE...LIMIT...
     fetchFromServer(startRow, count, filter, sortBy, descending) {
       const data = filter
-        ? this.original.filter((row) => row.account.includes(filter))
+        ? this.original.filter((row) => row.name.includes(filter))
         : this.original.slice();
 
       // handle sortBy
@@ -293,7 +293,7 @@ export default {
       }
       let count = 0;
       this.original.forEach((treat) => {
-        if (treat.account.includes(filter)) {
+        if (treat.name.includes(filter)) {
           ++count;
         }
       });
