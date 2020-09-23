@@ -39,6 +39,9 @@
       @request="onRequest"
       binary-state-sort
     >
+    <template v-slot:top-right>
+    <q-btn flat style="color: #8080FF;margin-left:40px" label="Export" @click="export2excel" />
+     </template>-->
       <!--检查按钮-->
       <!-- <template v-slot:top-right>
         <q-input borderless dense debounce="300" v-model="filter" placeholder="Search">
@@ -205,7 +208,7 @@
 
           <q-td key="profit" :props="props">
             {{ props.row.profit }}
-            <q-popup-edit  v-model="props.row.profit" title="调整营收" buttons auto-save>
+            <q-popup-edit v-model="props.row.profit" title="调整营收" buttons auto-save>
               <q-input
                 type="number"
                 v-model="props.row.profit"
@@ -319,6 +322,7 @@
       icon="perm_identity"
       :label="company_name[n-1]"
       :caption="is_company_checked[n-1].check ? '确认':'未确认'"
+      :class="is_company_checked[n-1].check ? 'green':'red'"
       v-for="n in 4"
       :key="`md-${n}`"
     >
@@ -362,6 +366,7 @@
 <script>
 import Game from "../api/game.js";
 import Strategy from "../components/host_strategy";
+import exportJson2Excel from "../scripts/xlsx.js";
 
 export default {
   name: "Game_host",
@@ -974,11 +979,54 @@ export default {
         _this.is_all_com_check = false;
       }
     },
+
+    export2excel() {
+      let jsonData = [];
+      const data = this.data;
+      for (let i = 0; i < data.length; i++) {
+        jsonData.push({
+          公司名称: data[i].name,
+          总资金: data[i].capital,
+          // hc_limit: data[i].hc_limit,
+          起始人数: data[i].hc_init,
+          已分配人数: data[i].hc_assigned,
+          可新增人数: data[i].hc_can_be_added,
+          人力成本: data[i].hc_price,
+          渠道牌价格: data[i].channel_price,
+          渠道牌剩余数量: data[i].channel,
+          准入牌价格: data[i].permission_price,
+          准入牌剩余数量: data[i].permission,
+          信息牌价格: data[i].info_price,
+          信息牌剩余数量: data[i].info,
+          营收: data[i].profit,
+          上轮营收: data[i].last_profit,
+          总营收: data[i].total_profit,
+          营收增长净值: data[i].profit_change,
+          营收增长比例: data[i].profit_change_ratio,
+          VBP价格: data[i].vbp_price,
+          VBP份额: data[i].vbp_share,
+
+          产品A成本: data[i].a_cost,
+          产品B成本: data[i].b_cost,
+          产品C成本: data[i].c_cost,
+          总资金投入: data[i].total_investment,
+          总生产成本: data[i].total_cost,
+        });
+      }
+      let path = this.game_name + "_" + this.rounds + "_CompanyInfo.xlsx";
+      exportJson2Excel(jsonData, path);
+    },
   },
 };
 </script>
 
 <style scoped lang="scss">
+.red{
+  color: #f54336;
+}
+.green{
+  color: green;
+}
 .com_strategy {
   margin-bottom: 40px;
 }

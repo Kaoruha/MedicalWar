@@ -122,6 +122,7 @@ def get_com_data():
     data = []
     for index, row in df.iterrows():
         t = {
+            "uid":row['ID'],
             "name": row['医院名称'],
             "operation_count": row['年手术台数'],
             "hc_sensitivity": row['HC敏感度'],

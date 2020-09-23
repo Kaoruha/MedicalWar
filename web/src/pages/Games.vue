@@ -32,7 +32,7 @@
 
       <template v-slot:body="props">
         <q-tr :props="props">
-          <q-td key="id" :props="props">{{ props.row.id }}</q-td>
+          <q-td key="uid" :props="props">{{ props.row.uid }}</q-td>
           <q-td key="name" :props="props">{{ props.row.name }}</q-td>
           <q-td key="description" :props="props">
             {{ props.row.description }}
@@ -58,14 +58,14 @@
               flat
               text-color="primay"
               label="ENTER"
-              @click="enter_game(props.row.id)"
+              @click="enter_game(props.row.uid)"
             />
             <q-btn
               flat
               color="white"
               text-color="red"
               label="Delete"
-              @click="show_delete_dialog(props.row.id, props.row.name)"
+              @click="show_delete_dialog(props.row.uid, props.row.name)"
             />
           </q-td>
         </q-tr>
@@ -117,7 +117,7 @@
             color="red"
             label="Delete"
             v-close-popup
-            @click="delete_game(ready_to_delete.id)"
+            @click="delete_game(ready_to_delete.uid)"
           />
         </q-card-actions>
       </q-card>
@@ -135,7 +135,7 @@ export default {
       is_add_show: false,
       is_delete_show: false,
       ready_to_delete: {
-        id: 0,
+        uid: 0,
         name: "god",
       },
       name: "",
@@ -143,19 +143,19 @@ export default {
       filter: "",
       loading: false,
       pagination: {
-        sortBy: "id",
-        descending: false,
+        sortBy: "uid",
+        descending: true,
         page: 1,
         rowsPerPage: 25,
-        rowsNumber: 10,
+        rowsNumber: 25,
       },
       columns: [
         {
-          name: "id",
+          name: "uid",
           required: true,
           label: "ID",
           align: "left",
-          field: (row) => row.id,
+          field: (row) => row.uid,
           style: "width: 10px",
           headerStyle: "width: 10px",
           format: (val) => `${val}`,
@@ -169,7 +169,7 @@ export default {
           field: (row) => row.name,
           style: "width:200px",
           format: (val) => `${val}`,
-          sortable: false,
+          sortable: true,
         },
         {
           name: "description",
@@ -189,7 +189,7 @@ export default {
           field: (row) => row.description,
           style: "width:200px",
           format: (val) => `${val}`,
-          sortable: false,
+          sortable: true,
         },
         {
           name: "recent",
@@ -273,10 +273,10 @@ export default {
       // handle sortBy
       if (sortBy) {
         const sortFn =
-          sortBy === "id"
+          sortBy === "uid"
             ? descending
-              ? (a, b) => (a.name > b.name ? -1 : a.name < b.name ? 1 : 0)
-              : (a, b) => (a.name > b.name ? 1 : a.name < b.name ? -1 : 0)
+              ? (a, b) => (a.uid > b.uid ? -1 : a.uid < b.uid ? 1 : 0)
+              : (a, b) => (a.uid > b.uid ? 1 : a.uid < b.uid ? -1 : 0)
             : descending
             ? (a, b) => parseFloat(b[sortBy]) - parseFloat(a[sortBy])
             : (a, b) => parseFloat(a[sortBy]) - parseFloat(b[sortBy]);
@@ -309,7 +309,7 @@ export default {
         for (let i = 0; i < data.length; i++) {
           _this.original.push({
             name: data[i].name,
-            id: data[i].id,
+            uid: data[i].id,
             description: data[i].description,
             round: data[i].rounds,
             recent: data[i].update,
@@ -346,15 +346,15 @@ export default {
       this.clear_add_dialog();
     },
 
-    show_delete_dialog(id, name) {
+    show_delete_dialog(uid, name) {
       this.is_delete_show = true;
-      this.ready_to_delete.id = id;
+      this.ready_to_delete.uid = uid;
       this.ready_to_delete.name = name;
     },
 
-    delete_game(id) {
+    delete_game(uid) {
       const _this = this;
-      Game.Delete(id).then((response) => {
+      Game.Delete(uid).then((response) => {
         switch (response.code) {
           default:
             break;
@@ -368,8 +368,8 @@ export default {
       });
     },
 
-    enter_game(id){
-      this.$store.commit("current_game/updateCurrentGameID", id); // TODO Check
+    enter_game(uid){
+      this.$store.commit("current_game/updateCurrentGameID", uid); // TODO Check
       // alert(this.$store.state.current_game.xxx;)
       this.$router.push("game_host");
     }

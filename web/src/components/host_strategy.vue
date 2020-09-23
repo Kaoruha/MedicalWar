@@ -18,12 +18,13 @@
       <!--检查按钮-->
       <template v-slot:top-right>
         {{url}}
+        <q-btn flat style="color: #8080FF;margin-left:40px" label="Export" @click="export2excel" />
         <q-btn
           class="btn-add"
           color="primary"
           rounded
           icon="done"
-          :label="is_company_checked ? 'Checked':'Check'"
+          :label="is_company_checked ? '已确认':'待确认'"
           @click="all_check"
         />
       </template>
@@ -36,6 +37,7 @@
             <br />
             <em>{{ props.row.operation_count }}</em>
           </q-tooltip>
+          <q-td key="uid" :props="props">{{ props.row.uid }}</q-td>
           <q-td key="name" :props="props">{{ props.row.name }}</q-td>
           <q-td key="operation_count" :props="props">
             {{ props.row.operation_count }}
@@ -368,12 +370,7 @@
 
           <q-td key="advertising_strategy" :props="props">
             {{ props.row.advertising_strategy }}
-            <q-popup-edit
-              v-model="props.row.advertising_strategy"
-              title="调整市场决策"
-              buttons
-              auto-save
-            >
+            <q-popup-edit v-model="props.row.advertising_strategy" title="调整市场决策" buttons auto-save>
               <q-input
                 type="number"
                 v-model="props.row.advertising_strategy"
@@ -469,6 +466,8 @@
 
 <script>
 import Game from "../api/game.js";
+import exportJson2Excel from "../scripts/xlsx.js";
+
 export default {
   name: "host_strategy",
   props: {
@@ -493,13 +492,24 @@ export default {
       filter: "",
       loading: false,
       pagination: {
-        sortBy: "id",
+        sortBy: "uid",
         descending: false,
         page: 1,
         rowsPerPage: 0,
         rowsNumber: 10,
       },
       columns: [
+        {
+          name: "uid",
+          required: true,
+          label: "ID",
+          align: "left",
+          field: (row) => row.uid,
+          style: "width: 10px",
+          headerStyle: "width: 10px",
+          format: (val) => `${val}`,
+          sortable: true,
+        },
         {
           name: "name",
           required: true,
@@ -918,10 +928,10 @@ export default {
       // handle sortBy
       if (sortBy) {
         const sortFn =
-          sortBy === "id"
+          sortBy === "uid"
             ? descending
-              ? (a, b) => (a.name > b.name ? -1 : a.name < b.name ? 1 : 0)
-              : (a, b) => (a.name > b.name ? 1 : a.name < b.name ? -1 : 0)
+              ? (a, b) => (a.uid > b.uid ? -1 : a.uid < b.uid ? 1 : 0)
+              : (a, b) => (a.uid > b.uid ? 1 : a.uid < b.uid ? -1 : 0)
             : descending
             ? (a, b) => parseFloat(b[sortBy]) - parseFloat(a[sortBy])
             : (a, b) => parseFloat(a[sortBy]) - parseFloat(b[sortBy]);
@@ -963,19 +973,14 @@ export default {
           //   const { data } = response;
           // }
           let { data } = Object;
-          if (typeof(response)==typeof "") {
+          if (typeof response == typeof "") {
             data = eval("(" + response + ")")["data"];
-          }else{
+          } else {
             data = response["data"];
           }
-          // const { data } = eval("(" + response + ")");
-           console.log("222");
-          console.log(data);
-          // const { data } = eval("(" + response + ")");
-          // console.log(response);
-          // console.log(data);
           for (let i = 0; i < data.length; i++) {
             _this.original.push({
+              uid: data[i].uid,
               name: data[i].name,
               operation_count: data[i].operation_count,
 
@@ -1098,6 +1103,64 @@ export default {
           element.operation_count_change_ratio
         ).toFixed(2);
       }
+    },
+
+    export2excel() {
+      let jsonData = [];
+      const data = this.data;
+      for (let i = 0; i < data.length; i++) {
+        jsonData.push({
+          ID: data[i].uid,
+          医院名称: data[i].name,
+          年手术台数: data[i].operation_count,
+
+          HC敏感度: data[i].hc_sensitivity,
+          推广敏感度: data[i].advertising_sensitivity,
+          价格敏感度: data[i].price_sensitivity,
+
+          份额: data[i].share,
+          份额可见: data[i].share_visibility,
+          总份额: data[i].total_share,
+          上轮份额: data[i].last_share,
+          份额增长净值: data[i].share_change,
+          份额增长比例: data[i].share_change_ratio,
+
+          当前HC: data[i].hc,
+          HC下限: data[i].hc_low_limit,
+          推广费用: data[i].advertising,
+          产品A价格: data[i].a_price,
+          产品A均价: data[i].a_mean,
+          产品B价格: data[i].b_price,
+          产品B均价: data[i].b_mean,
+          产品C价格: data[i].c_price,
+          产品C均价: data[i].c_mean,
+
+          // 0922 新增各个产品的台数
+          产品A台数: data[i].a_count,
+          产品B台数: data[i].b_count,
+          产品C台数: data[i].c_count,
+
+          上轮台数: data[i].last_operation_count,
+          本轮台数: data[i].current_operation_count,
+          台数增长净值: data[i].operation_count_change,
+          台数增长比例: data[i].operation_count_change_ratio,
+
+          HC决策: data[i].hc_strategy,
+          推广决策: data[i].advertising_strategy,
+          产品A价格决策: data[i].a_strategy,
+          产品B价格决策: data[i].b_strategy,
+          产品C价格决策: data[i].c_strategy,
+          渠道牌: data[i].channel,
+          准入牌: data[i].permission,
+          信息牌: data[i].info,
+        });
+      }
+      // const jsonData = [{ 姓名: 'Tom', 年龄: 18, 身份证号: '0102' }, { 姓名: '张三', 年龄: 210204199901212290, 身份证号: '210204199901212290' }]
+      let path =this.game_id + "_" + this.rounds + "_" + this.company_name + ".xlsx"
+      exportJson2Excel(
+        jsonData,
+        path
+      );
     },
   },
 };

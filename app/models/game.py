@@ -95,7 +95,7 @@ class Game(Base):
             rounds) + '/InputTable' + _company + '.csv'
         # print(path)
         try:
-            df = pd.read_csv(path)
+            df = pd.read_csv(path).fillna(0)
             return df
         except Exception as e:
             print(e)
@@ -117,7 +117,7 @@ class Game(Base):
             rounds) + '/companyInfo.csv'
         print(path)
         try:
-            df = pd.read_csv(path)
+            df = pd.read_csv(path).fillna(0)
             return df
         except Exception as e:
             print(e)
@@ -164,11 +164,11 @@ class Game(Base):
 
             if i == 0:
                 print(path + '/' + files[i] + '.csv')
-                company_info = pd.read_csv(path + '/' + files[i] + '.csv')
+                company_info = pd.read_csv(path + '/' + files[i] + '.csv').fillna(0)
             else:
                 print(path + '/' + files[i] + '.csv')
                 company_list.append(pd.read_csv(path + '/' + files[i] +
-                                                '.csv'))
+                                                '.csv').fillna(0))
         
         c_list, c_info = result_calculate(company_list=company_list,
                                           company_info=company_info,
@@ -278,6 +278,7 @@ dict1 = {
     "total_cost": '总生产成本'
 }
 dict2 = {
+    'uid':'ID',
     'name': '医院名称',
     'operation_count': '年手术台数',
     'hc_sensitivity': 'HC敏感度',
