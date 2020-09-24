@@ -183,7 +183,7 @@ def Company_Share_Change(hospital_id,company_list):
 
 # 对于一个产品，计算其份额情况
 
-def product_change(company_df, hospital_id,game):
+def product_change(company_df, hospital_id):
     '''
     company_df : 公司表
     hospital_id: 医院ID
@@ -201,7 +201,7 @@ def product_change(company_df, hospital_id,game):
         
     # product A
     if c['产品A份额'] == 0:
-        if (c['准入牌'] >= 1 and game < 3) or pa <= c['产品A均价']*0.9:
+        if c['准入牌'] >= 1 or pa <= c['产品A均价']*0.9:
             share_A = 0.1
         else:
             share_A = 0
@@ -279,7 +279,7 @@ def result_calculate(company_list, company_info, game):
     #对每家医院，每个企业，更新其三种产品份额
     for h in range(hospital_num):
         for c in range(company_num):
-            (share_A,share_B,share_C,pa,pb,pc) = product_change(company_list[c],h,game)
+            (share_A,share_B,share_C,pa,pb,pc) = product_change(company_list[c],h)
             new_company_list[c]['产品A价格'][h] = pa
             new_company_list[c]['产品B价格'][h] = pb
             new_company_list[c]['产品C价格'][h] = pc

@@ -115,7 +115,10 @@ def get_com_data():
     rounds = request.get_json()['rounds']
     company_id = request.get_json()['company_id']
     print(f'gameid:{game_id} companyid:{company_id} rounds:{rounds}')
-
+    if rounds ==0:
+        print("还未开始")
+        return NoException(data=data,
+                       msg=f'{game_id}局游戏还未开始')
     df = Game.get_com_data(game_id=game_id,
                            rounds=rounds,
                            company_id=company_id)
