@@ -20,6 +20,12 @@
         {{url}}
         <q-btn flat style="color: #8080FF;margin-left:40px" label="Export" @click="export2excel" />
         <q-btn
+          flat
+          style="color: #8080ff; margin-left: 40px"
+          label="批量"
+          @click="is_batch_show = true"
+        />
+        <q-btn
           class="btn-add"
           color="primary"
           rounded
@@ -461,6 +467,42 @@
         </q-tr>
       </template>
     </q-table>
+
+    <!--批量弹窗-->
+    <q-dialog v-model="is_batch_show">
+      <q-card style="min-width: 350px">
+        <q-card-section>
+          <div class="text-h6">批量填写</div>
+        </q-card-section>
+
+        <q-card-section class="q-pt-none del-dialog">
+          <q-select
+            filled
+            v-model="batch"
+            :options="options"
+            label="目标字段"
+          />
+          <q-input
+            v-model="batch_num"
+            label="Number"
+            style="margin-top: 20px"
+            type="number"
+          />
+        </q-card-section>
+
+        <q-card-actions align="right" class="text-primary">
+          <q-btn flat label="Cancel" v-close-popup />
+          <q-btn
+            flat
+            color="green"
+            label="Submit"
+            v-close-popup
+            @click="batch_submit()"
+          />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+
   </div>
 </template>
 
@@ -486,6 +528,15 @@ export default {
   },
   data() {
     return {
+      is_batch_show:false,
+      batch_num: 0,
+      batch: "产品B价格",
+      options: [
+        "产品B价格"
+      ],
+      options_target: [
+        "b_price",
+      ],
       game_id: 1,
       rounds: 1,
       is_company_checked: false,
@@ -1162,6 +1213,23 @@ export default {
         path
       );
     },
+
+    batch_submit() {
+      let i = 0;
+      for (let index = 0; index < this.options.length; index++) {
+        if (this.options[index] == this.batch) {
+          i = index
+        }
+      }
+      for (let index = 0; index < this.data.length; index++) {
+        const element = this.data[index];
+        element[this.options_target[i]] = this.batch_num
+      }
+      this.batch_num = 0
+      // alert(this.options_target[i]+this.batch_num);
+    },
+  
+  
   },
 };
 </script>

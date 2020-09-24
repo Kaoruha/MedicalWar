@@ -10,10 +10,9 @@
       </q-img>
       <div class="row">
         <div class="col">总资金：{{ this.capital }}</div>
-        <div
-          class="col"
-          :style="{ color: capital_check ? '#666' : '#FF0000' }"
-        >使用：{{ this.temp_capital }}</div>
+        <div class="col" :style="{ color: capital_check ? '#666' : '#FF0000' }">
+          使用：{{ this.temp_capital }}
+        </div>
 
         <div class="col">人力成本:{{ hc_price }}</div>
         <div class="col">渠道牌价格：{{ channel_price }}</div>
@@ -24,27 +23,35 @@
         <!-- <div class="col">VBP价格：{{ vbp_price }}</div>
         <div class="col">VBP份额：{{ vbp_share }}</div> -->
 
-        <div class="col" :style="{ color: a_check ? '#666' : '#FF0000' }">A成本：{{ a_cost }}</div>
-        <div class="col" :style="{ color: b_check ? '#666' : '#FF0000' }">B成本：{{ b_cost }}</div>
-        <div class="col" :style="{ color: c_check ? '#666' : '#FF0000' }">C成本：{{ c_cost }}</div>
+        <div class="col" :style="{ color: a_check ? '#666' : '#FF0000' }">
+          A成本：{{ a_cost }}
+        </div>
+        <div class="col" :style="{ color: b_check ? '#666' : '#FF0000' }">
+          B成本：{{ b_cost }}
+        </div>
+        <div class="col" :style="{ color: c_check ? '#666' : '#FF0000' }">
+          C成本：{{ c_cost }}
+        </div>
       </div>
       <div class="row">
         <div class="col">初始人数：{{ hc_init }}</div>
         <div class="col">已分配人数：{{ hc_assigned }}</div>
-        <div class="col" :style="{ color: hc_check ? '#666' : '#FF0000' }">新分配人数：{{ total_hc }}</div>
+        <div class="col" :style="{ color: hc_check ? '#666' : '#FF0000' }">
+          新分配人数：{{ total_hc }}
+        </div>
         <div class="col">可新增人数:{{ hc_can_be_added }}</div>
-        <div
-          class="col"
-          :style="{ color: channel_check ? '#666' : '#FF0000' }"
-        >渠道牌数量：{{ channel_count - total_channel }}</div>
+        <div class="col" :style="{ color: channel_check ? '#666' : '#FF0000' }">
+          渠道牌数量：{{ channel_count - total_channel }}
+        </div>
         <div
           class="col"
           :style="{ color: permission_check ? '#666' : '#FF0000' }"
-        >准入牌数量：{{ permission_count - total_permission }}</div>
-        <div
-          class="col"
-          :style="{ color: info_check ? '#666' : '#FF0000' }"
-        >信息牌数量：{{ info_count - total_info }}</div>
+        >
+          准入牌数量：{{ permission_count - total_permission }}
+        </div>
+        <div class="col" :style="{ color: info_check ? '#666' : '#FF0000' }">
+          信息牌数量：{{ info_count - total_info }}
+        </div>
       </div>
       <div class="row">
         <div class="col">营收：{{ profit }}</div>
@@ -74,7 +81,18 @@
             <q-icon name="search" />
           </template>
         </q-input>-->
-        <q-btn flat style="color: #8080FF;margin-left:40px" label="Export" @click="export2excel" />
+        <q-btn
+          flat
+          style="color: #8080ff; margin-left: 40px"
+          label="Export"
+          @click="export2excel"
+        />
+        <q-btn
+          flat
+          style="color: #8080ff; margin-left: 40px"
+          label="批量"
+          @click="is_batch_show = true"
+        />
         <q-btn
           class="btn-add"
           color="primary"
@@ -94,9 +112,9 @@
             <br />
             <em>
               {{
-              props.row.share_visibility == 1
-              ? props.row.operation_count
-              : "暂不可见"
+                props.row.share_visibility == 1
+                  ? props.row.operation_count
+                  : "暂不可见"
               }}
             </em>
           </q-tooltip>
@@ -104,16 +122,14 @@
           <q-td key="name" :props="props">{{ props.row.name }}</q-td>
           <q-td key="operation_count" :props="props">
             {{
-            props.row.share_visibility == 1
-            ? props.row.operation_count
-            : "暂不可见"
+              props.row.share_visibility == 1
+                ? props.row.operation_count
+                : "暂不可见"
             }}
           </q-td>
           <q-td key="hc" :props="props">{{ props.row.hc }}</q-td>
           <q-td key="advertising" :props="props">
-            {{
-            props.row.advertising
-            }}
+            {{ props.row.advertising }}
           </q-td>
 
           <q-td key="a_price" :props="props">{{ props.row.a_price }}</q-td>
@@ -126,24 +142,16 @@
           <q-td key="c_count" :props="props">{{ props.row.c_count }}</q-td>
 
           <q-td key="last_operation_count" :props="props">
-            {{
-            props.row.last_operation_count
-            }}
+            {{ props.row.last_operation_count }}
           </q-td>
           <q-td key="current_operation_count" :props="props">
-            {{
-            props.row.current_operation_count
-            }}
+            {{ props.row.current_operation_count }}
           </q-td>
           <q-td key="operation_count_change" :props="props">
-            {{
-            props.row.operation_count_change
-            }}
+            {{ props.row.operation_count_change }}
           </q-td>
           <q-td key="operation_count_change_ratio" :props="props">
-            {{
-            props.row.operation_count_change_ratio
-            }}
+            {{ props.row.operation_count_change_ratio }}
           </q-td>
 
           <q-td key="hc_strategy" class="editable" :props="props">
@@ -184,7 +192,12 @@
 
           <q-td key="a_strategy" class="editable" :props="props">
             {{ props.row.a_strategy }}
-            <q-popup-edit v-model="props.row.a_strategy" title="Update A Price" buttons auto-save>
+            <q-popup-edit
+              v-model="props.row.a_strategy"
+              title="Update A Price"
+              buttons
+              auto-save
+            >
               <q-input
                 type="number"
                 v-model="props.row.a_strategy"
@@ -197,7 +210,12 @@
 
           <q-td key="b_strategy" class="editable" :props="props">
             {{ props.row.b_strategy }}
-            <q-popup-edit v-model="props.row.b_strategy" title="Update B Price" buttons auto-save>
+            <q-popup-edit
+              v-model="props.row.b_strategy"
+              title="Update B Price"
+              buttons
+              auto-save
+            >
               <q-input
                 type="number"
                 v-model="props.row.b_strategy"
@@ -210,7 +228,12 @@
 
           <q-td key="c_strategy" class="editable" :props="props">
             {{ props.row.c_strategy }}
-            <q-popup-edit v-model="props.row.c_strategy" title="Update C Price" buttons auto-save>
+            <q-popup-edit
+              v-model="props.row.c_strategy"
+              title="Update C Price"
+              buttons
+              auto-save
+            >
               <q-input
                 type="number"
                 v-model="props.row.c_strategy"
@@ -223,7 +246,12 @@
 
           <q-td key="channel" class="editable" :props="props">
             {{ props.row.channel }}
-            <q-popup-edit v-model="props.row.channel" title="Update Channel" buttons auto-save>
+            <q-popup-edit
+              v-model="props.row.channel"
+              title="Update Channel"
+              buttons
+              auto-save
+            >
               <q-input
                 type="number"
                 v-model="props.row.channel"
@@ -254,7 +282,12 @@
 
           <q-td key="info" class="editable" :props="props">
             {{ props.row.info }}
-            <q-popup-edit v-model="props.row.info" title="Update Info" buttons auto-save>
+            <q-popup-edit
+              v-model="props.row.info"
+              title="Update Info"
+              buttons
+              auto-save
+            >
               <q-input
                 type="number"
                 v-model="props.row.info"
@@ -268,7 +301,7 @@
       </template>
     </q-table>
 
-    <!--弹窗-->
+    <!--提交弹窗-->
     <q-dialog v-model="is_submit_show">
       <q-card style="min-width: 350px">
         <q-card-section>
@@ -282,7 +315,48 @@
 
         <q-card-actions align="right" class="text-primary">
           <q-btn flat label="Cancel" v-close-popup />
-          <q-btn flat color="green" label="Submit" v-close-popup @click="submit()" />
+          <q-btn
+            flat
+            color="green"
+            label="Submit"
+            v-close-popup
+            @click="submit()"
+          />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+
+    <!--批量弹窗-->
+    <q-dialog v-model="is_batch_show">
+      <q-card style="min-width: 350px">
+        <q-card-section>
+          <div class="text-h6">批量填写</div>
+        </q-card-section>
+
+        <q-card-section class="q-pt-none del-dialog">
+          <q-select
+            filled
+            v-model="batch"
+            :options="options"
+            label="目标字段"
+          />
+          <q-input
+            v-model="batch_num"
+            label="Number"
+            style="margin-top: 20px"
+            type="number"
+          />
+        </q-card-section>
+
+        <q-card-actions align="right" class="text-primary">
+          <q-btn flat label="Cancel" v-close-popup />
+          <q-btn
+            flat
+            color="green"
+            label="Submit"
+            v-close-popup
+            @click="batch_submit()"
+          />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -297,6 +371,29 @@ export default {
   name: "Game_player",
   data() {
     return {
+      batch_num: 0,
+      batch: "HC决策",
+      options: [
+        "HC决策",
+        "市场决策",
+        "产品A价格决策",
+        "产品B价格决策",
+        "产品C价格决策",
+        "渠道牌",
+        "准入牌",
+        "信息牌",
+      ],
+      options_target: [
+        "hc_strategy",
+        "advertising_strategy",
+        "a_strategy",
+        "b_strategy",
+        "c_strategy",
+        "channel",
+        "permission",
+        "info",
+      ],
+      // options: [{name:'1212',value:'hc_strategy'},{name:'1212',value:'hc_strategy'}],
       is_able_to_submit: true,
       a_check: true,
       b_check: true,
@@ -341,6 +438,7 @@ export default {
       c_cost: 0,
       total_investment: 0,
       total_cost: 0,
+      is_batch_show: false,
       is_submit_show: false,
       ready_to_submit: {
         id: 0,
@@ -1093,7 +1191,21 @@ export default {
         this.game_name + "_" + this.rounds + "_" + this.company_name + ".xlsx";
       exportJson2Excel(jsonData, path);
     },
-  
+    batch_submit() {
+      let i = 0;
+      for (let index = 0; index < this.options.length; index++) {
+        if (this.options[index] == this.batch) {
+          i = index
+        }
+      }
+      for (let index = 0; index < this.data.length; index++) {
+        const element = this.data[index];
+        element[this.options_target[i]] = this.batch_num
+      }
+      this.batch_num = 0
+
+      // alert(this.options_target[i]+this.batch_num);
+    },
   },
 };
 </script>
