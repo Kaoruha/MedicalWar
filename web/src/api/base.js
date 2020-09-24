@@ -7,7 +7,7 @@ import { Notify } from 'quasar'
 class BaseModule {
   constructor(url, timeout) {
     this.url = url;
-    this.timeout = timeout;
+    this.timeout = 10000;
     this.instance = axios.create({
       baseURL: this.url,
       timeout: this.timeout,
