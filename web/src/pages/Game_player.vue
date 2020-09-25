@@ -9,7 +9,7 @@
         </div>
       </q-img>
       <div class="row">
-        <div class="col">总资金：{{ this.capital }}</div>
+        <div class="col">剩余资金：{{ this.capital }}</div>
         <div class="col" :style="{ color: capital_check ? '#666' : '#FF0000' }">
           使用：{{ this.temp_capital }}
         </div>
@@ -1080,7 +1080,7 @@ export default {
       if (this.company_id == "d") {
         this.hc_check =
           this.hc_can_be_added * 2 + this.hc_assigned - this.total_hc >= 0;
-        this.capital_check = this.capital * 1.2 - this.temp_capital;
+        this.capital_check = this.capital + 100000 - this.temp_capital >= 0;
       } else if (this.company_id == "c") {
         this.hc_check =
           this.hc_can_be_added * 2 + this.hc_assigned - this.total_hc >= 0;

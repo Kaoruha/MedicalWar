@@ -657,7 +657,15 @@ export default {
     // get initial data from server (1st page)
     this.get_current_game();
   },
-  watch: {},
+  watch: {
+    data: {
+      handler: function (val, oldval) {
+        // 取整
+        this.int_parse();
+      },
+      deep: true,
+    },
+  },
   methods: {
     onRequest(props) {
       const { page, rowsPerPage, sortBy, descending } = props.pagination;
@@ -787,7 +795,6 @@ export default {
               // hc_limit: data[i].hc_limit,
               hc_init: data[i].hc_init,
               hc_assigned: data[i].hc_assigned,
-              hc_init: data[i].hc_init,
               hc_can_be_added: data[i].hc_can_be_added,
               hc_price: data[i].hc_price,
               channel_price: data[i].channel_price,
@@ -1016,7 +1023,46 @@ export default {
       let path = this.game_name + "_" + this.rounds + "_CompanyInfo.xlsx";
       exportJson2Excel(jsonData, path);
     },
-  },
+
+    int_parse() {
+      for (let index = 0; index < this.data.length; index++) {
+        const element = this.data[index];
+        element.capital = Number(element.capital).toFixed(2);
+        element.hc_init = Number(element.hc_init).toFixed(1);
+        element.hc_assigned = Number(element.hc_assigned).toFixed(1);
+        element.hc_can_be_added = Number(element.hc_can_be_added).toFixed(1);
+        element.hc_price = Number(element.hc_price).toFixed(2);
+        element.channel_price = Number(element.channel_price).toFixed(2);
+        element.channel = Math.round(element.channel);
+
+        element.permission_price = Number(element.permission_price).toFixed(2);
+        element.permission = Math.round(element.permission);
+
+        element.info_price = Number(element.info_price).toFixed(2);
+        element.info = Math.round(element.info);
+
+
+        element.profit = Number(element.profit).toFixed(2);
+        element.last_profit = Number(element.last_profit).toFixed(2);
+        element.total_profit = Number(element.total_profit).toFixed(2);
+        element.profit_change = Number(element.profit_change).toFixed(2);
+        element.profit_change_ratio = Number(element.profit_change_ratio).toFixed(2);
+
+        element.vbp_price = Number(element.vbp_price).toFixed(2);
+        element.vbp_share = Number(element.vbp_share).toFixed(2);
+
+        element.a_cost = Number(element.a_cost).toFixed(2);
+        element.b_cost = Number(element.b_cost).toFixed(2);
+        element.c_cost = Number(element.c_cost).toFixed(2);
+
+        element.total_investment = Number(element.total_investment).toFixed(2);
+        element.total_cost = Number(element.total_cost).toFixed(2);
+      }
+    },
+
+ 
+ 
+ },
 };
 </script>
 
