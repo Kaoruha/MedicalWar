@@ -1074,6 +1074,7 @@ export default {
           this.info_price * this.total_info +
           this.total_advertising
       ).toFixed(2);
+      console.log(this.total_hc)
     },
 
     check() {

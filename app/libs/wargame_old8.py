@@ -191,7 +191,6 @@ def product_change(company_df, hospital_id,game):
     hospital_id: 医院ID
     输出：三个数字，表示产品ABC的份额
     '''
-    game = int(game)
     c = company_df.loc[hospital_id]
     pa = c['产品A价格决策']
     pb = c['产品B价格决策']
@@ -202,12 +201,9 @@ def product_change(company_df, hospital_id,game):
     if c['产品B价格决策'] > c['产品B价格']:
         pb = c['产品B价格']
         
-        
     # product A
     if c['产品A份额'] == 0:
-        if pa >= c['产品A均价']*2:
-            c['产品A份额'] = 0
-        elif (int(c['准入牌']) >= 1 and int(game) < 3) or pa <= c['产品A均价']*0.9:
+        if (c['准入牌'] >= 1 and game < 3) or pa <= c['产品A均价']*0.9:
             share_A = 0.1
         else:
             share_A = 0
@@ -225,7 +221,6 @@ def product_change(company_df, hospital_id,game):
     
 
 def result_calculate(company_list, company_info, game):
-    game = int(game)
     '''
     主要结算函数，company_list 为公司数据列表，其中每个元素为一个公司表格的dataframe
     company_info为公司信息汇总表，主要是筹码与结算
@@ -265,24 +260,6 @@ def result_calculate(company_list, company_info, game):
     company_num = len(company_list)
     hospital_num = len(company_list[0])
     
-    # 对每家医院，更新三种产品均价：
-    for h in range(hospital_num):
-        pa = []
-        pb = []
-        pc = []
-        for c in range(company_num):
-            pa.append(company_list[c]['产品A价格'][h])
-            pb.append(company_list[c]['产品B价格'][h])
-            pc.append(company_list[c]['产品C价格'][h])
-    pa_avg = mean(pa)
-    pb_avg = mean(pb)
-    pc_avg = mean(pc)
-
-    # 更新每张表的产品均价：
-    for c in range(company_num):
-        company_list[c]['产品A均价'] = pa_avg
-        company_list[c]['产品B均价'] = pb_avg
-        company_list[c]['产品C均价'] = pc_avg
     
     company_info['营收增长比例'] = company_info['营收增长比例'].astype(float)
 
@@ -299,33 +276,50 @@ def result_calculate(company_list, company_info, game):
         new_shares = Company_Share_Change(h,company_list)
         for c in range(len(new_shares)):
             #print(h,c)
-            new_company_list[c].loc[h,'份额'] = new_shares[c]
+            new_company_list[c]['份额'][h] = new_shares[c]
     
     #对每家医院，每个企业，更新其三种产品份额
     for h in range(hospital_num):
         for c in range(company_num):
             (share_A,share_B,share_C,pa,pb,pc) = product_change(company_list[c],h,game)
-            
-            new_company_list[c].loc[h,'产品A价格'] = pa
-            new_company_list[c].loc[h,'产品B价格'] = pb
-            new_company_list[c].loc[h,'产品C价格'] = pc
-            new_company_list[c].loc[h,'产品A份额'] = share_A
-            new_company_list[c].loc[h,'产品B份额'] = share_B
-            new_company_list[c].loc[h,'产品C份额'] = share_C
+            new_company_list[c]['产品A价格'][h] = pa
+            new_company_list[c]['产品B价格'][h] = pb
+            new_company_list[c]['产品C价格'][h] = pc
+            new_company_list[c]['产品A份额'][h] = share_A
+            new_company_list[c]['产品B份额'][h] = share_B
+            new_company_list[c]['产品C份额'][h] = share_C
             # 更新产品台数
             if game == 1:
-                new_company_list[c].loc[h,'产品A台数'] = int(new_company_list[c]['年手术台数'][h] * new_company_list[c]['份额'][h] * new_company_list[c]['产品A份额'][h] )
-                new_company_list[c].loc[h,'产品B台数'] = int(new_company_list[c]['年手术台数'][h] * new_company_list[c]['份额'][h] * new_company_list[c]['产品B份额'][h] )
-                new_company_list[c].loc[h,'产品C台数'] = int(new_company_list[c]['年手术台数'][h] * new_company_list[c]['份额'][h] * new_company_list[c]['产品C份额'][h] )
+                new_company_list[c]['产品A台数'][h] = int(new_company_list[c]['年手术台数'][h] * new_company_list[c]['份额'][h] * new_company_list[c]['产品A份额'][h] )
+                new_company_list[c]['产品B台数'][h] = int(new_company_list[c]['年手术台数'][h] * new_company_list[c]['份额'][h] * new_company_list[c]['产品B份额'][h] )
+                new_company_list[c]['产品C台数'][h] = int(new_company_list[c]['年手术台数'][h] * new_company_list[c]['份额'][h] * new_company_list[c]['产品C份额'][h] )
             else:
                 # 第二轮后，引入VBP，产品B总台数为医院一半正常分配，+ VBP份额, A和C为医院总台数一半按前面计算法分配
-                new_company_list[c].loc[h,'产品A台数'] = int(new_company_list[c]['年手术台数'][h] * new_company_list[c]['份额'][h] * new_company_list[c]['产品A份额'][h] * 0.5  )
-                new_company_list[c].loc[h,'产品B台数'] = int(new_company_list[c]['年手术台数'][h] * 0.5 * new_company_list[c]['份额'][h] * new_company_list[c]['产品B份额'][h] ) + new_company_list[c]['年手术台数'][h] * company_info['VBP份额'][c]
-                new_company_list[c].loc[h,'产品C台数'] = int(new_company_list[c]['年手术台数'][h] * new_company_list[c]['份额'][h] * new_company_list[c]['产品C份额'][h] * 0.5 )
+                new_company_list[c]['产品A台数'][h] = int(new_company_list[c]['年手术台数'][h] * new_company_list[c]['份额'][h] * new_company_list[c]['产品A份额'][h] * 0.5  )
+                new_company_list[c]['产品B台数'][h] = int(new_company_list[c]['年手术台数'][h] * 0.5 * new_company_list[c]['份额'][h] * new_company_list[c]['产品B份额'][h] ) + new_company_list[c]['年手术台数'][h] * company_info['VBP份额'][c]
+                new_company_list[c]['产品C台数'][h] = int(new_company_list[c]['年手术台数'][h] * new_company_list[c]['份额'][h] * new_company_list[c]['产品C份额'][h] * 0.5 )
             
             
 
-    
+    # 对每家医院，更新三种产品均价：
+
+    for h in range(hospital_num):
+        pa = []
+        pb = []
+        pc = []
+        for c in range(company_num):
+            pa.append(new_company_list[c]['产品A价格'][h])
+            pb.append(new_company_list[c]['产品B价格'][h])
+            pc.append(new_company_list[c]['产品C价格'][h])
+    pa_avg = mean(pa)
+    pb_avg = mean(pb)
+    pc_avg = mean(pc)
+
+    # 更新每张表的产品均价：
+    for c in range(company_num):
+        new_company_list[c]['产品A均价'] = pa_avg
+        new_company_list[c]['产品B均价'] = pb_avg
+        new_company_list[c]['产品C均价'] = pc_avg
 
     # 对每家公司，更新决策相关结果（HC，推广等）
     for c in range(company_num):
@@ -333,10 +327,10 @@ def result_calculate(company_list, company_info, game):
         new_company_list[c]['推广费用'] = company_list[c]['推广决策']
 
         #各种筹码的结算：
-        new_company_info.loc[c,'渠道牌剩余数量'] = max(0, company_info['渠道牌剩余数量'][c] - sum(company_list[c]['渠道牌']))
-        new_company_info.loc[c,'准入牌剩余数量'] = max(0, company_info['准入牌剩余数量'][c] - sum(company_list[c]['准入牌']))
-        new_company_info.loc[c,'信息牌剩余数量'] = max(0, company_info['信息牌剩余数量'][c] - sum(company_list[c]['信息牌']))
-        new_company_info.loc[c,'已分配人数'] = sum(company_list[c]['HC决策'])
+        new_company_info['渠道牌剩余数量'][c] = max(0, company_info['渠道牌剩余数量'][c] - sum(company_list[c]['渠道牌']))
+        new_company_info['准入牌剩余数量'][c] = max(0, company_info['准入牌剩余数量'][c] - sum(company_list[c]['准入牌']))
+        new_company_info['信息牌剩余数量'][c] = max(0, company_info['信息牌剩余数量'][c] - sum(company_list[c]['信息牌']))
+        new_company_info['已分配人数'][c] = int(sum(company_list[c]['HC决策']))
 
 
         # 开销结算
@@ -347,8 +341,8 @@ def result_calculate(company_list, company_info, game):
         cost += sum(company_list[c]['推广决策'])
 
         # 利用开销，结算资金
-        new_company_info.loc[c,'总资金'] = company_info['总资金'][c] - cost
-        new_company_info.loc[c,'总资金投入'] += cost
+        new_company_info['总资金'][c] = company_info['总资金'][c] - cost
+        new_company_info['总资金投入'][c]+= cost
    
     
         # -----------台数结算：上轮台数 本轮台数 台数增长净值 台数增长比例
@@ -384,13 +378,13 @@ def result_calculate(company_list, company_info, game):
         
         # -----------------------营收结算: 营收 上轮营收 总营收 营收增长净值 营收增长比例
         # 营收方面，表格中的营收一栏挪入上轮营收 
-        new_company_info.loc[c,'上轮营收']  = company_info['营收'][c]
+        new_company_info['上轮营收'][c]  = company_info['营收'][c]
 
         # 营收结算
         
         revenue = sum(new_company_list[c]['产品A台数']* new_company_list[c]['产品A价格']) + sum(new_company_list[c]['产品B台数']* new_company_list[c]['产品B价格']) + sum(new_company_list[c]['产品C台数']* new_company_list[c]['产品C价格'])
         
-        new_company_info.loc[c,'营收'] = revenue
+        new_company_info['营收'][c] = revenue
 #         if game <2 :
 #             # 第一轮没有VBP，营收为全部产品线营收
 #             #new_company_info['营收'][c] = revenueA+revenueB+revenueC
@@ -402,9 +396,9 @@ def result_calculate(company_list, company_info, game):
 #             new_company_info['营收'][c] = normal_income + VBP_income
         
         # 计算总营收、增长：
-        new_company_info.loc[c,'总营收'] = new_company_info['总营收'][c] + new_company_info['营收'][c]
-        new_company_info.loc[c,'营收增长净值'] = new_company_info['营收'][c] - new_company_info['上轮营收'][c]
-        new_company_info.loc[c,'营收增长比例'] = new_company_info['营收增长净值'][c] / new_company_info['上轮营收'][c]
+        new_company_info['总营收'][c] = new_company_info['总营收'][c] + new_company_info['营收'][c]
+        new_company_info['营收增长净值'][c] = new_company_info['营收'][c] - new_company_info['上轮营收'][c]
+        new_company_info['营收增长比例'][c] = new_company_info['营收增长净值'][c] / new_company_info['上轮营收'][c]
 
             
         # -------------------------成本结算
@@ -426,7 +420,7 @@ def result_calculate(company_list, company_info, game):
 #             VBP_production_cost = sum(new_company_info['产品B成本'][c] * new_company_info['VBP份额'][c] * new_company_list[c]['年手术台数'])
 #             production_cost = normal_production_cost + VBP_production_cost
         # 加入总生产成本
-        new_company_info.loc[c,'总生产成本'] += production_cost
+        new_company_info['总生产成本'][c] += production_cost
    
         # 资金池更新    
         if game%2 == 0: #年底，计算利润，计算下一年资金
@@ -444,7 +438,7 @@ def result_calculate(company_list, company_info, game):
             else:
                 gain = new_company_info['总营收'][c] * 0.16
             
-            new_company_info.loc[c,'总资金'] = profit + gain
+            new_company_info['总资金'][c] = profit + gain
             
             
     # 更新手术台数可见 : 份额可见计算逻辑：如果原来是1，则保留1， 否则如果该公司总份额为各公司最大，则为1，否则为0
@@ -455,7 +449,7 @@ def result_calculate(company_list, company_info, game):
     
         for c in range(4):
             if new_company_list[c]['总份额'][h] ==  max(shares):
-                new_company_list[c].loc[h,'份额可见'] =  1
+                new_company_list[c]['份额可见'][h] =  1
     
 
     return (new_company_list, new_company_info)
