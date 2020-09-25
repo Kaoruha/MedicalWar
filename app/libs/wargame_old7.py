@@ -9,8 +9,6 @@ import pandas as pd
 from numpy import *
 from random import *
 
-
-
 HOSPITAL_LIST = ['大型医院1',
  '大型医院2',
  '大型医院3',
@@ -294,9 +292,8 @@ def result_calculate(company_list, company_info, game):
                 new_company_list[c]['产品B台数'][h] = int(new_company_list[c]['年手术台数'][h] * new_company_list[c]['份额'][h] * new_company_list[c]['产品B份额'][h] )
                 new_company_list[c]['产品C台数'][h] = int(new_company_list[c]['年手术台数'][h] * new_company_list[c]['份额'][h] * new_company_list[c]['产品C份额'][h] )
             else:
-                # 第二轮后，引入VBP，产品B总台数为医院一半正常分配，+ VBP份额, A和C为医院总台数一半按前面计算法分配
                 new_company_list[c]['产品A台数'][h] = int(new_company_list[c]['年手术台数'][h] * new_company_list[c]['份额'][h] * new_company_list[c]['产品A份额'][h] * 0.5  )
-                new_company_list[c]['产品B台数'][h] = int(new_company_list[c]['年手术台数'][h] * 0.5 * new_company_list[c]['份额'][h] * new_company_list[c]['产品B份额'][h] ) + new_company_list[c]['年手术台数'][h] * company_info['VBP份额'][c]
+                new_company_list[c]['产品B台数'][h] = int(new_company_list[c]['年手术台数'][h] * new_company_list[c]['份额'][h] * new_company_list[c]['产品B份额'][h] * 0.5 )
                 new_company_list[c]['产品C台数'][h] = int(new_company_list[c]['年手术台数'][h] * new_company_list[c]['份额'][h] * new_company_list[c]['产品C份额'][h] * 0.5 )
             
             
@@ -348,13 +345,12 @@ def result_calculate(company_list, company_info, game):
         # -----------台数结算：上轮台数 本轮台数 台数增长净值 台数增长比例
 
         new_company_list[c]['上轮台数']  = company_list[c]['本轮台数']        # 本轮台数挪为上轮台数
-        new_company_list[c]['本轮台数'] = new_company_list[c]['产品A台数'][h] + new_company_list[c]['产品B台数'][h] + new_company_list[c]['产品C台数'][h]
-#         if game < 2:
-#             #第一轮，没有VBP，台数用份额计算
-#             new_company_list[c]['本轮台数'] = new_company_list[c]['年手术台数'] * new_company_list[c]['份额']
-#         else:
-#             #第二轮之后，使用VBP，台数用两部分计算
-#             new_company_list[c]['本轮台数'] = new_company_list[c]['年手术台数'] * 0.5 * new_company_list[c]['份额']  + new_company_list[c]['年手术台数'] * 0.5 * company_info['VBP份额'][c]
+        if game < 2:
+            #第一轮，没有VBP，台数用份额计算
+            new_company_list[c]['本轮台数'] = new_company_list[c]['年手术台数'] * new_company_list[c]['份额']
+        else:
+            #第二轮之后，使用VBP，台数用两部分计算
+            new_company_list[c]['本轮台数'] = new_company_list[c]['年手术台数'] * 0.5 * new_company_list[c]['份额']  + new_company_list[c]['年手术台数'] * 0.5 * company_info['VBP份额'][c]
         # 计算台数增长
         new_company_list[c]['台数增长净值'] = new_company_list[c]['本轮台数'] - new_company_list[c]['上轮台数']
         new_company_list[c]['台数增长比例'] = new_company_list[c]['台数增长净值'] / new_company_list[c]['上轮台数'].map(lambda x:max(x,1))
@@ -381,19 +377,24 @@ def result_calculate(company_list, company_info, game):
         new_company_info['上轮营收'][c]  = company_info['营收'][c]
 
         # 营收结算
+#         revenueA = sum(new_company_list[c]['年手术台数'] * new_company_list[c]['份额'] * new_company_list[c]['产品A份额'] * new_company_list[c]['产品A价格']) / 100
+#         revenueB = sum(new_company_list[c]['年手术台数'] * new_company_list[c]['份额'] * new_company_list[c]['产品B份额'] * new_company_list[c]['产品B价格'])/ 100
+#         revenueC = sum(new_company_list[c]['年手术台数'] * new_company_list[c]['份额'] * new_company_list[c]['产品C份额'] * new_company_list[c]['产品C价格'])/ 100
+        
+        #revenue = sum(new_company_list[c]['年手术台数'] * new_company_list[c]['份额'] * (new_company_list[c]['产品A份额'] * new_company_list[c]['产品A价格'] + new_company_list[c]['产品B份额'] * new_company_list[c]['产品B价格'] + new_company_list[c]['份额'] * new_company_list[c]['产品C份额'] * new_company_list[c]['产品C价格'])) 
         
         revenue = sum(new_company_list[c]['产品A台数']* new_company_list[c]['产品A价格']) + sum(new_company_list[c]['产品B台数']* new_company_list[c]['产品B价格']) + sum(new_company_list[c]['产品C台数']* new_company_list[c]['产品C价格'])
         
-        new_company_info['营收'][c] = revenue
-#         if game <2 :
-#             # 第一轮没有VBP，营收为全部产品线营收
-#             #new_company_info['营收'][c] = revenueA+revenueB+revenueC
-#             new_company_info['营收'][c] = revenue
-#         else:
-#             #第二轮之后有VBP，营收分两部分计算
-#             normal_income =  revenue * 0.5
-#             VBP_income = sum(company_info['VBP价格'][c] * company_info['VBP份额'][c] * new_company_list[c]['年手术台数'])
-#             new_company_info['营收'][c] = normal_income + VBP_income
+
+        if game <2 :
+            # 第一轮没有VBP，营收为全部产品线营收
+            #new_company_info['营收'][c] = revenueA+revenueB+revenueC
+            new_company_info['营收'][c] = revenue
+        else:
+            #第二轮之后有VBP，营收分两部分计算
+            normal_income =  revenue * 0.5
+            VBP_income = sum(company_info['VBP价格'][c] * company_info['VBP份额'][c] * new_company_list[c]['年手术台数'])
+            new_company_info['营收'][c] = normal_income + VBP_income
         
         # 计算总营收、增长：
         new_company_info['总营收'][c] = new_company_info['总营收'][c] + new_company_info['营收'][c]
@@ -409,16 +410,15 @@ def result_calculate(company_list, company_info, game):
         costB = sum(new_company_list[c]['产品B台数'])* new_company_info['产品B成本'][c]
         costC = sum(new_company_list[c]['产品C台数'])* new_company_info['产品C成本'][c]
 
-        production_cost = costA + costB + costC
 
-#         if game < 2:
-#             # 第一轮，成本直接核算
-#             production_cost = costA + costB + costC
-#         else:
-#             # 加入VBP后，成本分为VBP部分和非VBP部分
-#             normal_production_cost = (costA + costB + costC) * 0.5
-#             VBP_production_cost = sum(new_company_info['产品B成本'][c] * new_company_info['VBP份额'][c] * new_company_list[c]['年手术台数'])
-#             production_cost = normal_production_cost + VBP_production_cost
+        if game < 2:
+            # 第一轮，成本直接核算
+            production_cost = costA + costB + costC
+        else:
+            # 加入VBP后，成本分为VBP部分和非VBP部分
+            normal_production_cost = (costA + costB + costC) * 0.5
+            VBP_production_cost = sum(new_company_info['产品B成本'][c] * new_company_info['VBP份额'][c] * new_company_list[c]['年手术台数'])
+            production_cost = normal_production_cost + VBP_production_cost
         # 加入总生产成本
         new_company_info['总生产成本'][c] += production_cost
    
