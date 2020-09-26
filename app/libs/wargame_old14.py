@@ -213,18 +213,10 @@ def product_change(company_df, hospital_id,game):
         else:
             share_A = 0
     else:
-        #减少最多只5%
-        if c['产品A均价']-pa > 0:
-            share_A = c['产品A份额'] * min(1 + ((c['产品A均价']-pa) / c['产品A均价'] / 0.1) * 0.05, 1.2)
-        else:
-            share_A = c['产品A份额'] * max(1 + ((c['产品A均价']-pa) / c['产品A均价'] / 0.1) * 0.05, 0.8)
-        
+        share_A = c['产品A份额'] * (1 + ((c['产品A均价']-pa) / c['产品A均价'] / 0.1) * 0.05)
     
     # product B
-    if c['产品B均价']-pb>0:
-        share_B = c['产品B份额'] * min((1 + ((c['产品B均价']-pb) / c['产品B均价'] / 0.1) * 0.05), 1.2)
-    else:
-        share_B = c['产品B份额'] * max((1 + ((c['产品B均价']-pb) / c['产品B均价'] / 0.1) * 0.05), 0.8)
+    share_B = c['产品B份额'] * (1 + ((c['产品B均价']-pb) / c['产品B均价'] / 0.1) * 0.05)
     
     # product C
     share_C = 1-(share_A + share_B)
