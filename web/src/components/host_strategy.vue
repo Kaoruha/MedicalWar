@@ -17,8 +17,13 @@
     >
       <!--检查按钮-->
       <template v-slot:top-right>
-        {{url}}
-        <q-btn flat style="color: #8080FF;margin-left:40px" label="Export" @click="export2excel" />
+        {{ url }}
+        <q-btn
+          flat
+          style="color: #8080ff; margin-left: 40px"
+          label="Export"
+          @click="export2excel"
+        />
         <q-btn
           flat
           style="color: #8080ff; margin-left: 40px"
@@ -30,7 +35,7 @@
           color="primary"
           rounded
           icon="done"
-          :label="is_company_checked ? '已确认':'待确认'"
+          :label="is_company_checked ? '已确认' : '待确认'"
           @click="all_check"
         />
       </template>
@@ -47,7 +52,12 @@
           <q-td key="name" :props="props">{{ props.row.name }}</q-td>
           <q-td key="operation_count" :props="props">
             {{ props.row.operation_count }}
-            <q-popup-edit v-model="props.row.description" title="调整年手术台数" buttons auto-save>
+            <q-popup-edit
+              v-model="props.row.description"
+              title="调整年手术台数"
+              buttons
+              auto-save
+            >
               <q-input
                 type="number"
                 v-model="props.row.operation_count"
@@ -76,16 +86,24 @@
             </q-popup-edit>
           </q-td>
 
-          <q-td key="last_operation_count" :props="props">{{ props.row.last_operation_count }}</q-td>
-          <q-td key="operation_count_change" :props="props">{{ props.row.operation_count_change }}</q-td>
-          <q-td
-            key="operation_count_change_ratio"
-            :props="props"
-          >{{ props.row.operation_count_change_ratio }}</q-td>
+          <q-td key="last_operation_count" :props="props">{{
+            props.row.last_operation_count
+          }}</q-td>
+          <q-td key="operation_count_change" :props="props">{{
+            props.row.operation_count_change
+          }}</q-td>
+          <q-td key="operation_count_change_ratio" :props="props">{{
+            props.row.operation_count_change_ratio
+          }}</q-td>
 
           <q-td key="hc_sensitivity" :props="props">
             {{ props.row.hc_sensitivity }}
-            <q-popup-edit v-model="props.row.hc_sensitivity" title="调整HC敏感度" buttons auto-save>
+            <q-popup-edit
+              v-model="props.row.hc_sensitivity"
+              title="调整HC敏感度"
+              buttons
+              auto-save
+            >
               <q-input
                 type="number"
                 v-model="props.row.hc_sensitivity"
@@ -116,7 +134,12 @@
 
           <q-td key="price_sensitivity" :props="props">
             {{ props.row.price_sensitivity }}
-            <q-popup-edit v-model="props.row.price_sensitivity" title="调整价格敏感度" buttons auto-save>
+            <q-popup-edit
+              v-model="props.row.price_sensitivity"
+              title="调整价格敏感度"
+              buttons
+              auto-save
+            >
               <q-input
                 type="number"
                 v-model="props.row.price_sensitivity"
@@ -129,7 +152,12 @@
 
           <q-td key="share" :props="props">
             {{ props.row.share }}
-            <q-popup-edit v-model="props.row.share" title="调整份额" buttons auto-save>
+            <q-popup-edit
+              v-model="props.row.share"
+              title="调整份额"
+              buttons
+              auto-save
+            >
               <q-input
                 type="number"
                 v-model="props.row.share"
@@ -142,7 +170,12 @@
 
           <q-td key="share_visibility" :props="props">
             {{ props.row.share_visibility }}
-            <q-popup-edit v-model="props.row.share_visibility" title="份额可见" buttons auto-save>
+            <q-popup-edit
+              v-model="props.row.share_visibility"
+              title="份额可见"
+              buttons
+              auto-save
+            >
               <q-input
                 type="number"
                 v-model="props.row.share_visibility"
@@ -155,7 +188,12 @@
 
           <q-td key="total_share" :props="props">
             {{ props.row.total_share }}
-            <q-popup-edit v-model="props.row.total_share" title="总份额" buttons auto-save>
+            <q-popup-edit
+              v-model="props.row.total_share"
+              title="总份额"
+              buttons
+              auto-save
+            >
               <q-input
                 type="number"
                 v-model="props.row.total_share"
@@ -168,7 +206,12 @@
 
           <q-td key="last_share" :props="props">
             {{ props.row.last_share }}
-            <q-popup-edit v-model="props.row.last_share" title="上轮份额" buttons auto-save>
+            <q-popup-edit
+              v-model="props.row.last_share"
+              title="上轮份额"
+              buttons
+              auto-save
+            >
               <q-input
                 type="number"
                 v-model="props.row.last_share"
@@ -181,7 +224,12 @@
 
           <q-td key="share_change" :props="props">
             {{ props.row.share_change }}
-            <q-popup-edit v-model="props.row.share_change" title="份额增长净值" buttons auto-save>
+            <q-popup-edit
+              v-model="props.row.share_change"
+              title="份额增长净值"
+              buttons
+              auto-save
+            >
               <q-input
                 type="number"
                 v-model="props.row.share_change"
@@ -194,7 +242,12 @@
 
           <q-td key="share_change_ratio" :props="props">
             {{ props.row.share_change_ratio }}
-            <q-popup-edit v-model="props.row.share_change_ratio" title="份额增长比例" buttons auto-save>
+            <q-popup-edit
+              v-model="props.row.share_change_ratio"
+              title="份额增长比例"
+              buttons
+              auto-save
+            >
               <q-input
                 type="number"
                 v-model="props.row.share_change_ratio"
@@ -207,7 +260,12 @@
 
           <q-td key="hc" :props="props">
             {{ props.row.hc }}
-            <q-popup-edit v-model="props.row.hc" title="调整当前HC" buttons auto-save>
+            <q-popup-edit
+              v-model="props.row.hc"
+              title="调整当前HC"
+              buttons
+              auto-save
+            >
               <q-input
                 type="number"
                 v-model="props.row.hc"
@@ -220,7 +278,12 @@
 
           <q-td key="hc_low_limit" :props="props">
             {{ props.row.hc_low_limit }}
-            <q-popup-edit v-model="props.row.hc_low_limit" title="调整HC上限" buttons auto-save>
+            <q-popup-edit
+              v-model="props.row.hc_low_limit"
+              title="调整HC上限"
+              buttons
+              auto-save
+            >
               <q-input
                 type="number"
                 v-model="props.row.hc_low_limit"
@@ -233,7 +296,12 @@
 
           <q-td key="advertising" :props="props">
             {{ props.row.advertising }}
-            <q-popup-edit v-model="props.row.advertising" title="调整市场费用" buttons auto-save>
+            <q-popup-edit
+              v-model="props.row.advertising"
+              title="调整市场费用"
+              buttons
+              auto-save
+            >
               <q-input
                 type="number"
                 v-model="props.row.advertising"
@@ -246,7 +314,12 @@
 
           <q-td key="a_price" :props="props">
             {{ props.row.a_price }}
-            <q-popup-edit v-model="props.row.a_price" title="产品A价格" buttons auto-save>
+            <q-popup-edit
+              v-model="props.row.a_price"
+              title="产品A价格"
+              buttons
+              auto-save
+            >
               <q-input
                 type="number"
                 v-model="props.row.a_price"
@@ -259,7 +332,12 @@
 
           <q-td key="a_mean" :props="props">
             {{ props.row.a_mean }}
-            <q-popup-edit v-model="props.row.a_mean" title="调整产品A均价" buttons auto-save>
+            <q-popup-edit
+              v-model="props.row.a_mean"
+              title="调整产品A均价"
+              buttons
+              auto-save
+            >
               <q-input
                 type="number"
                 v-model="props.row.a_mean"
@@ -272,7 +350,12 @@
 
           <q-td key="a_count" :props="props">
             {{ props.row.a_count }}
-            <q-popup-edit v-model="props.row.a_count" title="调整产品A台数" buttons auto-save>
+            <q-popup-edit
+              v-model="props.row.a_count"
+              title="调整产品A台数"
+              buttons
+              auto-save
+            >
               <q-input
                 type="number"
                 v-model="props.row.a_count"
@@ -285,7 +368,12 @@
 
           <q-td key="b_price" :props="props">
             {{ props.row.b_price }}
-            <q-popup-edit v-model="props.row.b_price" title="调整产品B价格" buttons auto-save>
+            <q-popup-edit
+              v-model="props.row.b_price"
+              title="调整产品B价格"
+              buttons
+              auto-save
+            >
               <q-input
                 type="number"
                 v-model="props.row.b_price"
@@ -298,7 +386,12 @@
 
           <q-td key="b_mean" :props="props">
             {{ props.row.b_mean }}
-            <q-popup-edit v-model="props.row.b_mean" title="调整产品B均价" buttons auto-save>
+            <q-popup-edit
+              v-model="props.row.b_mean"
+              title="调整产品B均价"
+              buttons
+              auto-save
+            >
               <q-input
                 type="number"
                 v-model="props.row.b_mean"
@@ -311,7 +404,12 @@
 
           <q-td key="b_count" :props="props">
             {{ props.row.b_count }}
-            <q-popup-edit v-model="props.row.b_count" title="调整产品B台数" buttons auto-save>
+            <q-popup-edit
+              v-model="props.row.b_count"
+              title="调整产品B台数"
+              buttons
+              auto-save
+            >
               <q-input
                 type="number"
                 v-model="props.row.b_count"
@@ -324,7 +422,12 @@
 
           <q-td key="c_price" :props="props">
             {{ props.row.c_price }}
-            <q-popup-edit v-model="props.row.c_price" title="调整产品C价格" buttons auto-save>
+            <q-popup-edit
+              v-model="props.row.c_price"
+              title="调整产品C价格"
+              buttons
+              auto-save
+            >
               <q-input
                 type="number"
                 v-model="props.row.c_price"
@@ -337,7 +440,12 @@
 
           <q-td key="c_mean" :props="props">
             {{ props.row.c_mean }}
-            <q-popup-edit v-model="props.row.c_mean" title="调整产品C均价" buttons auto-save>
+            <q-popup-edit
+              v-model="props.row.c_mean"
+              title="调整产品C均价"
+              buttons
+              auto-save
+            >
               <q-input
                 type="number"
                 v-model="props.row.c_mean"
@@ -350,7 +458,12 @@
 
           <q-td key="c_count" :props="props">
             {{ props.row.c_count }}
-            <q-popup-edit v-model="props.row.c_count" title="调整产品C台数" buttons auto-save>
+            <q-popup-edit
+              v-model="props.row.c_count"
+              title="调整产品C台数"
+              buttons
+              auto-save
+            >
               <q-input
                 type="number"
                 v-model="props.row.c_count"
@@ -363,7 +476,12 @@
 
           <q-td key="hc_strategy" :props="props">
             {{ props.row.hc_strategy }}
-            <q-popup-edit v-model="props.row.hc_strategy" title="调整HC决策" buttons auto-save>
+            <q-popup-edit
+              v-model="props.row.hc_strategy"
+              title="调整HC决策"
+              buttons
+              auto-save
+            >
               <q-input
                 type="number"
                 v-model="props.row.hc_strategy"
@@ -376,7 +494,12 @@
 
           <q-td key="advertising_strategy" :props="props">
             {{ props.row.advertising_strategy }}
-            <q-popup-edit v-model="props.row.advertising_strategy" title="调整市场决策" buttons auto-save>
+            <q-popup-edit
+              v-model="props.row.advertising_strategy"
+              title="调整市场决策"
+              buttons
+              auto-save
+            >
               <q-input
                 type="number"
                 v-model="props.row.advertising_strategy"
@@ -389,7 +512,12 @@
 
           <q-td key="a_strategy" :props="props">
             {{ props.row.a_strategy }}
-            <q-popup-edit v-model="props.row.a_strategy" title="调整产品A价格决策" buttons auto-save>
+            <q-popup-edit
+              v-model="props.row.a_strategy"
+              title="调整产品A价格决策"
+              buttons
+              auto-save
+            >
               <q-input
                 type="number"
                 v-model="props.row.a_strategy"
@@ -402,7 +530,12 @@
 
           <q-td key="b_strategy" :props="props">
             {{ props.row.b_strategy }}
-            <q-popup-edit v-model="props.row.b_strategy" title="调整产品B价格决策" buttons auto-save>
+            <q-popup-edit
+              v-model="props.row.b_strategy"
+              title="调整产品B价格决策"
+              buttons
+              auto-save
+            >
               <q-input
                 type="number"
                 v-model="props.row.b_strategy"
@@ -415,7 +548,12 @@
 
           <q-td key="c_strategy" :props="props">
             {{ props.row.c_strategy }}
-            <q-popup-edit v-model="props.row.a_strategy" title="调整产品C价格决策" buttons auto-save>
+            <q-popup-edit
+              v-model="props.row.a_strategy"
+              title="调整产品C价格决策"
+              buttons
+              auto-save
+            >
               <q-input
                 type="number"
                 v-model="props.row.c_strategy"
@@ -428,7 +566,12 @@
 
           <q-td key="channel" :props="props">
             {{ props.row.channel }}
-            <q-popup-edit v-model="props.row.channel" title="调整渠道牌" buttons auto-save>
+            <q-popup-edit
+              v-model="props.row.channel"
+              title="调整渠道牌"
+              buttons
+              auto-save
+            >
               <q-input
                 type="number"
                 v-model="props.row.channel"
@@ -441,7 +584,12 @@
 
           <q-td key="permission" :props="props">
             {{ props.row.permission }}
-            <q-popup-edit v-model="props.row.permission" title="调整准入牌" buttons auto-save>
+            <q-popup-edit
+              v-model="props.row.permission"
+              title="调整准入牌"
+              buttons
+              auto-save
+            >
               <q-input
                 type="number"
                 v-model="props.row.permission"
@@ -454,7 +602,12 @@
 
           <q-td key="info" :props="props">
             {{ props.row.info }}
-            <q-popup-edit v-model="props.row.info" title="调整信息牌" buttons auto-save>
+            <q-popup-edit
+              v-model="props.row.info"
+              title="调整信息牌"
+              buttons
+              auto-save
+            >
               <q-input
                 type="number"
                 v-model="props.row.info"
@@ -502,7 +655,6 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
-
   </div>
 </template>
 
@@ -528,15 +680,11 @@ export default {
   },
   data() {
     return {
-      is_batch_show:false,
+      is_batch_show: false,
       batch_num: 0,
       batch: "产品B价格",
-      options: [
-        "产品B价格"
-      ],
-      options_target: [
-        "b_price",
-      ],
+      options: ["产品B价格"],
+      options_target: ["b_price"],
       game_id: 1,
       rounds: 1,
       is_company_checked: false,
@@ -1010,6 +1158,8 @@ export default {
       this.game_id = Number(id);
       let r = localStorage.getItem("current_rounds");
       this.rounds = Number(r);
+      console.log("game:" + this.game_id);
+      console.log("rounds:" + this.rounds);
     },
 
     get_company_strategy() {
@@ -1207,29 +1357,25 @@ export default {
         });
       }
       // const jsonData = [{ 姓名: 'Tom', 年龄: 18, 身份证号: '0102' }, { 姓名: '张三', 年龄: 210204199901212290, 身份证号: '210204199901212290' }]
-      let path =this.game_id + "_" + this.rounds + "_" + this.company_name + ".xlsx"
-      exportJson2Excel(
-        jsonData,
-        path
-      );
+      let path =
+        this.game_id + "_" + this.rounds + "_" + this.company_name + ".xlsx";
+      exportJson2Excel(jsonData, path);
     },
 
     batch_submit() {
       let i = 0;
       for (let index = 0; index < this.options.length; index++) {
         if (this.options[index] == this.batch) {
-          i = index
+          i = index;
         }
       }
       for (let index = 0; index < this.data.length; index++) {
         const element = this.data[index];
-        element[this.options_target[i]] = this.batch_num
+        element[this.options_target[i]] = this.batch_num;
       }
-      this.batch_num = 0
+      this.batch_num = 0;
       // alert(this.options_target[i]+this.batch_num);
     },
-  
-  
   },
 };
 </script>

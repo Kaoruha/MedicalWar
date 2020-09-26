@@ -14,7 +14,13 @@
     >
       <!--搜索框插槽-->
       <template v-slot:top-right>
-        <q-input borderless dense debounce="300" v-model="filter" placeholder="Search">
+        <q-input
+          borderless
+          dense
+          debounce="300"
+          v-model="filter"
+          placeholder="Search"
+        >
           <template v-slot:append>
             <q-icon name="search" />
           </template>
@@ -80,7 +86,13 @@
         </q-card-section>
 
         <q-card-section class="q-pt-none">
-          <q-input dense v-model="name" autofocus @keyup.enter="prompt = false" placeholder="Name at least 4 letters." />
+          <q-input
+            dense
+            v-model="name"
+            autofocus
+            @keyup.enter="prompt = false"
+            placeholder="Name at least 4 letters."
+          />
         </q-card-section>
         <q-card-section class="q-pt-none">
           <q-input
@@ -107,7 +119,7 @@
 
         <q-card-section class="q-pt-none del-dialog">
           <p class="msg">Do you really want to delete</p>
-          <p class="name">{{ready_to_delete.name}}?</p>
+          <p class="name">{{ ready_to_delete.name }}?</p>
         </q-card-section>
 
         <q-card-actions align="right" class="text-primary">
@@ -334,8 +346,8 @@ export default {
               pagination: _this.pagination,
               filter: _this.filter,
             });
-            _this.name=''
-            _this.description=''
+            _this.name = "";
+            _this.description = "";
             break;
           case 600:
             break;
@@ -368,11 +380,18 @@ export default {
       });
     },
 
-    enter_game(uid){
-      this.$store.commit("current_game/updateCurrentGameID", uid); // TODO Check
+    enter_game(uid) {
+      const _this = this;
+      this.$store.commit("current_game/updateCurrentGameID", uid);
+      Game.GetGameInfo(uid).then((response) => {
+        const { data } = response;
+        _this.$store.commit("current_game/updateCurrentRounds", data.rounds);
+        this.$router.push("game_host");
+      });
+
       // alert(this.$store.state.current_game.xxx;)
-      this.$router.push("game_host");
-    }
+      
+    },
   },
 };
 </script>

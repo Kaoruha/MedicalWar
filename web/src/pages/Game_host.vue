@@ -749,7 +749,6 @@ export default {
     get_company_info() {
       this.original = [];
       const _this = this;
-      // alert(this.rounds)
       Game.GetCompanyInfo(this.game_id, this.rounds).then((response) => {
         const { data } = response;
         console.log(response);
@@ -863,9 +862,19 @@ export default {
         this.data_d,
       ];
       Game.Next(this.game_id, data).then((response) => {
-        // location.reload();
+        
         _this.$q.notify({
           message: "提交成功",
+          // 可用的值: 'positive', 'negative', 'warning', 'info'
+          type: "positive",
+          textColor: "white",
+          // 'top', 'left', 'bottom-left'等
+          position: "top",
+        });
+        _this.get_current_game();
+
+        _this.$q.notify({
+          message: "请手动刷新页面",
           // 可用的值: 'positive', 'negative', 'warning', 'info'
           type: "positive",
           textColor: "white",
