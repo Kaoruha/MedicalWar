@@ -480,7 +480,7 @@ export default {
         {
           name: "operation_count",
           required: true,
-          label: "年手术台数",
+          label: "半年手术台数",
           align: "left",
           field: (row) => row.operation_count,
           style: "width:200px",

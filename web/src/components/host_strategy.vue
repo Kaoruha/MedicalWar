@@ -54,7 +54,7 @@
             {{ props.row.operation_count }}
             <q-popup-edit
               v-model="props.row.description"
-              title="调整年手术台数"
+              title="调整半年手术台数"
               buttons
               auto-save
             >
@@ -723,7 +723,7 @@ export default {
         {
           name: "operation_count",
           required: true,
-          label: "年手术台数",
+          label: "半年手术台数",
           align: "left",
           field: (row) => row.account,
           style: "width:100px",
