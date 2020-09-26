@@ -968,6 +968,7 @@ export default {
     },
 
     is_ok_to_start() {
+      const _this = this;
       if (this.is_all_com_check && !this.current_round_started) {
         _this.$q.notify({
           message: "可以开始回合",
