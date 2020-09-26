@@ -376,8 +376,10 @@ export default {
   data() {
     return {
       // host: "http://localhost:8080/#/game_player?uuid=",
+      mask_show : false,
       host: "http://49.235.80.242/#/game_player?uuid=",
       is_commit_show: false,
+      has_next_click:false,
       current_round_started: false,
       game_name: "default",
       rounds: 1,
@@ -853,6 +855,7 @@ export default {
     },
 
     next() {
+      this.has_next_click = true
       const _this = this;
       let data = [
         this.data,
@@ -871,16 +874,8 @@ export default {
           // 'top', 'left', 'bottom-left'等
           position: "top",
         });
-        _this.get_current_game();
-
-        _this.$q.notify({
-          message: "请手动刷新页面",
-          // 可用的值: 'positive', 'negative', 'warning', 'info'
-          type: "positive",
-          textColor: "white",
-          // 'top', 'left', 'bottom-left'等
-          position: "top",
-        });
+        location.reload()
+        // _this.get_current_game();
       });
 
       // 将gameid和rounds 和5个dataframe拼起来传到后端
@@ -952,8 +947,12 @@ export default {
     },
 
     is_ok_to_commit() {
+      const _this = this
+      if (this.has_next_click) {
+        return false
+      }
       if (this.is_all_com_check && this.current_round_started) {
-        return true;
+        
         _this.$q.notify({
           message: "可以提交",
           // 可用的值: 'positive', 'negative', 'warning', 'info'
@@ -962,6 +961,7 @@ export default {
           // 'top', 'left', 'bottom-left'等
           position: "top",
         });
+        return true;
       } else {
         return false;
       }
@@ -969,7 +969,6 @@ export default {
 
     is_ok_to_start() {
       if (this.is_all_com_check && !this.current_round_started) {
-        return true;
         _this.$q.notify({
           message: "可以开始回合",
           // 可用的值: 'positive', 'negative', 'warning', 'info'
@@ -978,6 +977,7 @@ export default {
           // 'top', 'left', 'bottom-left'等
           position: "top",
         });
+        return true;
       } else {
         return false;
       }
