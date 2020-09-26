@@ -105,16 +105,14 @@ def HC_effect(company_df, hospital_id):
     if new_hc_per_1000 < 1 and c['份额'] < 0.50:
         gap = old_hc_per_1000 - new_hc_per_1000
         loss = int(gap/0.1)
-        # 每损失0.1 ，就丢失1次，对多丢3次
+        # 每损失0.1 ，就丢失1次
         #print("HC份额丢失次数：",loss)
-        for i in range(min(loss,3)):
+        for i in range(loss):
             # 随机丢失1~10%额度，单位（%）
             new_share *= (1- randrange(1,11)/100)
     #print(operations,old_hc_per_1000,new_hc_per_1000, new_share)
     # counting in the sensitivity of the hospital on HC
     new_share = c['份额'] + (new_share - c['份额']) * c['HC敏感度']
-    if new_share < 0:
-        new_share = 0
     #print("HC结算后份额：",new_share)
     
     return new_share
@@ -139,9 +137,9 @@ def Promotion_effect(company_df, hospital_id):
     #change = (c['推广决策'] - c['推广费用']) / c['推广费用'] 
     #每比上一周期增加1%， 份额增加0.5%， 每降低1%， 份额丢失1%
     if change > 0:
-        total_change = min(change / 2, 0.2)
+        total_change = change / 2
     else:
-        total_change = max(change, -0.2)
+        total_change = change
     #TODO : 需要确定推广费用带来的增益和损失是否有上下限？
     # 推广敏感度带来的增益变化
     #print("渠道份额变化total_change = ", total_change)
@@ -169,13 +167,6 @@ def Company_Share_Change(hospital_id,company_list):
         old_share = c['份额'][hospital_id]
         # 先结算 HC（返回新share)，再结算推广（返回share改变量）
         new_share = HC_effect(c,hospital_id)* (1+ Promotion_effect(c,hospital_id))
-        # 新份额变化限制：不超过原份额的10个点，不低于原份额的10个点，不能到负的
-        if new_share > old_share:
-            new_share = min(new_share, old_share + 0.05)
-        else:
-            new_share = max(new_share, old_share - 0.05)
-        if new_share < 0:
-            new_share = 0
         static_shares.append(new_share)
         promotions.append(c['推广决策'][hospital_id])
     #print(static_shares)
