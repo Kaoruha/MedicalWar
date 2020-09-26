@@ -10,7 +10,7 @@ from numpy import *
 from random import *
 
 
-PROFIT_LIST = [10401070.2, 4115148.442, 4087621.33,1268654.112]
+PROFIT_LIST = [10401070.2/2, 4115148.442/2, 4087621.33/2,1268654.112/2]
 
 HOSPITAL_LIST = ['大型医院1',
  '大型医院2',
@@ -431,9 +431,7 @@ def result_calculate(company_list, company_info, game):
             if profit < old_profit:
                 new_company_info.loc[c,'总资金'] = gain * (profit/old_profit)
             else:
-                #new_company_info.loc[c,'总资金'] = gain * ((((profit/old_profit)-1) / 2) + 1)
-                new_company_info.loc[c,'总资金'] = gain 
-
+                new_company_info.loc[c,'总资金'] = gain * ((((profit/old_profit)-1) / 2) + 1)
             
             
             #第二轮结束后，医院自然增长

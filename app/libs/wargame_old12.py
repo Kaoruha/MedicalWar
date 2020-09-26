@@ -10,7 +10,6 @@ from numpy import *
 from random import *
 
 
-PROFIT_LIST = [10401070.2, 4115148.442, 4087621.33,1268654.112]
 
 HOSPITAL_LIST = ['大型医院1',
  '大型医院2',
@@ -324,6 +323,10 @@ def result_calculate(company_list, company_info, game):
                 new_company_list[c].loc[h,'产品B台数'] = int(new_company_list[c]['年手术台数'][h] * 0.5 * new_company_list[c]['份额'][h] * new_company_list[c]['产品B份额'][h] ) + new_company_list[c]['年手术台数'][h] * company_info['VBP份额'][c]
                 new_company_list[c].loc[h,'产品C台数'] = int(new_company_list[c]['年手术台数'][h] * new_company_list[c]['份额'][h] * new_company_list[c]['产品C份额'][h] * 0.5 )
             
+            
+
+    
+
     # 对每家公司，更新决策相关结果（HC，推广等）
     for c in range(company_num):
         new_company_list[c]['当前HC'] = company_list[c]['HC决策']
@@ -351,8 +354,13 @@ def result_calculate(company_list, company_info, game):
         # -----------台数结算：上轮台数 本轮台数 台数增长净值 台数增长比例
 
         new_company_list[c]['上轮台数']  = company_list[c]['本轮台数']        # 本轮台数挪为上轮台数
-        new_company_list[c]['本轮台数'] = new_company_list[c]['产品A台数'] + new_company_list[c]['产品B台数'] + new_company_list[c]['产品C台数']
-
+        new_company_list[c]['本轮台数'] = new_company_list[c]['产品A台数'][h] + new_company_list[c]['产品B台数'][h] + new_company_list[c]['产品C台数'][h]
+#         if game < 2:
+#             #第一轮，没有VBP，台数用份额计算
+#             new_company_list[c]['本轮台数'] = new_company_list[c]['年手术台数'] * new_company_list[c]['份额']
+#         else:
+#             #第二轮之后，使用VBP，台数用两部分计算
+#             new_company_list[c]['本轮台数'] = new_company_list[c]['年手术台数'] * 0.5 * new_company_list[c]['份额']  + new_company_list[c]['年手术台数'] * 0.5 * company_info['VBP份额'][c]
         # 计算台数增长
         new_company_list[c]['台数增长净值'] = new_company_list[c]['本轮台数'] - new_company_list[c]['上轮台数']
         new_company_list[c]['台数增长比例'] = new_company_list[c]['台数增长净值'] / new_company_list[c]['上轮台数'].map(lambda x:max(x,1))
@@ -400,12 +408,23 @@ def result_calculate(company_list, company_info, game):
 
             
         # -------------------------成本结算
+#         costA = sum(new_company_list[c]['年手术台数'] * new_company_list[c]['份额'] * new_company_list[c]['产品A份额']/100 * new_company_info['产品A成本'][c])
+#         costB = sum(new_company_list[c]['年手术台数'] * new_company_list[c]['份额'] * new_company_list[c]['产品B份额']/100 * new_company_info['产品B成本'][c])
+#         costC = sum(new_company_list[c]['年手术台数'] * new_company_list[c]['份额'] * new_company_list[c]['产品C份额']/100 * new_company_info['产品C成本'][c])
         costA = sum(new_company_list[c]['产品A台数'])* new_company_info['产品A成本'][c]
         costB = sum(new_company_list[c]['产品B台数'])* new_company_info['产品B成本'][c]
         costC = sum(new_company_list[c]['产品C台数'])* new_company_info['产品C成本'][c]
 
         production_cost = costA + costB + costC
 
+#         if game < 2:
+#             # 第一轮，成本直接核算
+#             production_cost = costA + costB + costC
+#         else:
+#             # 加入VBP后，成本分为VBP部分和非VBP部分
+#             normal_production_cost = (costA + costB + costC) * 0.5
+#             VBP_production_cost = sum(new_company_info['产品B成本'][c] * new_company_info['VBP份额'][c] * new_company_list[c]['年手术台数'])
+#             production_cost = normal_production_cost + VBP_production_cost
         # 加入总生产成本
         new_company_info.loc[c,'总生产成本'] += production_cost
    
@@ -425,16 +444,7 @@ def result_calculate(company_list, company_info, game):
             else:
                 gain = new_company_info['总营收'][c] * 0.16
             
-            #根据利润变化，结算资金有多少进入 ------ todo
-            old_profit = PROFIT_LIST[c]
-            print(c, profit,old_profit)
-            if profit < old_profit:
-                new_company_info.loc[c,'总资金'] = gain * (profit/old_profit)
-            else:
-                #new_company_info.loc[c,'总资金'] = gain * ((((profit/old_profit)-1) / 2) + 1)
-                new_company_info.loc[c,'总资金'] = gain 
-
-            
+            new_company_info.loc[c,'总资金'] = profit + gain
             
             #第二轮结束后，医院自然增长
             #大型医院总手术量增长8%
