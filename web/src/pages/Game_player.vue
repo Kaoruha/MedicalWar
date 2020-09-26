@@ -1081,7 +1081,7 @@ export default {
       if (this.company_id == "d") {
         this.hc_check =
           this.hc_can_be_added * 2 + this.hc_assigned - this.total_hc >= 0;
-        this.capital_check = this.capital + 100000 - this.temp_capital >= 0;
+        this.capital_check = this.capital + 500000 * 50% - this.temp_capital >= 0;
       } else if (this.company_id == "c") {
         this.hc_check =
           this.hc_can_be_added * 2 + this.hc_assigned - this.total_hc >= 0;
