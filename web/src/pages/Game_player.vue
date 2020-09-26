@@ -464,7 +464,7 @@ export default {
           style: "width: 10px",
           headerStyle: "width: 10px",
           format: (val) => `${val}`,
-          sortable: true,
+          sortable: false,
         },
         {
           name: "name",
@@ -475,7 +475,7 @@ export default {
           style: "width: 10px",
           headerStyle: "width: 10px",
           format: (val) => `${val}`,
-          sortable: true,
+          sortable: false,
         },
         {
           name: "operation_count",
@@ -485,7 +485,7 @@ export default {
           field: (row) => row.operation_count,
           style: "width:200px",
           format: (val) => `${val}`,
-          sortable: true,
+          sortable: false,
         },
         {
           name: "hc",
@@ -495,7 +495,7 @@ export default {
           field: (row) => row.hc,
           style: "width:200px",
           format: (val) => `${val}`,
-          sortable: true,
+          sortable: false,
         },
         {
           name: "advertising",
@@ -505,7 +505,7 @@ export default {
           field: (row) => row.advertising,
           style: "width:200px",
           format: (val) => `${val}`,
-          sortable: true,
+          sortable: false,
         },
         {
           name: "a_price",
@@ -545,7 +545,7 @@ export default {
           field: (row) => row.b_count,
           style: "width:200px",
           format: (val) => `${val}`,
-          sortable: true,
+          sortable: false,
         },
         {
           name: "c_price",
@@ -555,7 +555,7 @@ export default {
           field: (row) => row.c_price,
           style: "width:200px",
           format: (val) => `${val}`,
-          sortable: true,
+          sortable: false,
         },
         {
           name: "c_count",
@@ -565,7 +565,7 @@ export default {
           field: (row) => row.c_count,
           style: "width:200px",
           format: (val) => `${val}`,
-          sortable: true,
+          sortable: false,
         },
         {
           name: "last_operation_count",
@@ -575,7 +575,7 @@ export default {
           field: (row) => row.last_operation_count,
           style: "width:200px",
           format: (val) => `${val}`,
-          sortable: true,
+          sortable: false,
         },
         {
           name: "current_operation_count",
@@ -585,7 +585,7 @@ export default {
           field: (row) => row.current_operation_count,
           style: "width:200px",
           format: (val) => `${val}`,
-          sortable: true,
+          sortable: false,
         },
         {
           name: "operation_count_change",
@@ -595,7 +595,7 @@ export default {
           field: (row) => row.operation_count_change,
           style: "width:200px",
           format: (val) => `${val}`,
-          sortable: true,
+          sortable: false,
         },
         {
           name: "operation_count_change_ratio",
@@ -605,7 +605,7 @@ export default {
           field: (row) => row.operation_count_change_ratio,
           style: "width:200px",
           format: (val) => `${val}`,
-          sortable: true,
+          sortable: false,
         },
         {
           name: "hc_strategy",
@@ -615,7 +615,7 @@ export default {
           field: (row) => row.hc_strategy,
           style: "width:200px",
           format: (val) => `${val}`,
-          sortable: true,
+          sortable: false,
         },
         {
           name: "advertising_strategy",
@@ -625,7 +625,7 @@ export default {
           field: (row) => row.advertising_strategy,
           style: "width:200px",
           format: (val) => `${val}`,
-          sortable: true,
+          sortable: false,
         },
         {
           name: "a_strategy",
@@ -635,7 +635,7 @@ export default {
           field: (row) => row.a_strategy,
           style: "width:200px",
           format: (val) => `${val}`,
-          sortable: true,
+          sortable: false,
         },
         {
           name: "b_strategy",
@@ -645,7 +645,7 @@ export default {
           field: (row) => row.b_strategy,
           style: "width:200px",
           format: (val) => `${val}`,
-          sortable: true,
+          sortable: false,
         },
         {
           name: "c_strategy",
@@ -655,7 +655,7 @@ export default {
           field: (row) => row.c_strategy,
           style: "width:200px",
           format: (val) => `${val}`,
-          sortable: true,
+          sortable: false,
         },
         {
           name: "channel",
@@ -665,7 +665,7 @@ export default {
           field: (row) => row.channel,
           style: "width:200px",
           format: (val) => `${val}`,
-          sortable: true,
+          sortable: false,
         },
         {
           name: "permission",
@@ -675,7 +675,7 @@ export default {
           field: (row) => row.permission,
           style: "width:200px",
           format: (val) => `${val}`,
-          sortable: true,
+          sortable: false,
         },
         {
           name: "info",
@@ -685,7 +685,7 @@ export default {
           field: (row) => row.info,
           style: "width:200px",
           format: (val) => `${val}`,
-          sortable: true,
+          sortable: false,
         },
       ],
       data: [],
