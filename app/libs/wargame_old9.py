@@ -195,18 +195,18 @@ def product_change(company_df, hospital_id,game):
     c = company_df.loc[hospital_id]
     pa = c['产品A价格决策']
     pb = c['产品B价格决策']
-#     #检查策略：产品A，B禁止提价
-#     if c['产品A价格决策'] > c['产品A价格'] :
-#         #print("警告！AB产品禁止提价！")
-#         pa = c['产品A价格']
-#     if c['产品B价格决策'] > c['产品B价格']:
-#         pb = c['产品B价格']
+    #检查策略：产品A，B禁止提价
+    if c['产品A价格决策'] > c['产品A价格'] :
+        #print("警告！AB产品禁止提价！")
+        pa = c['产品A价格']
+    if c['产品B价格决策'] > c['产品B价格']:
+        pb = c['产品B价格']
         
         
     # product A
     if c['产品A份额'] == 0:
         if pa >= c['产品A均价']*2:
-            share_A = 0
+            c['产品A份额'] = 0
         elif (int(c['准入牌']) >= 1 and int(game) < 3) or pa <= c['产品A均价']*0.9:
             share_A = 0.1
         else:
@@ -274,15 +274,15 @@ def result_calculate(company_list, company_info, game):
             pa.append(company_list[c]['产品A价格'][h])
             pb.append(company_list[c]['产品B价格'][h])
             pc.append(company_list[c]['产品C价格'][h])
-        pa_avg = mean(pa)
-        pb_avg = mean(pb)
-        pc_avg = mean(pc)
+    pa_avg = mean(pa)
+    pb_avg = mean(pb)
+    pc_avg = mean(pc)
 
-        # 更新每张表的产品均价：
-        for c in range(company_num):
-            company_list[c]['产品A均价'] = pa_avg
-            company_list[c]['产品B均价'] = pb_avg
-            company_list[c]['产品C均价'] = pc_avg
+    # 更新每张表的产品均价：
+    for c in range(company_num):
+        company_list[c]['产品A均价'] = pa_avg
+        company_list[c]['产品B均价'] = pb_avg
+        company_list[c]['产品C均价'] = pc_avg
     
     company_info['营收增长比例'] = company_info['营收增长比例'].astype(float)
 
