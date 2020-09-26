@@ -863,7 +863,7 @@ export default {
         this.data_d,
       ];
       Game.Next(this.game_id, data).then((response) => {
-        location.reload();
+        // location.reload();
         _this.$q.notify({
           message: "提交成功",
           // 可用的值: 'positive', 'negative', 'warning', 'info'

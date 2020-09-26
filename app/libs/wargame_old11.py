@@ -446,15 +446,6 @@ def result_calculate(company_list, company_info, game):
             
             new_company_info.loc[c,'总资金'] = profit + gain
             
-            #第二轮结束后，医院自然增长
-            #大型医院总手术量增长8%
-            #中型医院总手术量增长15%
-            #小型医院总手术量增长25%
-            #私立医院总手术量增长20%
-            new_company_list[c].loc[new_company_list[c]['医院名称'].str.contains('大型医院'),'年手术台数'] *= 1.08
-            new_company_list[c].loc[new_company_list[c]['医院名称'].str.contains('中型医院'),'年手术台数'] *= 1.15
-            new_company_list[c].loc[new_company_list[c]['医院名称'].str.contains('小型医院'),'年手术台数'] *= 1.25
-            new_company_list[c].loc[new_company_list[c]['医院名称'].str.contains('私立医院'),'年手术台数'] *= 1.20
             
     # 更新手术台数可见 : 份额可见计算逻辑：如果原来是1，则保留1， 否则如果该公司总份额为各公司最大，则为1，否则为0
     for h in range(hospital_num):
@@ -466,12 +457,9 @@ def result_calculate(company_list, company_info, game):
             if new_company_list[c]['总份额'][h] ==  max(shares):
                 new_company_list[c].loc[h,'份额可见'] =  1
     
-    
-    
 
     return (new_company_list, new_company_info)
 
 
 
 
-#
