@@ -212,7 +212,7 @@ def product_change(company_df, hospital_id,game):
 #     if c['产品B价格决策'] > c['产品B价格']:
 #         pb = c['产品B价格']
         
-
+        
     # product A
     if c['产品A份额'] == 0:
         if pa >= c['产品A均价']*2:
@@ -227,13 +227,6 @@ def product_change(company_df, hospital_id,game):
             share_A = c['产品A份额'] * min(1 + ((c['产品A均价']-pa) / c['产品A均价'] / 0.1) * 0.05, 1.2)
         else:
             share_A = c['产品A份额'] * max(1 + ((c['产品A均价']-pa) / c['产品A均价'] / 0.1) * 0.05, 0.8)
-
-    
-    # Game 3：share_A 的增益受其降价幅度影响
-    if game == 3 and pa < c['产品A价格']:
-        lower = (c['产品A价格'] - pa) / c['产品A价格']
-        gain = 1 + min(1.5,lower/0.05*0.25) 
-        share_A = share_A * gain
         
     
     # product B
@@ -243,11 +236,7 @@ def product_change(company_df, hospital_id,game):
         share_B = c['产品B份额'] * max((1 + ((c['产品B均价']-pb) / c['产品B均价'] / 0.1) * 0.05), 0.8)
     
     # product C
-    if share_A + share_B <= 1:
-        share_C = 1-(share_A + share_B)
-    else:
-        share_B = 1-share_A
-        share_C = 0
+    share_C = 1-(share_A + share_B)
     
     return (share_A,share_B,share_C,pa,pb,c['产品C价格'])
 
