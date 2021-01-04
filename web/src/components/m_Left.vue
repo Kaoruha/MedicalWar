@@ -27,7 +27,7 @@ export default {
         },
         {
           icon: "supervised_user_circle",
-          label: "User",
+          label: "Users",
           separator: false,
           url: "/manager/user",
         },

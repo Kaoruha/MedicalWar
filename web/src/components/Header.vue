@@ -1,10 +1,11 @@
 <template>
   <q-header elevated class="header" height-hint="96">
     <q-tabs align="left">
-      <q-route-tab to="/page1" label="Intro" />
-      <q-route-tab to="/login" label="Host" />
+      <q-route-tab to="/intro" label="项目介绍" />
+      <q-route-tab to="/login" label="管理员登录" />
       <div class="logo_container">
-        <div class="logo" onclick="alert(1)"></div>
+        <img class="logo" alt="logo" src="~assets/logo.png" />
+        <!-- <div class="logo" onclick="alert(1)"></div> -->
       </div>
       <!-- <div class="right">
         <a href="">追波</a>
@@ -29,7 +30,7 @@ $height: 80px;
 .header {
   background-color: #1d1d1d;
   height: $height;
-  .q-tab{
+  .q-tab {
     height: $height;
     // background-color: red;
   }
@@ -70,13 +71,11 @@ $height: 80px;
 
   .logo {
     pointer-events: auto;
-    background-color: green;
     width: 200px;
     height: $height;
     display: inline-block;
-    &:hover {
-      background-color: blue;
-    }
+    // &:hover {
+    // }
   }
 
   .q-avatar {
