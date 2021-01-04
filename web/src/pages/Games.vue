@@ -114,7 +114,7 @@
     <q-dialog v-model="is_delete_show" persistent>
       <q-card style="min-width: 350px">
         <q-card-section>
-          <div class="text-h6">Delete User</div>
+          <div class="text-h6">Delete Game</div>
         </q-card-section>
 
         <q-card-section class="q-pt-none del-dialog">
