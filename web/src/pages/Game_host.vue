@@ -413,7 +413,7 @@ export default {
           style: "width: 10px",
           headerStyle: "width: 10px",
           format: (val) => `${val}`,
-          sortable: true,
+          sortable: false,
         },
         {
           name: "capital",
@@ -721,7 +721,7 @@ export default {
       // handle sortBy
       if (sortBy) {
         const sortFn =
-          sortBy === "id"
+          sortBy === "company_ids"
             ? descending
               ? (a, b) => (a.name > b.name ? -1 : a.name < b.name ? 1 : 0)
               : (a, b) => (a.name > b.name ? 1 : a.name < b.name ? -1 : 0)
