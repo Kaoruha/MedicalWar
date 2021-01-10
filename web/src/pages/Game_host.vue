@@ -418,7 +418,7 @@ export default {
         {
           name: "capital",
           required: true,
-          label: "总资金",
+          label: "剩余资金",
           align: "left",
           field: (row) => row.capital,
           style: "width:100px",
