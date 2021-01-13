@@ -1,15 +1,24 @@
 <template>
   <q-page class="flex flex-center">
-    <img
-      alt="Quasar logo"
-      src="~assets/quasar-logo-full.svg"
-    >
-    此处需要项目介绍。
+    <p class="intro">
+      Wargame项目针对医疗行业市场运营决策需求，通过体验式学习，帮助识别个人在动态环境和政策挑战下的策略性思考、资源规划和组织管理等维度的优势和发展点，提升商业敏锐度和决策质量。
+      <br><br>参加WarGame的小组将扮演某家公司的领导层，获得到该公司的市场信息、资源和人员情况。
+      <br><br>在指定时间完成以下演练任务： 
+      <br>1、结合各项数据和信息，识别本公司面临的挑战及机遇，制定业务、市场、团队等各方面的策略。
+      <br>2、 以拟定的策略为基础，在网页界面中输入的具体数额。关键考核指标：销售额、台数。
+    </p>
   </q-page>
 </template>
 
 <script>
 export default {
-  name: 'PageIntro'
-}
+  name: "PageIntro",
+};
 </script>
+<style scoped lang="scss">
+.intro {
+  font-size: 20px;
+  width: 40vw;
+  
+}
+</style>
